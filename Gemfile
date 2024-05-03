@@ -4,6 +4,8 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 # Specify your gem's dependencies in webauthn-rails.gemspec.
 gemspec
 
+gem 'rails'
+
 gem "puma"
 
 gem "sqlite3"
