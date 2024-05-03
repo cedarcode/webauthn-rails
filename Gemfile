@@ -8,7 +8,7 @@ gem 'rails'
 
 gem "puma"
 
-gem "sqlite3"
+gem "sqlite3", "~> 1.4"
 
 gem "sprockets-rails"
 
