@@ -19,4 +19,5 @@ Gem::Specification.new do |spec|
   end
 
   spec.add_dependency "rails", ">= 7.1.3.2"
+  spec.add_dependency "webauthn", ">= 3"
 end
