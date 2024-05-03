@@ -3,6 +3,14 @@ module Webauthn
     class ApplicationController < ::ApplicationController
       private
 
+      def sign_in(user)
+        session[:user_id] = user.id
+      end
+
+      def sign_out
+        session[:user_id] = nil
+      end
+
       def relying_party
         @relying_party ||=
           WebAuthn::RelyingParty.new(

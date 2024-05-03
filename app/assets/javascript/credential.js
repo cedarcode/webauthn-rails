@@ -45,5 +45,13 @@ function create(callbackUrl, credentialOptions) {
   });
 }
 
-export { create }
+function get(credentialOptions) {
+  WebAuthnJSON.get({ "publicKey": credentialOptions }).then(function(credential) {
+    callback("/webauthn-rails/session/callback", credential);
+  }).catch(function(error) {
+    showErrorMessage(error);
+  });
+}
+
+export { create, get }
 
