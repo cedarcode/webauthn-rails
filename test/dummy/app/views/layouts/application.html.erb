@@ -8,6 +8,10 @@
 
     <%= stylesheet_link_tag "application" %>
     <%= javascript_importmap_tags %>
+
+    <% if Rails.env.test? %>
+      <%= javascript_import_module_tag 'stub_credentials' %>
+    <% end %>
   </head>
 
   <body>
