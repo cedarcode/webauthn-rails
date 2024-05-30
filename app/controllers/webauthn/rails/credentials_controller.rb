@@ -1,6 +1,8 @@
 module Webauthn
   module Rails
     class CredentialsController < ApplicationController
+      before_action :enforce_current_user, only: %i(create callback destroy)
+
       def create
         create_options = relying_party.options_for_registration(
           user: {
