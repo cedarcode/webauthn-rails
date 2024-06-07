@@ -12,3 +12,5 @@ append_to_file "config/importmap.rb", %(pin "@github/webauthn-json", to: "https:
 
 say %(Appending: pin "webauthn-rails/credential", to: "credential.js")
 append_to_file "config/importmap.rb", %(pin "webauthn-rails/credential", to: "credential.js"\n)
+
+copy_file "#{__dir__}/config/initializers/webauthn_rails.rb", "config/initializers/webauthn_rails.rb"
