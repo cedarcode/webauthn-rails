@@ -1,8 +1,11 @@
 require 'rails/generators/base'
+require "rails/generators/active_record/migration"
 
 module Webauthn
   module Rails
     class InstallGenerator < ::Rails::Generators::Base
+      include ActiveRecord::Generators::Migration
+
       source_root File.expand_path("../templates", __FILE__)
 
       desc "Injects webauthn files to your application."
@@ -48,6 +51,9 @@ module Webauthn
               end
             RUBY
           end
+
+          migration_template "db/migrate/add_webauthn_to_users.rb", "db/migrate/add_webauthn_to_users.rb"
+          migration_template "db/migrate/create_webauthn_rails_credentials.rb", "db/migrate/create_webauthn_rails_credentials.rb"
         else
           say "Tried to inject webauthn into user model but couldn't find it"
         end
