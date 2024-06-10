@@ -34,6 +34,24 @@ module Webauthn
       def copy_initializer_file
         template "config/initializers/webauthn_rails.rb"
       end
+
+      def inject_webauthn_content
+        if File.exist?(File.join(destination_root, "app/models/user.rb"))
+          inject_into_class "app/models/user.rb", 'User' do
+            <<-RUBY.strip_heredoc.indent(2)
+              validates :username, presence: true, uniqueness: true
+
+              has_many :credentials, dependent: :destroy, class_name: 'Webauthn::Rails::Credential'
+
+              after_initialize do
+                self.webauthn_id ||= WebAuthn.generate_user_id
+              end
+            RUBY
+          end
+        else
+          say "Tried to inject webauthn into user model but couldn't find it"
+        end
+      end
     end
   end
 end
