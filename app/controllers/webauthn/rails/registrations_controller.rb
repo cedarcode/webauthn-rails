@@ -7,31 +7,31 @@ module Webauthn
       end
 
       def create
-        user = User.new(username: params[:registration][:username])
+        resource = Webauthn::Rails.resource_class.new(username: params[:registration][:username])
 
         create_options = relying_party.options_for_registration(
           user: {
             name: params[:registration][:username],
-            id: user.webauthn_id
+            id: resource.webauthn_id
           },
           authenticator_selection: { user_verification: "required" }
         )
 
-        if user.valid?
-          session[:current_registration] = { challenge: create_options.challenge, user_attributes: user.attributes }
+        if resource.valid?
+          session[:current_registration] = { challenge: create_options.challenge, resource_attributes: resource.attributes }
 
           respond_to do |format|
             format.turbo_stream { render json: create_options }
           end
         else
           respond_to do |format|
-            format.turbo_stream { render json: { errors: user.errors.full_messages }, status: :unprocessable_entity }
+            format.turbo_stream { render json: { errors: resource.errors.full_messages }, status: :unprocessable_entity }
           end
         end
       end
 
       def callback
-        user = User.create!(session[:current_registration][:user_attributes] || session[:current_registration]['user_attributes'])
+        resource = Webauthn::Rails.resource_class.create!(session[:current_registration][:resource_attributes] || session[:current_registration]['resource_attributes'])
 
         begin
           webauthn_credential = relying_party.verify_registration(
@@ -40,7 +40,7 @@ module Webauthn
             user_verification: true,
           )
 
-          credential = user.credentials.build(
+          credential = resource.credentials.build(
             external_id: Base64.strict_encode64(webauthn_credential.raw_id),
             nickname: params[:credential_nickname],
             public_key: webauthn_credential.public_key,
@@ -48,7 +48,7 @@ module Webauthn
           )
 
           if credential.save
-            sign_in(user)
+            sign_in(resource)
 
             render json: { status: "ok" }, status: :ok
           else

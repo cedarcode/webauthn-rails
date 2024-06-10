@@ -10,6 +10,17 @@ module Webauthn
 
     mattr_accessor :webauthn_origin
 
+    mattr_accessor :resource_class
+    @@resource_class = 'User'
+
+    def self.resource_class
+      @@resource_class.constantize
+    end
+
+    def self.resource_name
+      @@resource_class.downcase
+    end
+
     def self.configure
       yield self
     end

@@ -7,11 +7,11 @@ module Webauthn
       end
 
       def create
-        user = User.find_by(username: session_params[:username])
+        resource = Webauthn::Rails.resource_class.find_by(username: session_params[:username])
 
-        if user
+        if resource
           get_options = relying_party.options_for_authentication(
-            allow: user.credentials.pluck(:external_id),
+            allow: resource.credentials.pluck(:external_id),
             user_verification: "required"
           )
 
@@ -28,8 +28,8 @@ module Webauthn
       end
 
       def callback
-        user = User.find_by(username: session[:current_authentication][:username] || session[:current_authentication]['username'])
-        raise "user #{session[:current_authentication][:username]} never initiated sign up" unless user
+        resource = Webauthn::Rails.resource_class.find_by(username: session[:current_authentication][:username] || session[:current_authentication]['username'])
+        raise "#{Webauthn::Rails.resource_class.to_s.downcase} #{session[:current_authentication][:username]} never initiated sign up" unless resource
 
         begin
           verified_webauthn_credential, stored_credential = relying_party.verify_authentication(
@@ -37,11 +37,11 @@ module Webauthn
             session[:current_authentication][:challenge] || session[:current_authentication]['challenge'],
             user_verification: true,
           ) do |webauthn_credential|
-            user.credentials.find_by(external_id: Base64.strict_encode64(webauthn_credential.raw_id))
+            resource.credentials.find_by(external_id: Base64.strict_encode64(webauthn_credential.raw_id))
           end
 
           stored_credential.update!(sign_count: verified_webauthn_credential.sign_count)
-          sign_in(user)
+          sign_in(resource)
 
           render json: { status: "ok" }, status: :ok
         rescue WebAuthn::Error => e
