@@ -10,6 +10,8 @@ module Webauthn
 
       desc "Injects webauthn files to your application."
 
+      argument :resource_class, type: :string, default: "User"
+
       def copy_stimulus_controllers
         if File.exist?(File.join(destination_root, "config/importmap.rb"))
           say "Add Webauthn Stimulus controllers"
@@ -39,8 +41,8 @@ module Webauthn
       end
 
       def inject_webauthn_content
-        if File.exist?(File.join(destination_root, "app/models/user.rb"))
-          inject_into_class "app/models/user.rb", 'User' do
+        if File.exist?(File.join(destination_root, "app/models/#{underscored_resource_name}.rb"))
+          inject_into_class "app/models/#{underscored_resource_name}.rb", resource_class do
             <<-RUBY.strip_heredoc.indent(2)
               validates :username, presence: true, uniqueness: true
 
@@ -52,10 +54,10 @@ module Webauthn
             RUBY
           end
 
-          migration_template "db/migrate/add_webauthn_to_users.rb", "db/migrate/add_webauthn_to_users.rb"
+          migration_template "db/migrate/add_webauthn_to_users.rb", "db/migrate/add_webauthn_to_#{tableized_resource_name}.rb"
         else
-          template "app/models/user.rb"
-          migration_template "db/migrate/create_users.rb", "db/migrate/create_users.rb"
+          template "app/models/user.rb", "app/models/#{underscored_resource_name}.rb"
+          migration_template "db/migrate/create_users.rb", "db/migrate/create_#{tableized_resource_name}.rb"
         end
 
         migration_template "db/migrate/create_webauthn_rails_credentials.rb", "db/migrate/create_webauthn_rails_credentials.rb"
@@ -63,6 +65,16 @@ module Webauthn
 
       def mount_engine_routes
         inject_into_file "config/routes.rb", "  mount Webauthn::Rails::Engine => \"/webauthn-rails\"\n", :before => /^end/
+      end
+
+      private
+
+      def underscored_resource_name
+        resource_class.underscore
+      end
+
+      def tableized_resource_name
+        underscored_resource_name.tr('/', '_').pluralize
       end
     end
   end

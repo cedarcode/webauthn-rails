@@ -1,4 +1,4 @@
-class User < ApplicationRecord
+class <%= resource_class %> < ApplicationRecord
   validates :username, presence: true, uniqueness: true
 
   has_many :credentials, dependent: :destroy, class_name: 'Webauthn::Rails::Credential'

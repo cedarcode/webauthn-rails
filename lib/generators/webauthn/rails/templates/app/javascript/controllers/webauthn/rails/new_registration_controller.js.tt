@@ -13,7 +13,7 @@ export default class extends Controller {
         var credentialOptions = response;
 
         // Registration
-        if (credentialOptions["user"]) {
+        if (credentialOptions["<%= underscored_resource_name.tr('/', '_') %>"]) {
           var credential_nickname = event.target.querySelector("input[name='registration[nickname]']").value;
           var callback_url = `/webauthn-rails/registration/callback?credential_nickname=${credential_nickname}`
 

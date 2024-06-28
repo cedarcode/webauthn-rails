@@ -1,6 +1,6 @@
-class AddWebauthnToUsers < ActiveRecord::Migration[7.1]
+class AddWebauthnTo<%= tableized_resource_name.camelize %> < ActiveRecord::Migration[7.1]
   def up
-    change_table :users do |t|
+    change_table :<%= tableized_resource_name %> do |t|
       t.string :username
       t.string :webauthn_id
     end
