@@ -1,6 +1,8 @@
 module Webauthn
   module Rails
     class SessionsController < ApplicationController
+      before_action :enforce_no_current_user, only: %i(new create callback)
+
       def new
       end
 

@@ -11,6 +11,18 @@ module Webauthn
             end
         end
 
+        def enforce_no_current_user
+          if current_user.present?
+            redirect_to main_app.root_path
+          end
+        end
+
+        def enforce_current_user
+          if current_user.blank?
+            redirect_to webauthn_rails.new_session_path
+          end
+        end
+
         ActiveSupport.on_load(:action_controller) do
           helper_method :current_user
         end
