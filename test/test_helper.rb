@@ -12,6 +12,10 @@ if ActiveSupport::TestCase.respond_to?(:fixture_paths=)
   ActiveSupport::TestCase.fixtures :all
 end
 
+# For generators
+require "rails/generators/test_case"
+require "generators/webauthn/rails/install_generator"
+
 class ActiveSupport::TestCase
   def stub_create(fake_credential)
     # Encode binary fields to use in script
