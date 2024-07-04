@@ -9,5 +9,6 @@
 /test/dummy/storage/
 /test/dummy/tmp/
 /test/dummy/public/
+/test/tmp
 
 /Gemfile.lock
