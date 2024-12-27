@@ -53,10 +53,12 @@ module Webauthn
           end
 
           migration_template "db/migrate/add_webauthn_to_users.rb", "db/migrate/add_webauthn_to_users.rb"
-          migration_template "db/migrate/create_webauthn_rails_credentials.rb", "db/migrate/create_webauthn_rails_credentials.rb"
         else
-          say "Tried to inject webauthn into user model but couldn't find it"
+          template "app/models/user.rb"
+          migration_template "db/migrate/create_users.rb", "db/migrate/create_users.rb"
         end
+
+        migration_template "db/migrate/create_webauthn_rails_credentials.rb", "db/migrate/create_webauthn_rails_credentials.rb"
       end
     end
   end
