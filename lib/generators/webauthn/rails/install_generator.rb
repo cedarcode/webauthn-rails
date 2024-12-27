@@ -60,6 +60,10 @@ module Webauthn
 
         migration_template "db/migrate/create_webauthn_rails_credentials.rb", "db/migrate/create_webauthn_rails_credentials.rb"
       end
+
+      def mount_engine_routes
+        inject_into_file "config/routes.rb", "  mount Webauthn::Rails::Engine => \"/webauthn-rails\"\n", :before => /^end/
+      end
     end
   end
 end
