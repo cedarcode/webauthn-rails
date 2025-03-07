@@ -1,4 +1,4 @@
-class CreateWebauthnRailsCredentials < ActiveRecord::Migration[7.1]
+class CreateWebauthnRailsCredentials < ActiveRecord::Migration[<%= Rails.version.to_f %>]
   def change
     create_table :webauthn_rails_credentials do |t|
       t.references :user, null: false, foreign_key: true
