@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   CREDENTIAL_MIN_AMOUNT = 1
 
-  has_many :credentials, dependent: :destroy, class_name: 'Webauthn::Rails::Credential'
+  has_many :credentials, dependent: :destroy, class_name: "Webauthn::Rails::Credential"
 
   validates :username, presence: true, uniqueness: true
 

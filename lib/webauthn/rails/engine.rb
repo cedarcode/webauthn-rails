@@ -1,4 +1,4 @@
-require 'webauthn'
+require "webauthn"
 
 module Webauthn
   module Rails
@@ -7,7 +7,7 @@ module Webauthn
 
       initializer "webautn-rails.assets" do
         if ::Rails.application.config.respond_to?(:assets)
-          ::Rails.application.config.assets.precompile += %w( credential.js )
+          ::Rails.application.config.assets.precompile += %w[ credential.js ]
         end
       end
 

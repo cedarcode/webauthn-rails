@@ -1,7 +1,7 @@
 module Webauthn
   module Rails
     class SessionsController < ApplicationController
-      before_action :enforce_no_current_user, only: %i(new create callback)
+      before_action :enforce_no_current_user, only: %i[new create callback]
 
       def new
       end
@@ -22,19 +22,19 @@ module Webauthn
           end
         else
           respond_to do |format|
-            format.turbo_stream { render json: { errors: ["Username doesn't exist"] }, status: :unprocessable_entity }
+            format.turbo_stream { render json: { errors: [ "Username doesn't exist" ] }, status: :unprocessable_entity }
           end
         end
       end
 
       def callback
-        user = User.find_by(username: session[:current_authentication][:username] || session[:current_authentication]['username'])
+        user = User.find_by(username: session[:current_authentication][:username] || session[:current_authentication]["username"])
         raise "user #{session[:current_authentication][:username]} never initiated sign up" unless user
 
         begin
           verified_webauthn_credential, stored_credential = relying_party.verify_authentication(
             params,
-            session[:current_authentication][:challenge] || session[:current_authentication]['challenge'],
+            session[:current_authentication][:challenge] || session[:current_authentication]["challenge"],
             user_verification: true,
           ) do |webauthn_credential|
             user.credentials.find_by(external_id: Base64.strict_encode64(webauthn_credential.raw_id))

@@ -3,7 +3,7 @@ require "webauthn/fake_client"
 
 class SignInTest < ApplicationSystemTestCase
   test "register and then sign in" do
-    fake_origin = 'http://localhost:3030'
+    fake_origin = "http://localhost:3030"
     fake_client = WebAuthn::FakeClient.new(fake_origin, encoding: false)
     fixed_challenge = SecureRandom.random_bytes(32)
 

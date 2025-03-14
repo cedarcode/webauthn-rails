@@ -1,13 +1,13 @@
 Webauthn::Rails::Engine.routes.draw do
-  resource :registration, only: [:new, :create] do
+  resource :registration, only: [ :new, :create ] do
     post :callback
   end
 
-  resource :session, only: [:new, :create, :destroy] do
+  resource :session, only: [ :new, :create, :destroy ] do
     post :callback
   end
 
-  resources :credentials, only: [:new, :create, :destroy] do
+  resources :credentials, only: [ :new, :create, :destroy ] do
     post :callback, on: :collection
   end
 end

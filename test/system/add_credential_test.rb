@@ -3,7 +3,7 @@ require "webauthn/fake_client"
 
 class AddCredentialTest < ApplicationSystemTestCase
   test "add credentials" do
-    fake_origin = 'http://localhost:3030'
+    fake_origin = "http://localhost:3030"
     fake_client = WebAuthn::FakeClient.new(fake_origin, encoding: false)
     fixed_challenge = SecureRandom.random_bytes(32)
 
@@ -31,10 +31,10 @@ class AddCredentialTest < ApplicationSystemTestCase
     WebAuthn::PublicKeyCredential::CreationOptions.stub_any_instance :raw_challenge, fixed_challenge do
       click_on "Add Security Key"
       # wait for async response
-      assert_text 'Touch ID'
+      assert_text "Touch ID"
     end
 
     assert_current_path "/"
-    assert_text 'USB key'
+    assert_text "USB key"
   end
 end
