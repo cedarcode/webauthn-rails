@@ -1,4 +1,4 @@
-class CreateUsers < ActiveRecord::Migration[7.1]
+class CreateUsers < ActiveRecord::Migration[<%= Rails.version.to_f %>]
   def change
     create_table :users do |t|
       t.string :username

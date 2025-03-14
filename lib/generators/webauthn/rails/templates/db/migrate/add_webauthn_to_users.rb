@@ -1,4 +1,4 @@
-class AddWebauthnToUsers < ActiveRecord::Migration[7.1]
+class AddWebauthnToUsers < ActiveRecord::Migration[<%= Rails.version.to_f %>]
   def up
     change_table :users do |t|
       t.string :username
