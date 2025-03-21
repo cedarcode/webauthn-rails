@@ -1,4 +1,4 @@
-require 'rails/generators/base'
+require "rails/generators/base"
 require "rails/generators/active_record/migration"
 
 module Webauthn
@@ -40,7 +40,7 @@ module Webauthn
 
       def inject_webauthn_content
         if File.exist?(File.join(destination_root, "app/models/user.rb"))
-          inject_into_class "app/models/user.rb", 'User' do
+          inject_into_class "app/models/user.rb", "User" do
             <<-RUBY.strip_heredoc.indent(2)
               validates :username, presence: true, uniqueness: true
 
@@ -62,7 +62,7 @@ module Webauthn
       end
 
       def mount_engine_routes
-        inject_into_file "config/routes.rb", "  mount Webauthn::Rails::Engine => \"/webauthn-rails\"\n", :before => /^end/
+        inject_into_file "config/routes.rb", "  mount Webauthn::Rails::Engine => \"/webauthn-rails\"\n", before: /^end/
       end
     end
   end

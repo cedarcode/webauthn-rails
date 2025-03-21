@@ -16,7 +16,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_09_204936) do
     t.string "webauthn_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["username"], name: "index_users_on_username", unique: true
+    t.index [ "username" ], name: "index_users_on_username", unique: true
   end
 
   create_table "webauthn_rails_credentials", force: :cascade do |t|
@@ -27,7 +27,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_09_204936) do
     t.bigint "sign_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_webauthn_rails_credentials_on_user_id"
+    t.index [ "user_id" ], name: "index_webauthn_rails_credentials_on_user_id"
   end
 
   add_foreign_key "webauthn_rails_credentials", "users"

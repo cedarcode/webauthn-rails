@@ -1,13 +1,13 @@
 module Webauthn
   module Rails
     class CredentialsController < ApplicationController
-      before_action :enforce_current_user, only: %i(create callback destroy)
+      before_action :enforce_current_user, only: %i[create callback destroy]
 
       def create
         create_options = relying_party.options_for_registration(
           user: {
             id: current_user.webauthn_id,
-            name: current_user.username,
+            name: current_user.username
           },
           exclude: current_user.credentials.pluck(:external_id),
           authenticator_selection: { user_verification: "required" }
@@ -23,7 +23,7 @@ module Webauthn
       def callback
         webauthn_credential = relying_party.verify_registration(
           params,
-          session[:current_registration][:challenge] || session[:current_registration]['challenge'],
+          session[:current_registration][:challenge] || session[:current_registration]["challenge"],
           user_verification: true,
         )
 

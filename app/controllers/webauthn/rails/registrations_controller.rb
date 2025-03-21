@@ -1,7 +1,7 @@
 module Webauthn
   module Rails
     class RegistrationsController < ApplicationController
-      before_action :enforce_no_current_user, only: %i(new create callback)
+      before_action :enforce_no_current_user, only: %i[new create callback]
 
       def new
       end
@@ -31,12 +31,12 @@ module Webauthn
       end
 
       def callback
-        user = User.create!(session[:current_registration][:user_attributes] || session[:current_registration]['user_attributes'])
+        user = User.create!(session[:current_registration][:user_attributes] || session[:current_registration]["user_attributes"])
 
         begin
           webauthn_credential = relying_party.verify_registration(
             params,
-            session[:current_registration][:challenge] || session[:current_registration]['challenge'],
+            session[:current_registration][:challenge] || session[:current_registration]["challenge"],
             user_verification: true,
           )
 
