@@ -1,4 +1,5 @@
 require "test_helper"
+require "webauthn/fake_client"
 
 class RegistrationsControllerTest < ActionDispatch::IntegrationTest
   test "should initiate registration successfully" do
@@ -21,5 +22,72 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_entity
     assert_equal [ "Username can't be blank" ], JSON.parse(response.body)["errors"]
+  end
+
+  test "should return error if registering existing credential" do
+    raw_challenge = SecureRandom.random_bytes(32)
+    challenge = WebAuthn.configuration.encoder.encode(raw_challenge)
+
+    WebAuthn::PublicKeyCredential::CreationOptions.stub_any_instance(:raw_challenge, raw_challenge) do
+      post webauthn_rails.registration_url, params: { registration: { username: "alice" }, format: :turbo_stream }
+
+      assert_response :success
+    end
+
+    public_key_credential =
+      WebAuthn::FakeClient
+      .new("http://localhost:3030")
+      .create(challenge:, user_verified: true)
+
+    webauthn_credential = WebAuthn::Credential.from_create(public_key_credential)
+
+    User.create!(
+      username: "bob",
+      credentials: [
+        Webauthn::Rails::Credential.new(
+          external_id: Base64.strict_encode64(webauthn_credential.raw_id),
+          nickname: "Bob's USB Key",
+          public_key: webauthn_credential.public_key,
+          sign_count: webauthn_credential.sign_count
+        )
+      ]
+    )
+
+    assert_no_difference -> { User.count } do
+      post(
+        webauthn_rails.callback_registration_url,
+        params: { credential_nickname: "USB Key" }.merge(public_key_credential)
+      )
+    end
+
+    assert_response :unprocessable_entity
+    assert_equal "Couldn't register your Security Key", response.body
+  end
+
+  test "should register successfully" do
+    raw_challenge = SecureRandom.random_bytes(32)
+    challenge = WebAuthn.configuration.encoder.encode(raw_challenge)
+
+    WebAuthn::PublicKeyCredential::CreationOptions.stub_any_instance(:raw_challenge, raw_challenge) do
+      post webauthn_rails.registration_url, params: { registration: { username: "alice" }, format: :turbo_stream }
+
+      assert_response :success
+    end
+
+    public_key_credential =
+      WebAuthn::FakeClient
+      .new("http://localhost:3030")
+      .create(challenge:, user_verified: true)
+
+    assert_difference "User.count", +1 do
+      assert_difference "Webauthn::Rails::Credential.count", +1 do
+        post(
+          webauthn_rails.callback_registration_url,
+          params: { credential_nickname: "USB Key" }.merge(public_key_credential)
+        )
+      end
+    end
+
+    assert_response :success
   end
 end
