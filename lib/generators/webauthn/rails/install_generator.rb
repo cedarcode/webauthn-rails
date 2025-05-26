@@ -44,8 +44,14 @@ module Webauthn
 
           say %(Appending: pin "webauthn-rails/credential", to: "credential.js")
           append_to_file "config/importmap.rb", %(pin "webauthn-rails/credential", to: "credential.js"\n)
+        elsif using_bun?
+          say "Adding webauthn-json to your package manager"
+          run "bun add @github/webauthn-json"
+        elsif using_node?
+          say "Adding webauthn-json to your package manager"
+          run "yarn add @github/webauthn-json"
         else
-          puts "Tried to add js dependencies but failed. You must be running importmap-rails (config/importmap.rb) to use this gem."
+          puts "You must either be running with node (package.json) or importmap-rails (config/importmap.rb) to use this gem."
         end
       end
 
