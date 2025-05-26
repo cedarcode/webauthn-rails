@@ -14,9 +14,12 @@ module Webauthn
         if using_importmap?
           say "Add Webauthn Stimulus controllers"
           empty_directory "app/javascript/controllers/webauthn/rails"
-          template "app/javascript/controllers/webauthn/rails/add_credential_controller.js"
-          template "app/javascript/controllers/webauthn/rails/new_registration_controller.js"
-          template "app/javascript/controllers/webauthn/rails/new_session_controller.js"
+          template "app/javascript/controllers/webauthn/rails/add_credential_for_importmap.js",
+            "app/javascript/controllers/webauthn/rails/add_credential_controller.js"
+          template "app/javascript/controllers/webauthn/rails/new_registration_for_importmap.js",
+            "app/javascript/controllers/webauthn/rails/new_registration_controller.js"
+          template "app/javascript/controllers/webauthn/rails/new_session_for_importmap.js",
+            "app/javascript/controllers/webauthn/rails/new_session_controller.js"
         else
           puts "Tried to copy stimulus controllers but failed. You must be running importmap-rails (config/importmap.rb) to use this gem."
         end
