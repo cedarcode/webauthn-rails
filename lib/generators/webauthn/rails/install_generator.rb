@@ -11,7 +11,7 @@ module Webauthn
       desc "Injects webauthn files to your application."
 
       def copy_stimulus_controllers
-        if File.exist?(File.join(destination_root, "config/importmap.rb"))
+        if using_importmap?
           say "Add Webauthn Stimulus controllers"
           empty_directory "app/javascript/controllers/webauthn/rails"
           template "app/javascript/controllers/webauthn/rails/add_credential_controller.js"
@@ -23,7 +23,7 @@ module Webauthn
       end
 
       def inject_js_packages
-        if File.exist?(File.join(destination_root, "config/importmap.rb"))
+        if using_importmap?
           say %(Appending: pin "@github/webauthn-json", to: "https://ga.jspm.io/npm:@github/webauthn-json@2.1.1/dist/esm/webauthn-json.js")
           append_to_file "config/importmap.rb", %(pin "@github/webauthn-json", to: "https://ga.jspm.io/npm:@github/webauthn-json@2.1.1/dist/esm/webauthn-json.js"\n)
 
@@ -63,6 +63,20 @@ module Webauthn
 
       def mount_engine_routes
         inject_into_file "config/routes.rb", "  mount Webauthn::Rails::Engine => \"/webauthn-rails\"\n", before: /^end/
+      end
+
+      private
+
+      def using_bun?
+        File.exist?(File.join(destination_root, "bun.config.js"))
+      end
+
+      def using_importmap?
+        File.exist?(File.join(destination_root, "config/importmap.rb"))
+      end
+
+      def using_node?
+        File.exist?(File.join(destination_root, "package.json"))
       end
     end
   end
