@@ -11,27 +11,17 @@ module Webauthn
       desc "Injects webauthn files to your application."
 
       def copy_stimulus_controllers
-        if using_importmap?
+        if using_importmap? || using_bun? || using_node?
           say "Add Webauthn Stimulus controllers"
           empty_directory "app/javascript/controllers/webauthn/rails"
-          template "app/javascript/controllers/webauthn/rails/add_credential_for_importmap.js",
-            "app/javascript/controllers/webauthn/rails/add_credential_controller.js"
-          template "app/javascript/controllers/webauthn/rails/new_registration_for_importmap.js",
-            "app/javascript/controllers/webauthn/rails/new_registration_controller.js"
-          template "app/javascript/controllers/webauthn/rails/new_session_for_importmap.js",
-            "app/javascript/controllers/webauthn/rails/new_session_controller.js"
-        elsif using_bun? || using_node?
-          say "Add Webauthn Stimulus controllers"
-          empty_directory "app/javascript/controllers/webauthn/rails"
-          template "app/javascript/controllers/webauthn/rails/add_credential_for_node.js",
-            "app/javascript/controllers/webauthn/rails/add_credential_controller.js"
-          template "app/javascript/controllers/webauthn/rails/new_registration_for_node.js",
-            "app/javascript/controllers/webauthn/rails/new_registration_controller.js"
-          template "app/javascript/controllers/webauthn/rails/new_session_for_node.js",
-            "app/javascript/controllers/webauthn/rails/new_session_controller.js"
+          template "app/javascript/controllers/webauthn/rails/add_credential_controller.js"
+          template "app/javascript/controllers/webauthn/rails/new_registration_controller.js"
+          template "app/javascript/controllers/webauthn/rails/new_session_controller.js"
 
-          say "Updating Stimulus manifest"
-          run "bin/rails stimulus:manifest:update"
+          if using_bun? || using_node?
+            say "Updating Stimulus manifest"
+            run "bin/rails stimulus:manifest:update"
+          end
         else
           puts "You must either be running with node (package.json) or importmap-rails (config/importmap.rb) to use this gem."
         end
