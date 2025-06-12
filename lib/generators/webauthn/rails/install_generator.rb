@@ -31,9 +31,6 @@ module Webauthn
         if using_importmap?
           say %(Appending: pin "@github/webauthn-json", to: "https://ga.jspm.io/npm:@github/webauthn-json@2.1.1/dist/esm/webauthn-json.js")
           append_to_file "config/importmap.rb", %(pin "@github/webauthn-json", to: "https://ga.jspm.io/npm:@github/webauthn-json@2.1.1/dist/esm/webauthn-json.js"\n)
-
-          say %(Appending: pin "webauthn-rails/credential", to: "credential.js")
-          append_to_file "config/importmap.rb", %(pin "webauthn-rails/credential", to: "credential.js"\n)
         elsif using_bun?
           say "Adding webauthn-json to your package manager"
           run "bun add @github/webauthn-json"
