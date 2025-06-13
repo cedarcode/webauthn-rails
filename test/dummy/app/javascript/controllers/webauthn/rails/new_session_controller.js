@@ -1,21 +1,49 @@
-import { Controller } from "@hotwired/stimulus"
-import * as Credential from "webauthn-rails/credential";
+import { Controller } from "@hotwired/stimulus";
+import * as WebAuthnJSON from "@github/webauthn-json";
 
 export default class extends Controller {
   static targets = ["errorElement"]
 
   create(event) {
     event.preventDefault();
-    var errorElement = this.errorElementTarget;
-    event.detail.fetchResponse.response.json().then((response) => {
-      console.log(response);
-      if (event.detail.fetchResponse.succeeded) {
-        var credentialOptions = response;
-        Credential.get(credentialOptions);
+
+    const { fetchResponse } = event.detail;
+
+    fetchResponse.response.json().then((data) => {
+      if (fetchResponse.succeeded) {
+        WebAuthnJSON.get({ publicKey: data })
+          .then((credential) => this.#submitCredential(credential))
+          .catch((error) => this.#showError(error));
       } else {
-        errorElement.innerHTML = response["errors"][0];
-        errorElement.hidden = false;
+        this.#showError(data.errors?.[0] || "Unknown error");
       }
     });
+  }
+
+  #submitCredential(credential) {
+    fetch("/webauthn-rails/session/callback", {
+      method: "POST",
+      body: JSON.stringify(credential),
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]')?.getAttribute("content"),
+      },
+      credentials: "same-origin",
+    }).then((response) => {
+      if (response.ok) {
+        window.location.replace("/");
+      } else {
+        response.text().then((msg) => {
+          const errorMsg = response.status < 500 ? msg : "Sorry, something wrong happened.";
+          this.#showError(errorMsg);
+        });
+      }
+    })
+  }
+
+  #showError(message) {
+    this.errorElementTarget.innerHTML = message;
+    this.errorElementTarget.hidden = false;
   }
 }
