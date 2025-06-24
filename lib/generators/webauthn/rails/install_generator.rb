@@ -11,14 +11,14 @@ module Webauthn
       desc "Injects webauthn files to your application."
 
       def copy_stimulus_controllers
-        if using_importmap? || using_bun? || using_node?
+        if using_importmap? || using_bun? || has_package_json?
           say "Add Webauthn Stimulus controllers"
           empty_directory "app/javascript/controllers/webauthn/rails"
           template "app/javascript/controllers/webauthn/rails/add_credential_controller.js"
           template "app/javascript/controllers/webauthn/rails/new_registration_controller.js"
           template "app/javascript/controllers/webauthn/rails/new_session_controller.js"
 
-          if using_bun? || using_node?
+          if using_bun? || has_package_json?
             say "Updating Stimulus manifest"
             run "bin/rails stimulus:manifest:update"
           end
@@ -34,7 +34,7 @@ module Webauthn
         elsif using_bun?
           say "Adding webauthn-json to your package manager"
           run "bun add @github/webauthn-json"
-        elsif using_node?
+        elsif has_package_json?
           say "Adding webauthn-json to your package manager"
           run "yarn add @github/webauthn-json"
         else
@@ -83,7 +83,7 @@ module Webauthn
         File.exist?(File.join(destination_root, "config/importmap.rb"))
       end
 
-      def using_node?
+      def has_package_json?
         File.exist?(File.join(destination_root, "package.json"))
       end
     end
