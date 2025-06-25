@@ -1,6 +1,9 @@
 # Configure Rails Environment
 ENV["RAILS_ENV"] = "test"
 
+require "simplecov"
+SimpleCov.start "rails"
+
 require_relative "../test/dummy/config/environment"
 require "rails/test_help"
 

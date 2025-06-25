@@ -11,3 +11,5 @@
 /test/dummy/public/
 
 /Gemfile.lock
+
+/coverage/
