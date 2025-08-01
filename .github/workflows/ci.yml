@@ -28,6 +28,11 @@ jobs:
           - '3.3'
           - '3.2'
           - '3.1'
+        gemfile:
+          - 'rails_8'
+          - 'rails_7.2'
+    env:
+      BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
