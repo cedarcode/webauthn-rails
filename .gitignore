@@ -11,3 +11,4 @@
 /test/dummy/public/
 
 /Gemfile.lock
+/gemfiles/*.gemfile.lock

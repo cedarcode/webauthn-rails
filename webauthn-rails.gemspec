@@ -20,4 +20,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "railties", ">= 7.1.3.2"
   spec.add_dependency "webauthn", ">= 3"
+
+  spec.add_development_dependency "appraisal", "~> 2.5"
 end
