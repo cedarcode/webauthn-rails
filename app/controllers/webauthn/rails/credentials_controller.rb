@@ -4,7 +4,7 @@ module Webauthn
       before_action :enforce_current_user, only: %i[create callback destroy]
 
       def create
-        create_options = relying_party.options_for_registration(
+        create_options = WebAuthn::Credential.options_for_create(
           user: {
             id: current_user.webauthn_id,
             name: current_user.username
@@ -21,29 +21,32 @@ module Webauthn
       end
 
       def callback
-        webauthn_credential = relying_party.verify_registration(
-          params,
-          session[:current_registration][:challenge] || session[:current_registration]["challenge"],
-          user_verification: true,
-        )
+        webauthn_credential = WebAuthn::Credential.from_create(params)
 
-        credential = current_user.credentials.find_or_initialize_by(
-          external_id: Base64.strict_encode64(webauthn_credential.raw_id)
-        )
+        begin
+          webauthn_credential.verify(
+            session[:current_registration][:challenge] || session[:current_registration]["challenge"],
+            user_verification: true,
+          )
 
-        if credential.update(
-          nickname: params[:credential_nickname],
-          public_key: webauthn_credential.public_key,
-          sign_count: webauthn_credential.sign_count
-        )
-          render json: { status: "ok" }, status: :ok
-        else
-          render json: "Couldn't add your Security Key", status: :unprocessable_entity
+          credential = current_user.credentials.find_or_initialize_by(
+            external_id: Base64.strict_encode64(webauthn_credential.raw_id)
+          )
+
+          if credential.update(
+            nickname: params[:credential_nickname],
+            public_key: webauthn_credential.public_key,
+            sign_count: webauthn_credential.sign_count
+          )
+            render json: { status: "ok" }, status: :ok
+          else
+            render json: "Couldn't add your Security Key", status: :unprocessable_entity
+          end
+        rescue WebAuthn::Error => e
+          render json: "Verification failed: #{e.message}", status: :unprocessable_entity
+        ensure
+          session.delete(:current_registration)
         end
-      rescue WebAuthn::Error => e
-        render json: "Verification failed: #{e.message}", status: :unprocessable_entity
-      ensure
-        session.delete(:current_registration)
       end
 
       def destroy

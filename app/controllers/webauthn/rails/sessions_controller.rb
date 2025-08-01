@@ -12,7 +12,7 @@ module Webauthn
         user = User.find_by(username: session_params[:username])
 
         if user
-          get_options = relying_party.options_for_authentication(
+          get_options = WebAuthn::Credential.options_for_get(
             allow: user.credentials.pluck(:external_id),
             user_verification: "required"
           )
@@ -30,19 +30,22 @@ module Webauthn
       end
 
       def callback
+        webauthn_credential = WebAuthn::Credential.from_get(params)
+
         user = User.find_by(username: session[:current_authentication][:username] || session[:current_authentication]["username"])
         raise "user #{session[:current_authentication][:username]} never initiated sign up" unless user
 
-        begin
-          verified_webauthn_credential, stored_credential = relying_party.verify_authentication(
-            params,
-            session[:current_authentication][:challenge] || session[:current_authentication]["challenge"],
-            user_verification: true,
-          ) do |webauthn_credential|
-            user.credentials.find_by(external_id: Base64.strict_encode64(webauthn_credential.raw_id))
-          end
+        stored_credential = user.credentials.find_by(external_id: Base64.strict_encode64(webauthn_credential.raw_id))
 
-          stored_credential.update!(sign_count: verified_webauthn_credential.sign_count)
+        begin
+          webauthn_credential.verify(
+            session[:current_authentication][:challenge] || session[:current_authentication]["challenge"],
+            public_key: stored_credential.public_key,
+            sign_count: stored_credential.sign_count,
+            user_verification: true,
+          )
+
+          stored_credential.update!(sign_count: webauthn_credential.sign_count)
           sign_in(user)
 
           render json: { status: "ok" }, status: :ok
