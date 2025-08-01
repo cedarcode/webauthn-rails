@@ -1,6 +1,6 @@
 module Webauthn
   module Rails
-    class ApplicationController < ::ApplicationController
+    class ApplicationController < ActionController::Base
     end
   end
 end
