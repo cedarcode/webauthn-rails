@@ -18,7 +18,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "app/javascript/controllers/webauthn/rails/new_registration_controller.js"
     assert_file "app/javascript/controllers/webauthn/rails/new_session_controller.js"
 
-    assert_file "config/initializers/webauthn_rails.rb", /Webauthn::Rails.configure/
+    assert_file "config/initializers/webauthn.rb", /WebAuthn.configure/
 
     assert_file "app/models/user.rb", /has_many :credentials/
     assert_migration "db/migrate/create_users.rb", /create_table :users/
@@ -38,7 +38,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "app/javascript/controllers/webauthn/rails/new_registration_controller.js"
     assert_file "app/javascript/controllers/webauthn/rails/new_session_controller.js"
 
-    assert_file "config/initializers/webauthn_rails.rb", /Webauthn::Rails.configure/
+    assert_file "config/initializers/webauthn.rb", /WebAuthn.configure/
 
     assert_file "app/models/user.rb", /has_many :credentials/
     assert_migration "db/migrate/add_webauthn_to_users.rb", /change_table :users/
