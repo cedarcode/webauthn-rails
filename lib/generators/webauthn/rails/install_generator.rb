@@ -43,7 +43,7 @@ module Webauthn
       end
 
       def copy_initializer_file
-        template "config/initializers/webauthn_rails.rb"
+        template "config/initializers/webauthn.rb"
       end
 
       def inject_webauthn_content

@@ -11,7 +11,7 @@ module Webauthn
       def create
         user = User.new(username: params[:registration][:username])
 
-        create_options = relying_party.options_for_registration(
+        create_options = WebAuthn::Credential.options_for_create(
           user: {
             name: params[:registration][:username],
             id: user.webauthn_id
@@ -33,11 +33,12 @@ module Webauthn
       end
 
       def callback
+        webauthn_credential = WebAuthn::Credential.from_create(params)
+
         user = User.new(session[:current_registration][:user_attributes] || session[:current_registration]["user_attributes"])
 
         begin
-          webauthn_credential = relying_party.verify_registration(
-            params,
+          webauthn_credential.verify(
             session[:current_registration][:challenge] || session[:current_registration]["challenge"],
             user_verification: true,
           )
