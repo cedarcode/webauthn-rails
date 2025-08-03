@@ -1,4 +1,6 @@
 require "test_helper"
+require "rails/generators/test_case"
+require "generators/webauthn/rails/install_generator"
 
 class InstallGeneratorTest < Rails::Generators::TestCase
   tests Webauthn::Rails::InstallGenerator
