@@ -11,3 +11,5 @@
 /test/dummy/public/
 
 /Gemfile.lock
+
+.byebug_history
