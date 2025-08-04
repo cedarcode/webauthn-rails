@@ -66,6 +66,7 @@ module Webauthn
           migration_template "db/migrate/create_users.rb", "db/migrate/create_users.rb"
         end
 
+        template "app/models/webauthn/rails/credential.rb"
         migration_template "db/migrate/create_webauthn_rails_credentials.rb", "db/migrate/create_webauthn_rails_credentials.rb"
       end
 

@@ -1,6 +1,7 @@
 module Webauthn
   module Rails
     class Credential < ApplicationRecord
+      belongs_to :user
       validates :external_id, :public_key, :nickname, :sign_count, presence: true
       validates :external_id, uniqueness: true
       validates :sign_count,

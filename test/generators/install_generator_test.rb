@@ -24,6 +24,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
 
     assert_file "app/models/user.rb", /has_many :credentials/
     assert_migration "db/migrate/create_users.rb", /create_table :users/
+    assert_file "app/models/webauthn/rails/credential.rb", /belongs_to :user/
     assert_migration "db/migrate/create_webauthn_rails_credentials.rb", /create_table :webauthn_rails_credentials/
 
     assert_file "config/routes.rb", /mount Webauthn::Rails::Engine/
@@ -44,6 +45,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
 
     assert_file "app/models/user.rb", /has_many :credentials/
     assert_migration "db/migrate/add_webauthn_to_users.rb", /change_table :users/
+    assert_file "app/models/webauthn/rails/credential.rb", /belongs_to :user/
     assert_migration "db/migrate/create_webauthn_rails_credentials.rb", /create_table :webauthn_rails_credentials/
 
     assert_file "config/routes.rb", /mount Webauthn::Rails::Engine/
