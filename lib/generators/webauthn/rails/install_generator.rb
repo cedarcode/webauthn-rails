@@ -52,7 +52,7 @@ module Webauthn
             <<-RUBY.strip_heredoc.indent(2)
               validates :username, presence: true, uniqueness: true
 
-              has_many :credentials, dependent: :destroy, class_name: 'Webauthn::Rails::Credential'
+              has_many :webauthn_credentials, dependent: :destroy
 
               after_initialize do
                 self.webauthn_id ||= WebAuthn.generate_user_id
@@ -67,7 +67,7 @@ module Webauthn
         end
 
         template "app/models/webauthn_credential.rb"
-        migration_template "db/migrate/create_webauthn_rails_credentials.rb", "db/migrate/create_webauthn_rails_credentials.rb"
+        migration_template "db/migrate/create_webauthn_credentials.rb", "db/migrate/create_webauthn_credentials.rb"
       end
 
       def mount_engine_routes

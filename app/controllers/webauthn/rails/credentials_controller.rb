@@ -9,7 +9,7 @@ module Webauthn
             id: current_user.webauthn_id,
             name: current_user.username
           },
-          exclude: current_user.credentials.pluck(:external_id),
+          exclude: current_user.webauthn_credentials.pluck(:external_id),
           authenticator_selection: { user_verification: "required" }
         )
 
@@ -29,7 +29,7 @@ module Webauthn
             user_verification: true,
           )
 
-          credential = current_user.credentials.find_or_initialize_by(
+          credential = current_user.webauthn_credentials.find_or_initialize_by(
             external_id: Base64.strict_encode64(webauthn_credential.raw_id)
           )
 
@@ -51,7 +51,7 @@ module Webauthn
 
       def destroy
         if current_user&.can_delete_credentials?
-          current_user.credentials.destroy(params[:id])
+          current_user.webauthn_credentials.destroy(params[:id])
         end
 
         redirect_to main_app.root_path
