@@ -4,3 +4,7 @@ inherit_gem:
 AllCops:
   TargetRubyVersion: 3.1
   TargetRailsVersion: 7.1
+
+Layout/SpaceInsideArrayLiteralBrackets:
+  Exclude:
+    - 'test/dummy/db/schema.rb'
