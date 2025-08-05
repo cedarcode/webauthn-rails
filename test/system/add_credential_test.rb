@@ -22,6 +22,8 @@ class AddCredentialTest < ApplicationSystemTestCase
     # wait for async response
     assert_text "Your Security Keys"
 
+    @authenticator.remove_all_credentials
+
     click_on "Add credential"
 
     fill_in("Security Key nickname", with: "Touch ID")
