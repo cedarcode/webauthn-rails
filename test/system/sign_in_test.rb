@@ -1,39 +1,35 @@
 require "application_system_test_case"
-require "webauthn/fake_client"
 
 class SignInTest < ApplicationSystemTestCase
+  def setup
+    options = ::Selenium::WebDriver::VirtualAuthenticatorOptions.new
+    options.user_verification = true
+    options.user_verified = true
+    @authenticator = page.driver.browser.add_virtual_authenticator(options)
+  end
+
+  def teardown
+    @authenticator.remove!
+  end
+
   test "register and then sign in" do
-    fake_origin = "http://localhost:3030"
-    fake_client = WebAuthn::FakeClient.new(fake_origin, encoding: false)
-    fixed_challenge = SecureRandom.random_bytes(32)
-
     visit webauthn_rails.new_registration_path
-
-    fake_credentials = fake_client.create(challenge: fixed_challenge, user_verified: true)
-    stub_create(fake_credentials)
 
     fill_in "registration_username", with: "User1"
     fill_in "Security Key nickname", with: "USB key"
 
-    WebAuthn::PublicKeyCredential::CreationOptions.stub_any_instance :raw_challenge, fixed_challenge do
-      click_on "Sign up"
-      # wait for async response
-      assert_text "Your Security Keys"
-    end
+    click_on "Sign up"
+    # wait for async response
+    assert_text "Your Security Keys"
 
     click_on "Sign out"
-    visit webauthn_rails.new_session_path
-
-    fake_assertion = fake_client.get(challenge: fixed_challenge, user_verified: true)
-    stub_get(fake_assertion)
+    assert_text "Sign in"
 
     fill_in "Username", with: "User1"
 
-    WebAuthn::PublicKeyCredential::RequestOptions.stub_any_instance :raw_challenge, fixed_challenge do
-      click_button "Sign in"
-      # wait for async response
-      assert_text "Your Security Keys"
-    end
+    click_button "Sign in"
+    # wait for async response
+    assert_text "Your Security Keys"
 
     assert_current_path "/"
     assert_text "Your Security Keys"
