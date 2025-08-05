@@ -2,7 +2,7 @@
 
 <h3>Your Security Keys</h3>
 <ul>
-  <% current_user.credentials.each do |credential| %>
+  <% current_user.webauthn_credentials.each do |credential| %>
     <li>
       <span>
         <span>

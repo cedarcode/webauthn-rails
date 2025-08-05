@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   validates :username, presence: true, uniqueness: true
 
-  has_many :credentials, dependent: :destroy, class_name: "Webauthn::Rails::Credential"
+  has_many :webauthn_credentials, dependent: :destroy
 
   after_initialize do
     self.webauthn_id ||= WebAuthn.generate_user_id

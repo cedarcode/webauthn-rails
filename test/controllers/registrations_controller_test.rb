@@ -43,8 +43,8 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
 
     User.create!(
       username: "bob",
-      credentials: [
-        Webauthn::Rails::Credential.new(
+      webauthn_credentials: [
+        WebauthnCredential.new(
           external_id: Base64.strict_encode64(webauthn_credential.raw_id),
           nickname: "Bob's USB Key",
           public_key: webauthn_credential.public_key,
@@ -80,7 +80,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
       .create(challenge:, user_verified: true)
 
     assert_difference "User.count", +1 do
-      assert_difference "Webauthn::Rails::Credential.count", +1 do
+      assert_difference "WebauthnCredential.count", +1 do
         post(
           webauthn_rails.callback_registration_url,
           params: { credential_nickname: "USB Key" }.merge(public_key_credential)

@@ -43,7 +43,7 @@ module Webauthn
             user_verification: true,
           )
 
-          user.credentials.build(
+          user.webauthn_credentials.build(
             external_id: Base64.strict_encode64(webauthn_credential.raw_id),
             nickname: params[:credential_nickname],
             public_key: webauthn_credential.public_key,
