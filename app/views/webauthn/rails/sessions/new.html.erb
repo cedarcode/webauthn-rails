@@ -6,7 +6,7 @@
   id: "new-session",
   data: {
     controller: "webauthn--rails--new-session",
-    action: "turbo:before-fetch-response->webauthn--rails--new-session#create",
+    action: "webauthn--rails--new-session#create:prevent",
   }) do |form| %>
   <%= render "webauthn/rails/shared/error_messages" %>
 

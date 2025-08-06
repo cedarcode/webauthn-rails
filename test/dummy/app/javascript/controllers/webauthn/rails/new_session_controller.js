@@ -3,13 +3,14 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
   static targets = ["errorElement"]
 
-  create(event) {
-    event.preventDefault();
+  async create(event) {
+    const response = await fetch(this.element.action, {
+      method: this.element.method,
+      body: new FormData(this.element),
+    });
 
-    const { fetchResponse } = event.detail;
-
-    fetchResponse.response.json().then((data) => {
-      if (fetchResponse.succeeded) {
+    response.json().then((data) => {
+      if (response.ok) {
         navigator.credentials.get({ publicKey: PublicKeyCredential.parseRequestOptionsFromJSON(data) })
           .then((credential) => this.#submitCredential(credential))
           .catch((error) => this.#showError(error));

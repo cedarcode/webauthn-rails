@@ -6,7 +6,7 @@
   id: "new-registration",
   data: {
     controller: "webauthn--rails--new-registration",
-    action: "turbo:before-fetch-response->webauthn--rails--new-registration#create",
+    action: "webauthn--rails--new-registration#create:prevent",
   }) do |form| %>
   <%= render "webauthn/rails/shared/error_messages" %>
 

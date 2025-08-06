@@ -3,13 +3,14 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
   static targets = ["errorElement"]
 
-  create(event) {
-    event.preventDefault();
+  async create(event) {
+    const response = await fetch(this.element.action, {
+      method: this.element.method,
+      body: new FormData(this.element),
+    });
 
-    const { fetchResponse } = event.detail;
-
-    fetchResponse.response.json().then((data) => {
-      if (fetchResponse.succeeded && data.user) {
+    response.json().then((data) => {
+      if (response.ok && data.user) {
         const nickname = event.target.querySelector("input[name='registration[nickname]']")?.value || "";
         const callbackUrl = `/webauthn-rails/registration/callback?credential_nickname=${encodeURIComponent(nickname)}`;
 
