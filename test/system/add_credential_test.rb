@@ -2,10 +2,9 @@ require "application_system_test_case"
 
 class AddCredentialTest < ApplicationSystemTestCase
   def setup
-    options = ::Selenium::WebDriver::VirtualAuthenticatorOptions.new
-    options.user_verification = true
-    options.user_verified = true
-    @authenticator = page.driver.browser.add_virtual_authenticator(options)
+    sign_up(username: "User1")
+
+    @authenticator = add_virtual_authenticator
   end
 
   def teardown
@@ -13,16 +12,7 @@ class AddCredentialTest < ApplicationSystemTestCase
   end
 
   test "add credentials" do
-    visit webauthn_rails.new_registration_path
-
-    fill_in "registration_username", with: "User1"
-    fill_in "Security Key nickname", with: "USB key"
-
-    click_on "Sign up"
-    # wait for async response
-    assert_text "Your Security Keys"
-
-    @authenticator.remove_all_credentials
+    visit root_path
 
     click_on "Add credential"
 
@@ -34,5 +24,29 @@ class AddCredentialTest < ApplicationSystemTestCase
 
     assert_current_path "/"
     assert_text "USB key"
+  end
+
+  private
+
+  def sign_up(username:, credential_nickname: "USB key")
+    authenticator = add_virtual_authenticator
+
+    visit webauthn_rails.new_registration_path
+
+    fill_in "registration_username", with: username
+    fill_in "Security Key nickname", with: credential_nickname
+
+    click_on "Sign up"
+    # wait for async response
+    assert_text "Your Security Keys"
+
+    authenticator.remove!
+  end
+
+  def add_virtual_authenticator
+    options = ::Selenium::WebDriver::VirtualAuthenticatorOptions.new
+    options.user_verification = true
+    options.user_verified = true
+    page.driver.browser.add_virtual_authenticator(options)
   end
 end
