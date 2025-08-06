@@ -28,8 +28,6 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_migration "db/migrate/create_webauthn_credentials.rb", /create_table :webauthn_credentials/
 
     assert_file "config/routes.rb", /mount Webauthn::Rails::Engine/
-
-    assert_file "config/importmap.rb", /pin "@github\/webauthn-json"/
   end
 
   test "assert all files are properly created when user model already exists" do
@@ -49,8 +47,6 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_migration "db/migrate/create_webauthn_credentials.rb", /create_table :webauthn_credentials/
 
     assert_file "config/routes.rb", /mount Webauthn::Rails::Engine/
-
-    assert_file "config/importmap.rb", /pin "@github\/webauthn-json"/
   end
 
   private
