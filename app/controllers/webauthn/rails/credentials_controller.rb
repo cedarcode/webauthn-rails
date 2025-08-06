@@ -30,7 +30,7 @@ module Webauthn
           )
 
           credential = current_user.webauthn_credentials.find_or_initialize_by(
-            external_id: Base64.strict_encode64(webauthn_credential.raw_id)
+            external_id: webauthn_credential.id
           )
 
           if credential.update(
