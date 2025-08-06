@@ -1,40 +1,45 @@
 require "application_system_test_case"
-require "webauthn/fake_client"
 
 class AddCredentialTest < ApplicationSystemTestCase
+  def setup
+    sign_up(username: "User1")
+
+    @authenticator = add_virtual_authenticator
+  end
+
+  def teardown
+    @authenticator.remove!
+  end
+
   test "add credentials" do
-    fake_origin = "http://localhost:3030"
-    fake_client = WebAuthn::FakeClient.new(fake_origin, encoding: false)
-    fixed_challenge = SecureRandom.random_bytes(32)
-
-    visit webauthn_rails.new_registration_path
-
-    fake_credentials = fake_client.create(challenge: fixed_challenge, user_verified: true)
-    stub_create(fake_credentials)
-
-    fill_in "registration_username", with: "User1"
-    fill_in "Security Key nickname", with: "USB key"
-
-    WebAuthn::PublicKeyCredential::CreationOptions.stub_any_instance :raw_challenge, fixed_challenge do
-      click_on "Sign up"
-      # wait for async response
-      assert_text "Your Security Keys"
-    end
+    visit root_path
 
     click_on "Add credential"
 
-    fake_credentials = fake_client.create(challenge: fixed_challenge, user_verified: true)
-    stub_create(fake_credentials)
-
     fill_in("Security Key nickname", with: "Touch ID")
 
-    WebAuthn::PublicKeyCredential::CreationOptions.stub_any_instance :raw_challenge, fixed_challenge do
-      click_on "Add Security Key"
-      # wait for async response
-      assert_text "Touch ID"
-    end
+    click_on "Add Security Key"
+    # wait for async response
+    assert_text "Touch ID"
 
     assert_current_path "/"
     assert_text "USB key"
+  end
+
+  private
+
+  def sign_up(username:, credential_nickname: "USB key")
+    authenticator = add_virtual_authenticator
+
+    visit webauthn_rails.new_registration_path
+
+    fill_in "registration_username", with: username
+    fill_in "Security Key nickname", with: credential_nickname
+
+    click_on "Sign up"
+    # wait for async response
+    assert_text "Your Security Keys"
+
+    authenticator.remove!
   end
 end
