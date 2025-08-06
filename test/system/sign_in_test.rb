@@ -2,10 +2,7 @@ require "application_system_test_case"
 
 class SignInTest < ApplicationSystemTestCase
   def setup
-    options = ::Selenium::WebDriver::VirtualAuthenticatorOptions.new
-    options.user_verification = true
-    options.user_verified = true
-    @authenticator = page.driver.browser.add_virtual_authenticator(options)
+    @authenticator = add_virtual_authenticator
   end
 
   def teardown
