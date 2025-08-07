@@ -8,6 +8,9 @@ export default class extends Controller {
       const optionsResponse = await fetch("/webauthn-rails/credentials/create_options", {
         method: "POST",
         body: new FormData(this.element),
+        headers: {
+          "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]')?.getAttribute("content")
+        },
       });
 
       const optionsJson = await optionsResponse.json();
