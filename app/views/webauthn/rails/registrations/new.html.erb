@@ -20,6 +20,8 @@
     <p><%= form.text_field :nickname, required: true %></p>
   </div>
 
+  <%= form.hidden_field :credential, data: { "webauthn--rails--new-registration-target": "credentialHiddenInput" } %>
+
   <div class="actions">
     <%= form.submit "Sign up" %>
   </div>

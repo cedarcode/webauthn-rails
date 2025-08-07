@@ -30,7 +30,7 @@ module Webauthn
       end
 
       def create
-        webauthn_credential = WebAuthn::Credential.from_get(params)
+        webauthn_credential = WebAuthn::Credential.from_get(JSON.parse(params[:session][:credential]))
 
         user = User.find_by(username: session[:current_authentication][:username] || session[:current_authentication]["username"])
         raise "user #{session[:current_authentication][:username]} never initiated sign up" unless user
@@ -48,7 +48,7 @@ module Webauthn
           stored_credential.update!(sign_count: webauthn_credential.sign_count)
           sign_in(user)
 
-          render json: { status: "ok" }, status: :ok
+          redirect_to main_app.root_path, notice: "Credential authenticated successfully"
         rescue WebAuthn::Error => e
           render json: "Verification failed: #{e.message}", status: :unprocessable_entity
         ensure

@@ -1,9 +1,9 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["errorElement"]
+  static targets = ["errorElement", "credentialHiddenInput"];
 
-  async create(event) {
+  async create() {
     const optionsResponse = await fetch("/webauthn-rails/credentials/create_options", {
       method: "POST",
       body: new FormData(this.element),
@@ -11,38 +11,17 @@ export default class extends Controller {
 
     optionsResponse.json().then((data) => {
       if (optionsResponse.ok) {
-        const nickname = event.target.querySelector("input[name='credential[nickname]']")?.value || "";
-        const callbackUrl = `/webauthn-rails/credentials?credential_nickname=${encodeURIComponent(nickname)}`;
+        const credentialOptions = PublicKeyCredential.parseCreationOptionsFromJSON(data);
 
-        navigator.credentials.create({ publicKey: PublicKeyCredential.parseCreationOptionsFromJSON(data) })
-          .then((credential) => this.#submitCredential(callbackUrl, credential))
-          .catch((error) => this.#showError(error));
+        navigator.credentials.create({ publicKey: credentialOptions }).then((credential) => {
+          this.credentialHiddenInputTarget.value = JSON.stringify(credential);
+
+          this.element.submit();
+        });
       } else {
         this.#showError(data.errors?.[0] || "Unknown error");
       }
     });
-  }
-
-  #submitCredential(url, credential) {
-    fetch(url, {
-      method: this.element.method,
-      body: JSON.stringify(credential),
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]')?.getAttribute("content")
-      },
-      credentials: "same-origin"
-    }).then((response) => {
-      if (response.ok) {
-        window.location.replace("/");
-      } else {
-        response.text().then((msg) => {
-          const errorMsg = response.status < 500 ? msg : "Sorry, something wrong happened.";
-          this.#showError(errorMsg);
-        });
-      }
-    })
   }
 
   #showError(message) {

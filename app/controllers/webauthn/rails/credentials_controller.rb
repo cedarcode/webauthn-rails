@@ -21,7 +21,7 @@ module Webauthn
       end
 
       def create
-        webauthn_credential = WebAuthn::Credential.from_create(params)
+        webauthn_credential = WebAuthn::Credential.from_create(JSON.parse(params[:credential][:credential]))
 
         begin
           webauthn_credential.verify(
@@ -34,13 +34,13 @@ module Webauthn
           )
 
           if credential.update(
-            nickname: params[:credential_nickname],
+            nickname: params[:credential][:nickname],
             public_key: webauthn_credential.public_key,
             sign_count: webauthn_credential.sign_count
           )
-            render json: { status: "ok" }, status: :ok
+            redirect_to main_app.root_path, notice: "Security Key registered successfully"
           else
-            render json: "Couldn't add your Security Key", status: :unprocessable_entity
+            redirect_to webauthn_rails.new_credential_path, alert: "Error registering credential"
           end
         rescue WebAuthn::Error => e
           render json: "Verification failed: #{e.message}", status: :unprocessable_entity
