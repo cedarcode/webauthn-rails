@@ -9,19 +9,18 @@ export default class extends Controller {
       body: new FormData(this.element),
     });
 
-    optionsResponse.json().then((data) => {
-      if (optionsResponse.ok) {
-        const credentialOptions = PublicKeyCredential.parseRequestOptionsFromJSON(data);
+    const optionsJson = await optionsResponse.json();
 
-        navigator.credentials.get({ publicKey: credentialOptions }).then((credential) => {
-          this.credentialHiddenInputTarget.value = JSON.stringify(credential);
+    if (optionsResponse.ok) {
+      const credentialOptions = PublicKeyCredential.parseRequestOptionsFromJSON(optionsJson);
+      const credential = await navigator.credentials.get({ publicKey: credentialOptions });
 
-          this.element.submit();
-        });
-      } else {
-        this.#showError(data.errors?.[0] || "Unknown error");
-      }
-    });
+      this.credentialHiddenInputTarget.value = JSON.stringify(credential);
+
+      this.element.submit();
+    } else {
+      this.#showError(optionsJson.errors?.[0] || "Unknown error");
+    }
   }
 
   #showError(message) {
