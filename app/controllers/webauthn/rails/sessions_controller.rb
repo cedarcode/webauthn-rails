@@ -3,12 +3,12 @@ module Webauthn
     class SessionsController < ApplicationController
       include Authentication
 
-      before_action :enforce_no_current_user, only: %i[new create callback]
+      before_action :enforce_no_current_user, only: %i[new get_options create]
 
       def new
       end
 
-      def create
+      def get_options
         user = User.find_by(username: session_params[:username])
 
         if user
@@ -29,7 +29,7 @@ module Webauthn
         end
       end
 
-      def callback
+      def create
         webauthn_credential = WebAuthn::Credential.from_get(params)
 
         user = User.find_by(username: session[:current_authentication][:username] || session[:current_authentication]["username"])

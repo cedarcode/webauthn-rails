@@ -3,12 +3,12 @@ module Webauthn
     class RegistrationsController < ApplicationController
       include Authentication
 
-      before_action :enforce_no_current_user, only: %i[new create callback]
+      before_action :enforce_no_current_user, only: %i[new create_options create]
 
       def new
       end
 
-      def create
+      def create_options
         user = User.new(username: params[:registration][:username])
 
         create_options = WebAuthn::Credential.options_for_create(
@@ -32,7 +32,7 @@ module Webauthn
         end
       end
 
-      def callback
+      def create
         webauthn_credential = WebAuthn::Credential.from_create(params)
 
         user = User.new(session[:current_registration][:user_attributes] || session[:current_registration]["user_attributes"])

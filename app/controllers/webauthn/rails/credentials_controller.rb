@@ -1,9 +1,9 @@
 module Webauthn
   module Rails
     class CredentialsController < ApplicationController
-      before_action :enforce_current_user, only: %i[create callback destroy]
+      before_action :enforce_current_user, only: %i[create_options create destroy]
 
-      def create
+      def create_options
         create_options = WebAuthn::Credential.options_for_create(
           user: {
             id: current_user.webauthn_id,
@@ -20,7 +20,7 @@ module Webauthn
         end
       end
 
-      def callback
+      def create
         webauthn_credential = WebAuthn::Credential.from_create(params)
 
         begin

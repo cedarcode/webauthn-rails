@@ -4,15 +4,15 @@ export default class extends Controller {
   static targets = ["errorElement"]
 
   async create(event) {
-    const response = await fetch(this.element.action, {
-      method: this.element.method,
+    const optionsResponse = await fetch("/webauthn-rails/credentials/create_options", {
+      method: "POST",
       body: new FormData(this.element),
     });
 
-    response.json().then((data) => {
-      if (response.ok) {
+    optionsResponse.json().then((data) => {
+      if (optionsResponse.ok) {
         const nickname = event.target.querySelector("input[name='credential[nickname]']")?.value || "";
-        const callbackUrl = `/webauthn-rails/credentials/callback?credential_nickname=${encodeURIComponent(nickname)}`;
+        const callbackUrl = `/webauthn-rails/credentials?credential_nickname=${encodeURIComponent(nickname)}`;
 
         navigator.credentials.create({ publicKey: PublicKeyCredential.parseCreationOptionsFromJSON(data) })
           .then((credential) => this.#submitCredential(callbackUrl, credential))
@@ -25,7 +25,7 @@ export default class extends Controller {
 
   #submitCredential(url, credential) {
     fetch(url, {
-      method: "POST",
+      method: this.element.method,
       body: JSON.stringify(credential),
       headers: {
         "Content-Type": "application/json",
