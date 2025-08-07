@@ -22,13 +22,9 @@ module Webauthn
         if user.valid?
           session[:current_registration] = { challenge: create_options.challenge, user_attributes: user.attributes }
 
-          respond_to do |format|
-            format.turbo_stream { render json: create_options }
-          end
+          render json: create_options
         else
-          respond_to do |format|
-            format.turbo_stream { render json: { errors: user.errors.full_messages }, status: :unprocessable_entity }
-          end
+          render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
         end
       end
 

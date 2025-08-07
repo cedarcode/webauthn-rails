@@ -15,9 +15,7 @@ module Webauthn
 
         session[:current_registration] = { challenge: create_options.challenge }
 
-        respond_to do |format|
-          format.turbo_stream { render json: create_options }
-        end
+        render json: create_options
       end
 
       def create
