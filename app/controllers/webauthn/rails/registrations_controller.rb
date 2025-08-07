@@ -9,11 +9,11 @@ module Webauthn
       end
 
       def create_options
-        user = User.new(username: params[:registration][:username])
+        user = User.new(username: registration_params[:username])
 
         create_options = WebAuthn::Credential.options_for_create(
           user: {
-            name: params[:registration][:username],
+            name: registration_params[:username],
             id: user.webauthn_id
           },
           authenticator_selection: { user_verification: "required" }
@@ -33,7 +33,7 @@ module Webauthn
       end
 
       def create
-        webauthn_credential = WebAuthn::Credential.from_create(JSON.parse(params[:registration][:credential]))
+        webauthn_credential = WebAuthn::Credential.from_create(JSON.parse(registration_params[:credential]))
 
         user = User.new(session[:current_registration][:user_attributes] || session[:current_registration]["user_attributes"])
 
@@ -45,7 +45,7 @@ module Webauthn
 
           user.webauthn_credentials.build(
             external_id: webauthn_credential.id,
-            nickname: params[:registration][:nickname],
+            nickname: registration_params[:nickname],
             public_key: webauthn_credential.public_key,
             sign_count: webauthn_credential.sign_count
           )
@@ -62,6 +62,12 @@ module Webauthn
         ensure
           session.delete(:current_registration)
         end
+      end
+
+      private
+
+      def registration_params
+        params.require(:registration).permit(:username, :nickname, :credential)
       end
     end
   end
