@@ -56,7 +56,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     assert_no_difference -> { User.count } do
       post(
         webauthn_rails.registration_url,
-        params: { registration: { nickname: "USB Key", credential: public_key_credential.to_json } }
+        params: { registration: { nickname: "USB Key", public_key_credential: public_key_credential.to_json } }
       )
     end
 
@@ -82,7 +82,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
       assert_difference "WebauthnCredential.count", +1 do
         post(
           webauthn_rails.registration_url,
-          params: { registration: { nickname: "USB Key", credential: public_key_credential.to_json } },
+          params: { registration: { nickname: "USB Key", public_key_credential: public_key_credential.to_json } },
         )
       end
     end

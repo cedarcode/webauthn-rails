@@ -29,7 +29,7 @@ module Webauthn
       end
 
       def create
-        webauthn_credential = WebAuthn::Credential.from_create(JSON.parse(registration_params[:credential]))
+        webauthn_credential = WebAuthn::Credential.from_create(JSON.parse(registration_params[:public_key_credential]))
 
         user = User.new(session[:current_registration][:user_attributes] || session[:current_registration]["user_attributes"])
 
@@ -63,7 +63,7 @@ module Webauthn
       private
 
       def registration_params
-        params.require(:registration).permit(:username, :nickname, :credential)
+        params.require(:registration).permit(:username, :nickname, :public_key_credential)
       end
     end
   end

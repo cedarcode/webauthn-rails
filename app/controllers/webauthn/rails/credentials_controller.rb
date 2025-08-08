@@ -19,7 +19,7 @@ module Webauthn
       end
 
       def create
-        webauthn_credential = WebAuthn::Credential.from_create(JSON.parse(create_credential_params[:credential]))
+        webauthn_credential = WebAuthn::Credential.from_create(JSON.parse(create_credential_params[:public_key_credential]))
 
         begin
           webauthn_credential.verify(
@@ -58,7 +58,7 @@ module Webauthn
       private
 
       def create_credential_params
-        params.require(:credential).permit(:nickname, :credential)
+        params.require(:credential).permit(:nickname, :public_key_credential)
       end
     end
   end

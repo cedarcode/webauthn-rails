@@ -26,7 +26,7 @@ module Webauthn
       end
 
       def create
-        webauthn_credential = WebAuthn::Credential.from_get(JSON.parse(session_params[:credential]))
+        webauthn_credential = WebAuthn::Credential.from_get(JSON.parse(session_params[:public_key_credential]))
 
         user = User.find_by(username: session[:current_authentication][:username] || session[:current_authentication]["username"])
         raise "user #{session[:current_authentication][:username]} never initiated sign up" unless user
@@ -61,7 +61,7 @@ module Webauthn
       private
 
       def session_params
-        params.require(:session).permit(:username, :credential)
+        params.require(:session).permit(:username, :public_key_credential)
       end
     end
   end

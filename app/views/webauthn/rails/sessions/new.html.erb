@@ -15,7 +15,7 @@
     <p><%= form.text_field :username, autofocus: true, autocapitalize: "none", required: true %></p>
   </div>
 
-  <%= form.hidden_field :credential, data: { "webauthn--rails--new-session-target": "credentialHiddenInput" } %>
+  <%= form.hidden_field :public_key_credential, data: { "webauthn--rails--new-session-target": "credentialHiddenInput" } %>
 
   <div class="actions">
     <%= form.submit "Sign in" %>
