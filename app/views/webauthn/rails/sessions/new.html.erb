@@ -7,6 +7,7 @@
   data: {
     controller: "webauthn--rails--new-session",
     action: "webauthn--rails--new-session#create:prevent",
+    "webauthn--rails--new-session-options-url-value": webauthn_rails.get_options_session_path,
   }) do |form| %>
   <%= render "webauthn/rails/shared/error_messages" %>
 
