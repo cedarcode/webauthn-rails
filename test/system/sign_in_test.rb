@@ -17,18 +17,15 @@ class SignInTest < ApplicationSystemTestCase
 
     click_on "Sign up"
     # wait for async response
-    assert_text "Your Security Keys"
+    assert_selector "h3", text: "Your Security Keys"
 
     click_on "Sign out"
-    assert_text "Sign in"
+    assert_selector("input[type=submit][value='Sign in']")
 
     fill_in "Username", with: "User1"
 
     click_button "Sign in"
-    # wait for async response
-    assert_text "Your Security Keys"
-
+    assert_selector "h3", text: "Your Security Keys"
     assert_current_path "/"
-    assert_text "Your Security Keys"
   end
 end

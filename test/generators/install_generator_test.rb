@@ -17,9 +17,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
 
     run_generator
 
-    assert_file "app/javascript/controllers/webauthn/rails/add_credential_controller.js"
-    assert_file "app/javascript/controllers/webauthn/rails/new_registration_controller.js"
-    assert_file "app/javascript/controllers/webauthn/rails/new_session_controller.js"
+    assert_file "app/javascript/controllers/webauthn/rails/credentials_controller.js"
 
     assert_file "app/controllers/registrations_controller.rb"
     assert_file "app/controllers/sessions_controller.rb"
@@ -47,9 +45,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
 
     run_generator
 
-    assert_file "app/javascript/controllers/webauthn/rails/add_credential_controller.js"
-    assert_file "app/javascript/controllers/webauthn/rails/new_registration_controller.js"
-    assert_file "app/javascript/controllers/webauthn/rails/new_session_controller.js"
+    assert_file "app/javascript/controllers/webauthn/rails/credentials_controller.js"
 
     assert_file "app/controllers/registrations_controller.rb"
     assert_file "app/controllers/sessions_controller.rb"

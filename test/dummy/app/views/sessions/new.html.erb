@@ -5,8 +5,9 @@
   url: main_app.session_path,
   id: "new-session",
   data: {
-    controller: "webauthn--rails--new-session",
-    action: "turbo:before-fetch-response->webauthn--rails--new-session#create",
+    controller: "webauthn--rails--credentials",
+    action: "webauthn--rails--credentials#get:prevent",
+    "webauthn--rails--credentials-options-url-value": main_app.get_options_session_path,
   }) do |form| %>
   <%= render "shared/error_messages" %>
 
@@ -14,6 +15,8 @@
     <p><%= form.label :username %></p>
     <p><%= form.text_field :username, autofocus: true, autocapitalize: "none", required: true %></p>
   </div>
+
+  <%= form.hidden_field :public_key_credential, data: { "webauthn--rails--credentials-target": "credentialHiddenInput" } %>
 
   <div class="actions">
     <%= form.submit "Sign in" %>

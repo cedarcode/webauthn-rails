@@ -1,13 +1,13 @@
 Rails.application.routes.draw do
   resource :registration, only: [ :new, :create ] do
-    post :callback
+    post :create_options, on: :collection
   end
 
   resource :session, only: [ :new, :create, :destroy ] do
-    post :callback
+    post :get_options, on: :collection
   end
 
   resources :credentials, only: [ :new, :create, :destroy ] do
-    post :callback, on: :collection
+    post :create_options, on: :collection
   end
 end

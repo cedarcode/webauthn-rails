@@ -1,9 +1,9 @@
 class CredentialsController < ApplicationController
   include Authentication
 
-  before_action :enforce_current_user, only: %i[create callback destroy]
+  before_action :enforce_current_user, only: %i[create_options create destroy]
 
-  def create
+  def create_options
     create_options = WebAuthn::Credential.options_for_create(
       user: {
         id: current_user.webauthn_id,
@@ -15,13 +15,11 @@ class CredentialsController < ApplicationController
 
     session[:current_registration] = { challenge: create_options.challenge }
 
-    respond_to do |format|
-      format.turbo_stream { render json: create_options }
-    end
+    render json: create_options
   end
 
-  def callback
-    webauthn_credential = WebAuthn::Credential.from_create(params)
+  def create
+    webauthn_credential = WebAuthn::Credential.from_create(JSON.parse(create_credential_params[:public_key_credential]))
 
     begin
       webauthn_credential.verify(
@@ -34,13 +32,13 @@ class CredentialsController < ApplicationController
       )
 
       if credential.update(
-        nickname: params[:credential_nickname],
+        nickname: create_credential_params[:nickname],
         public_key: webauthn_credential.public_key,
         sign_count: webauthn_credential.sign_count
       )
-        render json: { status: "ok" }, status: :ok
+        redirect_to main_app.root_path, notice: "Security Key registered successfully"
       else
-        render json: "Couldn't add your Security Key", status: :unprocessable_entity
+        redirect_to main_app.new_credential_path, alert: "Error registering credential"
       end
     rescue WebAuthn::Error => e
       render json: "Verification failed: #{e.message}", status: :unprocessable_entity
@@ -55,5 +53,11 @@ class CredentialsController < ApplicationController
     end
 
     redirect_to main_app.root_path
+  end
+
+  private
+
+  def create_credential_params
+    params.require(:credential).permit(:nickname, :public_key_credential)
   end
 end

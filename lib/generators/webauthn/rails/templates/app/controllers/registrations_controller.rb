@@ -1,17 +1,17 @@
 class RegistrationsController < ApplicationController
   include Authentication
 
-  before_action :enforce_no_current_user, only: %i[new create callback]
+  before_action :enforce_no_current_user, only: %i[new create_options create]
 
   def new
   end
 
-  def create
-    user = User.new(username: params[:registration][:username])
+  def create_options
+    user = User.new(username: registration_params[:username])
 
     create_options = WebAuthn::Credential.options_for_create(
       user: {
-        name: params[:registration][:username],
+        name: registration_params[:username],
         id: user.webauthn_id
       },
       authenticator_selection: { user_verification: "required" }
@@ -20,18 +20,14 @@ class RegistrationsController < ApplicationController
     if user.valid?
       session[:current_registration] = { challenge: create_options.challenge, user_attributes: user.attributes }
 
-      respond_to do |format|
-        format.turbo_stream { render json: create_options }
-      end
+      render json: create_options
     else
-      respond_to do |format|
-        format.turbo_stream { render json: { errors: user.errors.full_messages }, status: :unprocessable_entity }
-      end
+      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
-  def callback
-    webauthn_credential = WebAuthn::Credential.from_create(params)
+  def create
+    webauthn_credential = WebAuthn::Credential.from_create(JSON.parse(registration_params[:public_key_credential]))
 
     user = User.new(session[:current_registration][:user_attributes] || session[:current_registration]["user_attributes"])
 
@@ -43,7 +39,7 @@ class RegistrationsController < ApplicationController
 
       user.webauthn_credentials.build(
         external_id: webauthn_credential.id,
-        nickname: params[:credential_nickname],
+        nickname: registration_params[:nickname],
         public_key: webauthn_credential.public_key,
         sign_count: webauthn_credential.sign_count
       )
@@ -51,14 +47,20 @@ class RegistrationsController < ApplicationController
       if user.save
         sign_in(user)
 
-        render json: { status: "ok" }, status: :ok
+        redirect_to main_app.root_path, notice: "Security Key registered successfully"
       else
-        render json: "Couldn't register your Security Key", status: :unprocessable_entity
+        redirect_to main_app.new_registration_path, alert: "Error registering credential"
       end
     rescue WebAuthn::Error => e
       render json: "Verification failed: #{e.message}", status: :unprocessable_entity
     ensure
       session.delete(:current_registration)
     end
+  end
+
+  private
+
+  def registration_params
+    params.require(:registration).permit(:username, :nickname, :public_key_credential)
   end
 end
