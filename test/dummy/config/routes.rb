@@ -1,5 +1,15 @@
 Rails.application.routes.draw do
-  mount Webauthn::Rails::Engine => "/webauthn-rails"
+  resource :registration, only: [ :new, :create ] do
+    post :callback
+  end
+
+  resource :session, only: [ :new, :create, :destroy ] do
+    post :callback
+  end
+
+  resources :credentials, only: [ :new, :create, :destroy ] do
+    post :callback, on: :collection
+  end
 
   root "home#index"
 end

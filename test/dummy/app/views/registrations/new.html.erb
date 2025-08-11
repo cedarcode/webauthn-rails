@@ -1,0 +1,28 @@
+<h2>Sign up</h2>
+
+<%= form_with(
+  scope: :registration,
+  url: main_app.registration_path,
+  id: "new-registration",
+  data: {
+    controller: "webauthn--rails--new-registration",
+    action: "turbo:before-fetch-response->webauthn--rails--new-registration#create",
+  }) do |form| %>
+  <%= render "shared/error_messages" %>
+
+  <div class="field">
+    <p><%= form.label :username %></p>
+    <p><%= form.text_field :username, autofocus: true, autocapitalize: "none", required: true %></p>
+  </div>
+
+  <div class="field">
+    <p><%= form.label :nickname, 'Security Key nickname' %></p>
+    <p><%= form.text_field :nickname, required: true %></p>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "Sign up" %>
+  </div>
+<% end %>
+
+<%= link_to "Sign in", main_app.new_session_path %>

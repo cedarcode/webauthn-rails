@@ -11,7 +11,7 @@ export default class extends Controller {
     fetchResponse.response.json().then((data) => {
       if (fetchResponse.succeeded) {
         const nickname = event.target.querySelector("input[name='credential[nickname]']")?.value || "";
-        const callbackUrl = `/webauthn-rails/credentials/callback?credential_nickname=${encodeURIComponent(nickname)}`;
+        const callbackUrl = `/credentials/callback?credential_nickname=${encodeURIComponent(nickname)}`;
 
         navigator.credentials.create({ publicKey: PublicKeyCredential.parseCreationOptionsFromJSON(data) })
           .then((credential) => this.#submitCredential(callbackUrl, credential))

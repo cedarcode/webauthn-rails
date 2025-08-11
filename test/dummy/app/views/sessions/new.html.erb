@@ -1,0 +1,23 @@
+<h2>Sign in</h2>
+
+<%= form_with(
+  scope: :session,
+  url: main_app.session_path,
+  id: "new-session",
+  data: {
+    controller: "webauthn--rails--new-session",
+    action: "turbo:before-fetch-response->webauthn--rails--new-session#create",
+  }) do |form| %>
+  <%= render "shared/error_messages" %>
+
+  <div class="field">
+    <p><%= form.label :username %></p>
+    <p><%= form.text_field :username, autofocus: true, autocapitalize: "none", required: true %></p>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "Sign in" %>
+  </div>
+<% end %>
+
+<%= link_to "Sign up", main_app.new_registration_path %>

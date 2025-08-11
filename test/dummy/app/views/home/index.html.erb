@@ -1,4 +1,4 @@
-<%= link_to 'Sign out', webauthn_rails.session_path, data: { turbo_method: :delete } %>
+<%= link_to 'Sign out', main_app.session_path, data: { turbo_method: :delete } %>
 
 <h3>Your Security Keys</h3>
 <ul>
@@ -15,10 +15,10 @@
       </span>
 
       <% if current_user.can_delete_credentials? %>
-        <%= link_to "Delete credential", webauthn_rails.credential_path(credential), data: { turbo_method: :delete } %>
+        <%= link_to "Delete credential", main_app.credential_path(credential), data: { turbo_method: :delete } %>
       <% end %>
     </li>
   <% end %>
 </ul>
 
-<%= link_to 'Add credential', webauthn_rails.new_credential_path %>
+<%= link_to 'Add credential', main_app.new_credential_path %>

@@ -10,15 +10,26 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     prepare_destination
     add_config_folder
     add_importmap
-    add_routes
   end
 
-  test "assert all files are properly created when user model does not exist" do
+  test "assert all files are properly created when user model does not exist and routes file does exist" do
+    add_routes
+
     run_generator
 
     assert_file "app/javascript/controllers/webauthn/rails/add_credential_controller.js"
     assert_file "app/javascript/controllers/webauthn/rails/new_registration_controller.js"
     assert_file "app/javascript/controllers/webauthn/rails/new_session_controller.js"
+
+    assert_file "app/controllers/registrations_controller.rb"
+    assert_file "app/controllers/sessions_controller.rb"
+    assert_file "app/controllers/credentials_controller.rb"
+    assert_file "app/controllers/concerns/authentication.rb"
+
+    assert_file "app/views/credentials/new.html.erb"
+    assert_file "app/views/registrations/new.html.erb"
+    assert_file "app/views/sessions/new.html.erb"
+    assert_file "app/views/shared/_error_messages.html.erb"
 
     assert_file "config/initializers/webauthn.rb", /WebAuthn.configure/
 
@@ -27,10 +38,11 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "app/models/webauthn_credential.rb", /belongs_to :user/
     assert_migration "db/migrate/create_webauthn_credentials.rb", /create_table :webauthn_credentials/
 
-    assert_file "config/routes.rb", /mount Webauthn::Rails::Engine/
+    assert_file "config/routes.rb", /Rails.application.routes.draw do/
+    assert_file "config/routes.rb", /resources :credentials, only: \[\s*:new, :create, :destroy\s*\] do/
   end
 
-  test "assert all files are properly created when user model already exists" do
+  test "assert all files are properly created when user model already exists and routes file does not exist" do
     add_user_model
 
     run_generator
@@ -39,6 +51,16 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "app/javascript/controllers/webauthn/rails/new_registration_controller.js"
     assert_file "app/javascript/controllers/webauthn/rails/new_session_controller.js"
 
+    assert_file "app/controllers/registrations_controller.rb"
+    assert_file "app/controllers/sessions_controller.rb"
+    assert_file "app/controllers/credentials_controller.rb"
+    assert_file "app/controllers/concerns/authentication.rb"
+
+    assert_file "app/views/credentials/new.html.erb"
+    assert_file "app/views/registrations/new.html.erb"
+    assert_file "app/views/sessions/new.html.erb"
+    assert_file "app/views/shared/_error_messages.html.erb"
+
     assert_file "config/initializers/webauthn.rb", /WebAuthn.configure/
 
     assert_file "app/models/user.rb", /has_many :webauthn_credentials/
@@ -46,7 +68,8 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "app/models/webauthn_credential.rb", /belongs_to :user/
     assert_migration "db/migrate/create_webauthn_credentials.rb", /create_table :webauthn_credentials/
 
-    assert_file "config/routes.rb", /mount Webauthn::Rails::Engine/
+    assert_file "config/routes.rb", /Rails.application.routes.draw do/
+    assert_file "config/routes.rb", /resources :credentials, only: \[\s*:new, :create, :destroy\s*\] do/
   end
 
   private

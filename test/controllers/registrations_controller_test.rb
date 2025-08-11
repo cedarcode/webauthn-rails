@@ -3,7 +3,7 @@ require "webauthn/fake_client"
 
 class RegistrationsControllerTest < ActionDispatch::IntegrationTest
   test "should initiate registration successfully" do
-    post webauthn_rails.registration_url, params: { registration: { username: "alice" }, format: :turbo_stream }
+    post main_app.registration_url, params: { registration: { username: "alice" }, format: :turbo_stream }
 
     assert_response :success
   end
@@ -11,14 +11,14 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
   test "should return error if registrating taken username" do
     User.create!(username: "alice")
 
-    post webauthn_rails.registration_url, params: { registration: { username: "alice" }, format: :turbo_stream }
+    post main_app.registration_url, params: { registration: { username: "alice" }, format: :turbo_stream }
 
     assert_response :unprocessable_entity
     assert_equal [ "Username has already been taken" ], JSON.parse(response.body)["errors"]
   end
 
   test "should return error if registrating blank username" do
-    post webauthn_rails.registration_url, params: { registration: { username: "" }, format: :turbo_stream }
+    post main_app.registration_url, params: { registration: { username: "" }, format: :turbo_stream }
 
     assert_response :unprocessable_entity
     assert_equal [ "Username can't be blank" ], JSON.parse(response.body)["errors"]
@@ -29,7 +29,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     challenge = WebAuthn.configuration.encoder.encode(raw_challenge)
 
     WebAuthn::PublicKeyCredential::CreationOptions.stub_any_instance(:raw_challenge, raw_challenge) do
-      post webauthn_rails.registration_url, params: { registration: { username: "alice" }, format: :turbo_stream }
+      post main_app.registration_url, params: { registration: { username: "alice" }, format: :turbo_stream }
 
       assert_response :success
     end
@@ -55,7 +55,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
 
     assert_no_difference -> { User.count } do
       post(
-        webauthn_rails.callback_registration_url,
+        main_app.callback_registration_url,
         params: { credential_nickname: "USB Key" }.merge(public_key_credential)
       )
     end
@@ -69,7 +69,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     challenge = WebAuthn.configuration.encoder.encode(raw_challenge)
 
     WebAuthn::PublicKeyCredential::CreationOptions.stub_any_instance(:raw_challenge, raw_challenge) do
-      post webauthn_rails.registration_url, params: { registration: { username: "alice" }, format: :turbo_stream }
+      post main_app.registration_url, params: { registration: { username: "alice" }, format: :turbo_stream }
 
       assert_response :success
     end
@@ -82,7 +82,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     assert_difference "User.count", +1 do
       assert_difference "WebauthnCredential.count", +1 do
         post(
-          webauthn_rails.callback_registration_url,
+          main_app.callback_registration_url,
           params: { credential_nickname: "USB Key" }.merge(public_key_credential)
         )
       end

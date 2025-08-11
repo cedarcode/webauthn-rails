@@ -7,7 +7,7 @@ class HomeController < ApplicationController
 
   def enforce_current_user
     if current_user.blank?
-      redirect_to webauthn_rails.new_session_path
+      redirect_to main_app.new_session_path
     end
   end
 end
