@@ -5,11 +5,10 @@
   url: webauthn_rails.registration_path,
   id: "new-registration",
   data: {
-    controller: "webauthn--rails--credentials",
-    action: "webauthn--rails--credentials#create:prevent",
-    "webauthn--rails--credentials-options-url-value": webauthn_rails.create_options_registration_path,
+    controller: "webauthn-credentials",
+    action: "webauthn-credentials#create:prevent",
+    "webauthn-credentials-options-url-value": webauthn_rails.create_options_registration_path,
   }) do |form| %>
-  <%= render "webauthn/rails/shared/error_messages" %>
 
   <div class="field">
     <p><%= form.label :username %></p>
@@ -21,7 +20,7 @@
     <p><%= form.text_field :nickname, required: true %></p>
   </div>
 
-  <%= form.hidden_field :public_key_credential, data: { "webauthn--rails--credentials-target": "credentialHiddenInput" } %>
+  <%= form.hidden_field :public_key_credential, data: { "webauthn-credentials-target": "credentialHiddenInput" } %>
 
   <div class="actions">
     <%= form.submit "Sign up" %>
