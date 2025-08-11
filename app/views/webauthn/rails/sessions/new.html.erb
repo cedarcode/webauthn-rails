@@ -5,9 +5,9 @@
   url: webauthn_rails.session_path,
   id: "new-session",
   data: {
-    controller: "webauthn--rails--credentials",
-    action: "webauthn--rails--credentials#get:prevent",
-    "webauthn--rails--credentials-options-url-value": webauthn_rails.get_options_session_path,
+    controller: "webauthn-credentials",
+    action: "webauthn-credentials#get:prevent",
+    "webauthn-credentials-options-url-value": webauthn_rails.get_options_session_path,
   }) do |form| %>
   <%= render "webauthn/rails/shared/error_messages" %>
 
@@ -16,7 +16,7 @@
     <p><%= form.text_field :username, autofocus: true, autocapitalize: "none", required: true %></p>
   </div>
 
-  <%= form.hidden_field :public_key_credential, data: { "webauthn--rails--credentials-target": "credentialHiddenInput" } %>
+  <%= form.hidden_field :public_key_credential, data: { "webauthn-credentials-target": "credentialHiddenInput" } %>
 
   <div class="actions">
     <%= form.submit "Sign in" %>
