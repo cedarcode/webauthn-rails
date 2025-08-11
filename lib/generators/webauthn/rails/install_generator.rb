@@ -10,6 +10,23 @@ module Webauthn
 
       desc "Injects webauthn files to your application."
 
+      def copy_controllers_and_concerns
+        say "Add Webauthn controllers"
+        template "app/controllers/credentials_controller.rb"
+        template "app/controllers/registrations_controller.rb"
+        template "app/controllers/sessions_controller.rb"
+        template "app/controllers/concerns/authentication.rb"
+      end
+
+      def copy_views
+        say "Add Webauthn views"
+        empty_directory "app/views"
+        template "app/views/credentials/new.html.erb.tt"
+        template "app/views/registrations/new.html.erb.tt"
+        template "app/views/sessions/new.html.erb.tt"
+        template "app/views/shared/_error_messages.html.erb"
+      end
+
       def copy_stimulus_controllers
         if using_importmap? || using_bun? || has_package_json?
           say "Add Webauthn Stimulus controllers"
@@ -51,12 +68,29 @@ module Webauthn
           migration_template "db/migrate/create_users.rb", "db/migrate/create_users.rb"
         end
 
+        if File.exist?(File.join(destination_root, "config/routes.rb"))
+          inject_into_file "config/routes.rb", after: "Rails.application.routes.draw do\n" do
+            <<-RUBY.strip_heredoc.indent(2)
+            resource :registration, only: [ :new, :create ] do
+              post :callback
+            end
+
+            resource :session, only: [ :new, :create, :destroy ] do
+              post :callback
+            end
+
+            resources :credentials, only: [ :new, :create, :destroy ] do
+              post :callback, on: :collection
+            end
+
+            RUBY
+          end
+        else
+          template "config/routes.rb"
+        end
+
         template "app/models/webauthn_credential.rb"
         migration_template "db/migrate/create_webauthn_credentials.rb", "db/migrate/create_webauthn_credentials.rb"
-      end
-
-      def mount_engine_routes
-        inject_into_file "config/routes.rb", "  mount Webauthn::Rails::Engine => \"/webauthn-rails\"\n", before: /^end/
       end
 
       private

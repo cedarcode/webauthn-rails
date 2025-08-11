@@ -10,12 +10,6 @@ module Webauthn
           ::Rails.application.config.assets.precompile += %w[ credential.js ]
         end
       end
-
-      initializer "webauthn-rails.helpers" do
-        ActiveSupport.on_load(:action_controller) do
-          include Webauthn::Rails::Controllers::Helpers
-        end
-      end
     end
   end
 end
