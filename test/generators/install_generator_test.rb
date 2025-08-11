@@ -16,9 +16,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
   test "assert all files are properly created when user model does not exist" do
     run_generator
 
-    assert_file "app/javascript/controllers/webauthn/rails/add_credential_controller.js"
-    assert_file "app/javascript/controllers/webauthn/rails/new_registration_controller.js"
-    assert_file "app/javascript/controllers/webauthn/rails/new_session_controller.js"
+    assert_file "app/javascript/controllers/webauthn/rails/credentials_controller.js"
 
     assert_file "config/initializers/webauthn.rb", /WebAuthn.configure/
 
@@ -35,9 +33,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
 
     run_generator
 
-    assert_file "app/javascript/controllers/webauthn/rails/add_credential_controller.js"
-    assert_file "app/javascript/controllers/webauthn/rails/new_registration_controller.js"
-    assert_file "app/javascript/controllers/webauthn/rails/new_session_controller.js"
+    assert_file "app/javascript/controllers/webauthn/rails/credentials_controller.js"
 
     assert_file "config/initializers/webauthn.rb", /WebAuthn.configure/
 

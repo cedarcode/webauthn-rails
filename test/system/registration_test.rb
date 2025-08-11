@@ -17,9 +17,9 @@ class RegistrationTest < ApplicationSystemTestCase
 
     click_on "Sign up"
     # wait for async response
-    assert_text "Your Security Keys"
+    assert_selector "h3", text: "Your Security Keys"
 
     assert_current_path "/"
-    assert_text "USB key"
+    assert_selector "span", text: "USB key"
   end
 end

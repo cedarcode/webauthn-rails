@@ -3,12 +3,12 @@ module Webauthn
     class SessionsController < ApplicationController
       include Authentication
 
-      before_action :enforce_no_current_user, only: %i[new create callback]
+      before_action :enforce_no_current_user, only: %i[new get_options create]
 
       def new
       end
 
-      def create
+      def get_options
         user = User.find_by(username: session_params[:username])
 
         if user
@@ -19,18 +19,14 @@ module Webauthn
 
           session[:current_authentication] = { challenge: get_options.challenge, username: session_params[:username] }
 
-          respond_to do |format|
-            format.turbo_stream { render json: get_options }
-          end
+          render json: get_options
         else
-          respond_to do |format|
-            format.turbo_stream { render json: { errors: [ "Username doesn't exist" ] }, status: :unprocessable_entity }
-          end
+          render json: { errors: [ "Username doesn't exist" ] }, status: :unprocessable_entity
         end
       end
 
-      def callback
-        webauthn_credential = WebAuthn::Credential.from_get(params)
+      def create
+        webauthn_credential = WebAuthn::Credential.from_get(JSON.parse(session_params[:public_key_credential]))
 
         user = User.find_by(username: session[:current_authentication][:username] || session[:current_authentication]["username"])
         raise "user #{session[:current_authentication][:username]} never initiated sign up" unless user
@@ -48,7 +44,7 @@ module Webauthn
           stored_credential.update!(sign_count: webauthn_credential.sign_count)
           sign_in(user)
 
-          render json: { status: "ok" }, status: :ok
+          redirect_to main_app.root_path, notice: "Credential authenticated successfully"
         rescue WebAuthn::Error => e
           render json: "Verification failed: #{e.message}", status: :unprocessable_entity
         ensure
@@ -65,7 +61,7 @@ module Webauthn
       private
 
       def session_params
-        params.require(:session).permit(:username)
+        params.require(:session).permit(:username, :public_key_credential)
       end
     end
   end
