@@ -20,7 +20,6 @@ module Webauthn
 
       def copy_views
         say "Add Webauthn views"
-        empty_directory "app/views"
         template "app/views/credentials/new.html.erb.tt"
         template "app/views/registrations/new.html.erb.tt"
         template "app/views/sessions/new.html.erb.tt"
