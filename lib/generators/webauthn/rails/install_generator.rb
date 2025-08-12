@@ -13,7 +13,6 @@ module Webauthn
       def copy_stimulus_controllers
         if using_importmap? || using_bun? || has_package_json?
           say "Add Webauthn Stimulus controllers"
-          empty_directory "app/javascript/controllers"
           template "app/javascript/controllers/webauthn_credentials_controller.js"
 
           if using_bun? || has_package_json?
