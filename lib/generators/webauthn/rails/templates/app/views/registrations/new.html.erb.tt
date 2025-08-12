@@ -5,20 +5,22 @@
   url: main_app.registration_path,
   id: "new-registration",
   data: {
-    controller: "webauthn--rails--new-registration",
-    action: "turbo:before-fetch-response->webauthn--rails--new-registration#create",
+    controller: "webauthn-credentials",
+    action: "webauthn-credentials#create:prevent",
+    "webauthn-credentials-options-url-value": main_app.create_options_registration_path,
   }) do |form| %>
-  <%%= render "shared/error_messages" %>
 
-  <div class="field">
-    <p><%%= form.label :username %></p>
-    <p><%%= form.text_field :username, autofocus: true, autocapitalize: "none", required: true %></p>
-  </div>
+    <div class="field">
+      <p><%%= form.label :username %></p>
+      <p><%%= form.text_field :username, autofocus: true, autocapitalize: "none", required: true %></p>
+    </div>
 
-  <div class="field">
+    <div class="field">
     <p><%%= form.label :nickname, 'Security Key nickname' %></p>
     <p><%%= form.text_field :nickname, required: true %></p>
   </div>
+
+  <%%= form.hidden_field :public_key_credential, data: { "webauthn-credentials-target": "credentialHiddenInput" } %>
 
   <div class="actions">
     <%%= form.submit "Sign up" %>
