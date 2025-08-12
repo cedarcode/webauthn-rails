@@ -1,6 +1,4 @@
 class WebauthnCredentialsController < ApplicationController
-  include Authentication
-
   before_action :enforce_current_user, only: %i[create_options create destroy]
 
   def create_options

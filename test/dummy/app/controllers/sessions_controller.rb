@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  include Authentication
+
   before_action :enforce_no_current_user, only: %i[new get_options create]
 
   def new

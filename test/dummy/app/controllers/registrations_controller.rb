@@ -1,4 +1,6 @@
 class RegistrationsController < ApplicationController
+  include Authentication
+
   before_action :enforce_no_current_user, only: %i[new create_options create]
 
   def new
