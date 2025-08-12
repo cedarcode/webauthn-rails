@@ -27,7 +27,6 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "app/views/webauthn_credentials/new.html.erb"
     assert_file "app/views/registrations/new.html.erb"
     assert_file "app/views/sessions/new.html.erb"
-    assert_file "app/views/shared/_error_messages.html.erb"
 
     assert_file "config/initializers/webauthn.rb", /WebAuthn.configure/
 
@@ -55,7 +54,6 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "app/views/webauthn_credentials/new.html.erb"
     assert_file "app/views/registrations/new.html.erb"
     assert_file "app/views/sessions/new.html.erb"
-    assert_file "app/views/shared/_error_messages.html.erb"
 
     assert_file "config/initializers/webauthn.rb", /WebAuthn.configure/
 

@@ -23,7 +23,6 @@ module Webauthn
         template "app/views/webauthn_credentials/new.html.erb.tt"
         template "app/views/registrations/new.html.erb.tt"
         template "app/views/sessions/new.html.erb.tt"
-        template "app/views/shared/_error_messages.html.erb"
       end
 
       def copy_stimulus_controllers
