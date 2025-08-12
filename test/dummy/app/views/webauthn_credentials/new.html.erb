@@ -6,10 +6,10 @@
     action: "webauthn-credentials#create:prevent",
     "webauthn-credentials-options-url-value": main_app.create_options_webauthn_credentials_path,
   }) do |form| %>
-    <div class="field">
-      <%= form.label :nickname, 'Security Key nickname' %>
-      <%= form.text_field :nickname, required: true %>
-    </div>
+  <div class="field">
+    <%= form.label :nickname, 'Security Key nickname' %>
+    <%= form.text_field :nickname, required: true %>
+  </div>
 
   <%= form.hidden_field :public_key_credential, data: { "webauthn-credentials-target": "credentialHiddenInput" } %>
 

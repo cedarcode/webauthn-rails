@@ -10,8 +10,8 @@
     "webauthn-credentials-options-url-value": main_app.get_options_session_path,
   }) do |form| %>
 
-    <div class="field">
-      <p><%%= form.label :username %></p>
+  <div class="field">
+    <p><%%= form.label :username %></p>
     <p><%%= form.text_field :username, autofocus: true, autocapitalize: "none", required: true %></p>
   </div>
 
