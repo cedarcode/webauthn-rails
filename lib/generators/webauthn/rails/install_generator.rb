@@ -12,7 +12,7 @@ module Webauthn
 
       def copy_controllers_and_concerns
         say "Add Webauthn controllers"
-        template "app/controllers/credentials_controller.rb"
+        template "app/controllers/webauthn_credentials_controller.rb"
         template "app/controllers/registrations_controller.rb"
         template "app/controllers/sessions_controller.rb"
         template "app/controllers/concerns/authentication.rb"
@@ -20,7 +20,7 @@ module Webauthn
 
       def copy_views
         say "Add Webauthn views"
-        template "app/views/credentials/new.html.erb.tt"
+        template "app/views/webauthn_credentials/new.html.erb.tt"
         template "app/views/registrations/new.html.erb.tt"
         template "app/views/sessions/new.html.erb.tt"
         template "app/views/shared/_error_messages.html.erb"
@@ -76,7 +76,7 @@ module Webauthn
               post :callback
             end
 
-            resources :credentials, only: [ :new, :create, :destroy ] do
+            resources :webauthn_credentials, only: [ :new, :create, :destroy ] do
               post :callback, on: :collection
             end
 

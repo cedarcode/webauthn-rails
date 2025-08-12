@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     post :get_options, on: :collection
   end
 
-  resources :credentials, only: [ :new, :create, :destroy ] do
+  resources :webauthn_credentials, only: [ :new, :create, :destroy ] do
     post :create_options, on: :collection
   end
 end

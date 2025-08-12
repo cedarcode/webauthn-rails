@@ -1,5 +1,5 @@
 <div data-controller="webauthn--rails--add-credential">
-  <%%= form_with scope: :credential, url: main_app.credentials_path, data: { action: "turbo:before-fetch-response->webauthn--rails--add-credential#create" } do |form| %>
+  <%%= form_with scope: :credential, url: main_app.webauthn_credentials_path, data: { action: "turbo:before-fetch-response->webauthn--rails--add-credential#create" } do |form| %>
     <%%= render "shared/error_messages" %>
 
     <div class="field">

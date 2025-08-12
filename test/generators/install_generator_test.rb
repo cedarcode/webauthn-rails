@@ -21,10 +21,10 @@ class InstallGeneratorTest < Rails::Generators::TestCase
 
     assert_file "app/controllers/registrations_controller.rb"
     assert_file "app/controllers/sessions_controller.rb"
-    assert_file "app/controllers/credentials_controller.rb"
+    assert_file "app/controllers/webauthn_credentials_controller.rb"
     assert_file "app/controllers/concerns/authentication.rb"
 
-    assert_file "app/views/credentials/new.html.erb"
+    assert_file "app/views/webauthn_credentials/new.html.erb"
     assert_file "app/views/registrations/new.html.erb"
     assert_file "app/views/sessions/new.html.erb"
     assert_file "app/views/shared/_error_messages.html.erb"
@@ -37,7 +37,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_migration "db/migrate/create_webauthn_credentials.rb", /create_table :webauthn_credentials/
 
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
-    assert_file "config/routes.rb", /resources :credentials, only: \[\s*:new, :create, :destroy\s*\] do/
+    assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
   end
 
   test "assert all files are properly created when user model already exists and routes file does not exist" do
@@ -49,10 +49,10 @@ class InstallGeneratorTest < Rails::Generators::TestCase
 
     assert_file "app/controllers/registrations_controller.rb"
     assert_file "app/controllers/sessions_controller.rb"
-    assert_file "app/controllers/credentials_controller.rb"
+    assert_file "app/controllers/webauthn_credentials_controller.rb"
     assert_file "app/controllers/concerns/authentication.rb"
 
-    assert_file "app/views/credentials/new.html.erb"
+    assert_file "app/views/webauthn_credentials/new.html.erb"
     assert_file "app/views/registrations/new.html.erb"
     assert_file "app/views/sessions/new.html.erb"
     assert_file "app/views/shared/_error_messages.html.erb"
@@ -65,7 +65,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_migration "db/migrate/create_webauthn_credentials.rb", /create_table :webauthn_credentials/
 
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
-    assert_file "config/routes.rb", /resources :credentials, only: \[\s*:new, :create, :destroy\s*\] do/
+    assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
   end
 
   private

@@ -1,4 +1,4 @@
-class CredentialsController < ApplicationController
+class WebauthnCredentialsController < ApplicationController
   include Authentication
 
   before_action :enforce_current_user, only: %i[create_options create destroy]
@@ -38,7 +38,7 @@ class CredentialsController < ApplicationController
       )
         redirect_to main_app.root_path, notice: "Security Key registered successfully"
       else
-        redirect_to main_app.new_credential_path, alert: "Error registering credential"
+        redirect_to main_app.new_webauthn_credential_path, alert: "Error registering credential"
       end
     rescue WebAuthn::Error => e
       render json: "Verification failed: #{e.message}", status: :unprocessable_entity
