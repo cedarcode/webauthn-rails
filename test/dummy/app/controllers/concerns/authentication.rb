@@ -8,12 +8,6 @@ module Authentication
     end
   end
 
-  ActiveSupport.on_load(:action_controller) do
-    helper_method :current_user
-  end
-
-  private
-
   def enforce_no_current_user
     if current_user.present?
       redirect_to main_app.root_path

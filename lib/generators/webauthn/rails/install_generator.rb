@@ -18,6 +18,25 @@ module Webauthn
         template "app/controllers/concerns/authentication.rb"
       end
 
+      def copy_helpers
+        say "Add Webauthn helpers"
+        if File.exist?(File.join(destination_root, "app/helpers/application_helper.rb"))
+          inject_into_file "app/helpers/application_helper.rb", after: "module ApplicationHelper\n" do
+            <<-RUBY.strip_heredoc.indent(2)
+            def current_user
+              @current_user ||=
+              if session[:user_id]
+                User.find_by(id: session[:user_id])
+              end
+            end
+            RUBY
+          end
+        else
+          template "app/helpers/application_helper.rb"
+        end
+      end
+
+
       def copy_views
         say "Add Webauthn views"
         template "app/views/webauthn_credentials/new.html.erb.tt"
