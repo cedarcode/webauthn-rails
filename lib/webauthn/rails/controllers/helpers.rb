@@ -13,13 +13,13 @@ module Webauthn
 
         def enforce_no_current_user
           if current_user.present?
-            redirect_to main_app.root_path
+            redirect_to root_path
           end
         end
 
         def enforce_current_user
           if current_user.blank?
-            redirect_to main_app.new_session_path
+            redirect_to new_session_path
           end
         end
 

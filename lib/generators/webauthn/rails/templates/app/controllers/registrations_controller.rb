@@ -47,9 +47,9 @@ class RegistrationsController < ApplicationController
       if user.save
         sign_in(user)
 
-        redirect_to main_app.root_path, notice: "Security Key registered successfully"
+        redirect_to root_path, notice: "Security Key registered successfully"
       else
-        redirect_to main_app.new_registration_path, alert: "Error registering credential"
+        redirect_to new_registration_path, alert: "Error registering credential"
       end
     rescue WebAuthn::Error => e
       render json: "Verification failed: #{e.message}", status: :unprocessable_entity

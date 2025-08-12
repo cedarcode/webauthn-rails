@@ -42,7 +42,7 @@ class SessionsController < ApplicationController
       stored_credential.update!(sign_count: webauthn_credential.sign_count)
       sign_in(user)
 
-      redirect_to main_app.root_path, notice: "Credential authenticated successfully"
+      redirect_to root_path, notice: "Credential authenticated successfully"
     rescue WebAuthn::Error => e
       render json: "Verification failed: #{e.message}", status: :unprocessable_entity
     ensure
@@ -53,7 +53,7 @@ class SessionsController < ApplicationController
   def destroy
     sign_out
 
-    redirect_to main_app.root_path
+    redirect_to root_path
   end
 
   private

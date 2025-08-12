@@ -1,10 +1,10 @@
 <%= form_with(
   scope: :credential,
-  url: main_app.webauthn_credentials_path,
+  url: webauthn_credentials_path,
   data: {
     controller: "webauthn-credentials",
     action: "webauthn-credentials#create:prevent",
-    "webauthn-credentials-options-url-value": main_app.create_options_webauthn_credentials_path,
+    "webauthn-credentials-options-url-value": create_options_webauthn_credentials_path,
   }) do |form| %>
   <div class="field">
     <%= form.label :nickname, 'Security Key nickname' %>

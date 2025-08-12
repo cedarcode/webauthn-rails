@@ -34,9 +34,9 @@ class WebauthnCredentialsController < ApplicationController
         public_key: webauthn_credential.public_key,
         sign_count: webauthn_credential.sign_count
       )
-        redirect_to main_app.root_path, notice: "Security Key registered successfully"
+        redirect_to root_path, notice: "Security Key registered successfully"
       else
-        redirect_to main_app.new_webauthn_credential_path, alert: "Error registering credential"
+        redirect_to new_webauthn_credential_path, alert: "Error registering credential"
       end
     rescue WebAuthn::Error => e
       render json: "Verification failed: #{e.message}", status: :unprocessable_entity
@@ -50,7 +50,7 @@ class WebauthnCredentialsController < ApplicationController
       current_user.webauthn_credentials.destroy(params[:id])
     end
 
-    redirect_to main_app.root_path
+    redirect_to root_path
   end
 
   private
