@@ -10,8 +10,6 @@ gem "puma"
 
 gem "sqlite3", "~> 2.7"
 
-gem "sprockets-rails"
-
 gem "importmap-rails"
 
 gem "hotwire-rails"
