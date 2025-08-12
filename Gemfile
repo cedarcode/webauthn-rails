@@ -10,6 +10,8 @@ gem "puma"
 
 gem "sqlite3", "~> 2.7"
 
+gem "propshaft", "~> 1.2"
+
 gem "importmap-rails"
 
 gem "hotwire-rails"
