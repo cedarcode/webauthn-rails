@@ -10,11 +10,10 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     prepare_destination
     add_config_folder
     add_importmap
+    add_routes
   end
 
-  test "assert all files are properly created when user model does not exist and routes file does exist" do
-    add_routes
-
+  test "assert all files are properly created when user model does not exist" do
     run_generator
 
     assert_file "app/javascript/controllers/webauthn_credentials_controller.js"
@@ -39,7 +38,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
   end
 
-  test "assert all files are properly created when user model already exists and routes file does not exist" do
+  test "assert all files are properly created when user model already exists" do
     add_user_model
 
     run_generator

@@ -64,25 +64,20 @@ module Webauthn
           migration_template "db/migrate/create_users.rb", "db/migrate/create_users.rb"
         end
 
-        if File.exist?(File.join(destination_root, "config/routes.rb"))
-          inject_into_file "config/routes.rb", after: "Rails.application.routes.draw do\n" do
-            <<-RUBY.strip_heredoc.indent(2)
-            resource :registration, only: [ :new, :create ] do
-              post :callback
-            end
-
-            resource :session, only: [ :new, :create, :destroy ] do
-              post :callback
-            end
-
-            resources :webauthn_credentials, only: [ :new, :create, :destroy ] do
-              post :callback, on: :collection
-            end
-
-            RUBY
+        inject_into_file "config/routes.rb", after: "Rails.application.routes.draw do\n" do
+          <<-RUBY.strip_heredoc.indent(2)
+          resource :registration, only: [ :new, :create ] do
+            post :create_options, on: :collection
           end
-        else
-          template "config/routes.rb"
+
+          resource :session, only: [ :new, :create, :destroy ] do
+            post :get_options, on: :collection
+          end
+
+          resources :webauthn_credentials, only: [ :new, :create, :destroy ] do
+            post :create_options, on: :collection
+          end
+          RUBY
         end
 
         template "app/models/webauthn_credential.rb"
