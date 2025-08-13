@@ -18,6 +18,10 @@ module Webauthn
         template "app/controllers/concerns/authentication.rb"
       end
 
+      def configure_application_controller
+        inject_into_class "app/controllers/application_controller.rb", "ApplicationController", "  include Authentication\n"
+      end
+
       def copy_views
         say "Add Webauthn views"
         template "app/views/webauthn_credentials/new.html.erb.tt"
