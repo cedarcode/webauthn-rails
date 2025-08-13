@@ -11,6 +11,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     add_config_folder
     add_importmap
     add_routes
+    add_application_controller
   end
 
   test "assert all files are properly created when user model does not exist" do
@@ -22,6 +23,8 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "app/controllers/sessions_controller.rb"
     assert_file "app/controllers/webauthn_credentials_controller.rb"
     assert_file "app/controllers/concerns/authentication.rb"
+
+    assert_file "app/controllers/application_controller.rb", /include Authentication/
 
     assert_file "app/views/webauthn_credentials/new.html.erb"
     assert_file "app/views/registrations/new.html.erb"
@@ -49,6 +52,8 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "app/controllers/sessions_controller.rb"
     assert_file "app/controllers/webauthn_credentials_controller.rb"
     assert_file "app/controllers/concerns/authentication.rb"
+
+    assert_file "app/controllers/application_controller.rb", /include Authentication/
 
     assert_file "app/views/webauthn_credentials/new.html.erb"
     assert_file "app/views/registrations/new.html.erb"
@@ -87,6 +92,15 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     FileUtils.mkdir_p(File.join(app_folder, "models"))
     File.write(File.join(destination_root, "app", "models", "user.rb"), <<~CONTENT)
       class User < ApplicationRecord
+      end
+    CONTENT
+  end
+
+  def add_application_controller
+    app_folder = FileUtils.mkdir_p(File.join(destination_root, "app"))
+    FileUtils.mkdir_p(File.join(app_folder, "controllers"))
+    File.write(File.join(destination_root, "app", "controllers", "application_controller.rb"), <<~CONTENT)
+      class ApplicationController < ActionController::Base
       end
     CONTENT
   end
