@@ -10,7 +10,7 @@ class SignInTest < ApplicationSystemTestCase
   end
 
   test "register and then sign in" do
-    visit webauthn_rails.new_registration_path
+    visit new_registration_path
 
     fill_in "registration_username", with: "User1"
     fill_in "Security Key nickname", with: "USB key"

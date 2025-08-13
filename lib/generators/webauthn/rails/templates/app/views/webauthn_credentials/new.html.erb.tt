@@ -1,0 +1,19 @@
+<%%= form_with(
+  scope: :credential,
+  url: webauthn_credentials_path,
+  data: {
+    controller: "webauthn-credentials",
+    action: "webauthn-credentials#create:prevent",
+    "webauthn-credentials-options-url-value": create_options_webauthn_credentials_path,
+  }) do |form| %>
+  <div class="field">
+    <%%= form.label :nickname, 'Security Key nickname' %>
+    <%%= form.text_field :nickname, required: true %>
+  </div>
+
+  <%%= form.hidden_field :public_key_credential, data: { "webauthn-credentials-target": "credentialHiddenInput" } %>
+
+  <div>
+    <%%= form.submit "Add Security Key" %>
+  </div>
+<%% end %>

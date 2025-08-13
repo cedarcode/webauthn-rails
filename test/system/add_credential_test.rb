@@ -30,7 +30,7 @@ class AddCredentialTest < ApplicationSystemTestCase
   def sign_up(username:, credential_nickname: "USB key")
     authenticator = add_virtual_authenticator
 
-    visit webauthn_rails.new_registration_path
+    visit new_registration_path
 
     fill_in "registration_username", with: username
     fill_in "Security Key nickname", with: credential_nickname

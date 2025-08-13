@@ -2,12 +2,12 @@
 
 <%= form_with(
   scope: :session,
-  url: webauthn_rails.session_path,
+  url: session_path,
   id: "new-session",
   data: {
     controller: "webauthn-credentials",
     action: "webauthn-credentials#get:prevent",
-    "webauthn-credentials-options-url-value": webauthn_rails.get_options_session_path,
+    "webauthn-credentials-options-url-value": get_options_session_path,
   }) do |form| %>
 
   <div class="field">
@@ -22,4 +22,4 @@
   </div>
 <% end %>
 
-<%= link_to "Sign up", webauthn_rails.new_registration_path %>
+<%= link_to "Sign up", new_registration_path %>
