@@ -30,7 +30,7 @@ module Authentication
     end
   end
 
-  ActiveSupport.on_load(:action_controller) do
+  included do
     helper_method :current_user
   end
 end
