@@ -30,6 +30,8 @@ module Webauthn
       end
 
       def copy_stimulus_controllers
+        add_stimulus_rails_gem
+
         if using_importmap? || using_bun? || has_package_json?
           say "Add Webauthn Stimulus controllers"
           template "app/javascript/controllers/webauthn_credentials_controller.js"
@@ -85,6 +87,20 @@ module Webauthn
 
         template "app/models/webauthn_credential.rb"
         migration_template "db/migrate/create_webauthn_credentials.rb", "db/migrate/create_webauthn_credentials.rb"
+      end
+
+      def add_stimulus_rails_gem
+        return if File.read("Gemfile").match?(/^\s*gem ["']stimulus-rails["']/)
+
+        say "Add stimulus-rails gem to Gemfile"
+
+        if File.read("Gemfile").match?(/^\s*#\s*gem ["']stimulus-rails["']/)
+          uncomment_lines "Gemfile", /gem ["']stimulus-rails["']/
+        else
+          gem "stimulus-rails"
+        end
+
+        Bundler.with_original_env { run "bundle install --quiet"}
       end
 
       private
