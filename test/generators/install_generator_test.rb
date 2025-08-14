@@ -77,17 +77,8 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "Gemfile", /gem ["']stimulus-rails["']/
   end
 
-  test "uncomments stimulus-rails gem when commented in Gemfile" do
-    add_stimulus_rails_gem(commented: true)
-
-    run_generator
-
-    assert_file "Gemfile", /gem ["']stimulus-rails["']/
-    assert_no_match /#\s*gem ["']stimulus-rails["']/, File.read(File.join(destination_root, "Gemfile"))
-  end
-
   test "does not modify Gemfile when stimulus-rails already present" do
-    add_stimulus_rails_gem(commented: false)
+    add_stimulus_rails_gem
 
     original_content = File.read(File.join(destination_root, "Gemfile"))
 
@@ -142,11 +133,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     File.write(File.join(destination_root, "Gemfile"), content)
   end
 
-  def add_stimulus_rails_gem(commented: true)
-    if commented
-      File.open(File.join(destination_root, "Gemfile"), "a") { |f| f.puts "# gem \"stimulus-rails\"" }
-    else
-      File.open(File.join(destination_root, "Gemfile"), "a") { |f| f.puts "gem \"stimulus-rails\"" }
-    end
+  def add_stimulus_rails_gem
+    File.open(File.join(destination_root, "Gemfile"), "a") { |f| f.puts "gem \"stimulus-rails\"" }
   end
 end

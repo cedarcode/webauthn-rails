@@ -35,14 +35,7 @@ module Webauthn
         return if File.read(gemfile_path).match?(/^\s*gem ["']stimulus-rails["']/)
 
         say "Add stimulus-rails gem to Gemfile"
-
-        if File.read(gemfile_path).match?(/^\s*#\s*gem ["']stimulus-rails["']/)
-          uncomment_lines gemfile_path, /gem ["']stimulus-rails["']/
-        else
-          gem "stimulus-rails"
-        end
-
-        Bundler.with_original_env { run "bundle install --quiet" }
+        gem "stimulus-rails"
       end
 
       def copy_stimulus_controllers
