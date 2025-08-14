@@ -47,6 +47,15 @@ module Webauthn
         template "config/initializers/webauthn.rb"
       end
 
+      def copy_tests
+        template "test/controllers/registrations_controller_test.rb", "test/controllers/registrations_controller_test.rb"
+        template "test/controllers/sessions_controller_test.rb", "test/controllers/sessions_controller_test.rb"
+
+        template "test/system/add_credential_test.rb", "test/system/add_credential_test.rb"
+        template "test/system/registration_test.rb", "test/system/registration_test.rb"
+        template "test/system/sign_in_test.rb", "test/system/sign_in_test.rb"
+      end
+
       def inject_webauthn_content
         if File.exist?(File.join(destination_root, "app/models/user.rb"))
           inject_into_class "app/models/user.rb", "User" do
