@@ -90,17 +90,24 @@ module Webauthn
       end
 
       def add_stimulus_rails_gem
-        return if File.read("Gemfile").match?(/^\s*gem ["']stimulus-rails["']/)
+        gemfile_path = File.join(destination_root, "Gemfile")
+
+        unless File.exist?(gemfile_path)
+          say "No Gemfile found, skipping stimulus-rails gem addition"
+          return
+        end
+
+        return if File.read(gemfile_path).match?(/^\s*gem ["']stimulus-rails["']/)
 
         say "Add stimulus-rails gem to Gemfile"
 
-        if File.read("Gemfile").match?(/^\s*#\s*gem ["']stimulus-rails["']/)
-          uncomment_lines "Gemfile", /gem ["']stimulus-rails["']/
+        if File.read(gemfile_path).match?(/^\s*#\s*gem ["']stimulus-rails["']/)
+          uncomment_lines gemfile_path, /gem ["']stimulus-rails["']/
         else
           gem "stimulus-rails"
         end
 
-        Bundler.with_original_env { run "bundle install --quiet"}
+        Bundler.with_original_env { run "bundle install --quiet" }
       end
 
       private

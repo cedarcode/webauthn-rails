@@ -70,6 +70,33 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
   end
 
+  test "adds stimulus-rails gem when not present in Gemfile" do
+    generate_gemfile_content(stimulus_status: :none)
+
+    run_generator
+
+    assert_file "Gemfile", /gem ["']stimulus-rails["']/
+  end
+
+  test "uncomments stimulus-rails gem when commented in Gemfile" do
+    generate_gemfile_content(stimulus_status: :commented)
+
+    run_generator
+
+    assert_file "Gemfile", /gem ["']stimulus-rails["']/
+    assert_no_match /#\s*gem ["']stimulus-rails["']/, File.read(File.join(destination_root, "Gemfile"))
+  end
+
+  test "does not modify Gemfile when stimulus-rails already present" do
+    generate_gemfile_content(stimulus_status: :enabled)
+
+    original_content = File.read(File.join(destination_root, "Gemfile"))
+
+    run_generator
+
+    assert_equal original_content, File.read(File.join(destination_root, "Gemfile"))
+  end
+
   private
 
   def add_config_folder
@@ -103,5 +130,23 @@ class InstallGeneratorTest < Rails::Generators::TestCase
       class ApplicationController < ActionController::Base
       end
     CONTENT
+  end
+
+  def generate_gemfile_content(stimulus_status: :none)
+    content = <<~CONTENT
+      source "https://rubygems.org"
+
+      gem "rails", "~> 7.0.0"
+      gem "sqlite3"
+    CONTENT
+
+    case stimulus_status
+    when :enabled
+      content += "  gem \"stimulus-rails\"\n"
+    when :commented
+      content += "  # gem \"stimulus-rails\"\n"
+    end
+
+    File.write(File.join(destination_root, "Gemfile"), content)
   end
 end
