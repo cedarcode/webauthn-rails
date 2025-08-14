@@ -12,6 +12,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     add_importmap
     add_routes
     add_application_controller
+    add_basic_gemfile
   end
 
   test "assert all files are properly created when user model does not exist" do
@@ -71,15 +72,13 @@ class InstallGeneratorTest < Rails::Generators::TestCase
   end
 
   test "adds stimulus-rails gem when not present in Gemfile" do
-    generate_gemfile_content(stimulus_status: :none)
-
     run_generator
 
     assert_file "Gemfile", /gem ["']stimulus-rails["']/
   end
 
   test "uncomments stimulus-rails gem when commented in Gemfile" do
-    generate_gemfile_content(stimulus_status: :commented)
+    add_stimulus_rails_gem(commented: true)
 
     run_generator
 
@@ -88,7 +87,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
   end
 
   test "does not modify Gemfile when stimulus-rails already present" do
-    generate_gemfile_content(stimulus_status: :enabled)
+    add_stimulus_rails_gem(commented: false)
 
     original_content = File.read(File.join(destination_root, "Gemfile"))
 
@@ -132,7 +131,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     CONTENT
   end
 
-  def generate_gemfile_content(stimulus_status: :none)
+  def add_basic_gemfile
     content = <<~CONTENT
       source "https://rubygems.org"
 
@@ -140,13 +139,14 @@ class InstallGeneratorTest < Rails::Generators::TestCase
       gem "sqlite3"
     CONTENT
 
-    case stimulus_status
-    when :enabled
-      content += "  gem \"stimulus-rails\"\n"
-    when :commented
-      content += "  # gem \"stimulus-rails\"\n"
-    end
-
     File.write(File.join(destination_root, "Gemfile"), content)
+  end
+
+  def add_stimulus_rails_gem(commented: true)
+    if commented
+      File.open(File.join(destination_root, "Gemfile"), "a") { |f| f.puts "# gem \"stimulus-rails\"" }
+    else
+      File.open(File.join(destination_root, "Gemfile"), "a") { |f| f.puts "gem \"stimulus-rails\"" }
+    end
   end
 end
