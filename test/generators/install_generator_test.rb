@@ -15,7 +15,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
   end
 
   test "assert all files are properly created when user model does not exist" do
-    run_generator
+    run_generator [ "--test-framework=test_unit" ]
 
     assert_file "app/controllers/registrations_controller.rb"
     assert_file "app/controllers/sessions_controller.rb"
@@ -50,7 +50,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
   test "assert all files are properly created when user model already exists" do
     add_user_model
 
-    run_generator
+    run_generator [ "--test-framework=test_unit" ]
 
     assert_file "app/controllers/registrations_controller.rb"
     assert_file "app/controllers/sessions_controller.rb"
