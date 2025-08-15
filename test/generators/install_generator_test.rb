@@ -12,7 +12,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     add_importmap
     add_routes
     add_application_controller
-    add_basic_gemfile
+    add_gemfile
   end
 
   test "assert all files are properly created when user model does not exist" do
@@ -122,15 +122,8 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     CONTENT
   end
 
-  def add_basic_gemfile
-    content = <<~CONTENT
-      source "https://rubygems.org"
-
-      gem "rails", "~> 7.0.0"
-      gem "sqlite3"
-    CONTENT
-
-    File.write(File.join(destination_root, "Gemfile"), content)
+  def add_gemfile
+    File.write(File.join(destination_root, "Gemfile"), "")
   end
 
   def add_stimulus_rails_gem
