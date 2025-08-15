@@ -1,0 +1,20 @@
+require "rails/generators/test_unit"
+
+module TestUnit
+  module Generators
+    class InstallGenerator < Rails::Generators::Base
+      source_root File.expand_path("../templates", __FILE__)
+
+      def create_controller_test_files
+        template "test/controllers/registrations_controller_test.rb"
+        template "test/controllers/sessions_controller_test.rb"
+      end
+
+      def create_system_test_files
+        template "test/system/add_credential_test.rb"
+        template "test/system/registration_test.rb"
+        template "test/system/sign_in_test.rb"
+      end
+    end
+  end
+end
