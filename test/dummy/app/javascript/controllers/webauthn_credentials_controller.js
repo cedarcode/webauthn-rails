@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
+import { create as createWebAuthnJSON, get as getWebAuthnJSON } from "@github/webauthn-json";
 
 export default class extends Controller {
   static targets = ["credentialHiddenInput"];
@@ -16,8 +17,7 @@ export default class extends Controller {
 
       const optionsJson = await optionsResponse.json();
       if (optionsResponse.ok && optionsJson.user) {
-        const credentialOptions = PublicKeyCredential.parseCreationOptionsFromJSON(optionsJson);
-        const credential = await navigator.credentials.create({ publicKey: credentialOptions });
+        const credential = await createWebAuthnJSON({ publicKey: optionsJson });
 
         this.credentialHiddenInputTarget.value = JSON.stringify(credential);
 
@@ -43,8 +43,7 @@ export default class extends Controller {
       const optionsJson = await optionsResponse.json();
 
       if (optionsResponse.ok) {
-        const credentialOptions = PublicKeyCredential.parseRequestOptionsFromJSON(optionsJson);
-        const credential = await navigator.credentials.get({ publicKey: credentialOptions });
+        const credential = await getWebAuthnJSON({ publicKey: optionsJson });
 
         this.credentialHiddenInputTarget.value = JSON.stringify(credential);
 
