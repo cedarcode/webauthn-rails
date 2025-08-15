@@ -13,6 +13,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     add_routes
     add_application_controller
     add_gemfile
+    add_gemfile_lock
   end
 
   test "assert all files are properly created when user model does not exist" do
@@ -75,6 +76,8 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     run_generator
 
     assert_file "Gemfile", /gem ["']stimulus-rails["']/
+    assert_file "Gemfile.lock", /stimulus-rails/
+    assert_file "Gemfile.lock", /railties/
   end
 
   test "does not modify Gemfile when stimulus-rails already present" do
@@ -124,6 +127,10 @@ class InstallGeneratorTest < Rails::Generators::TestCase
 
   def add_gemfile
     File.write(File.join(destination_root, "Gemfile"), "")
+  end
+
+  def add_gemfile_lock
+    File.write(File.join(destination_root, "Gemfile.lock"), "")
   end
 
   def add_stimulus_rails_gem
