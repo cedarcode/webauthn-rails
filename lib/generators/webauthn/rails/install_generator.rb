@@ -43,6 +43,21 @@ module Webauthn
         end
       end
 
+      def inject_js_packages
+        if using_importmap?
+          say %(Appending: pin "@github/webauthn-json", to: "https://ga.jspm.io/npm:@github/webauthn-json@2.1.1/dist/esm/webauthn-json.js")
+          append_to_file "config/importmap.rb", %(pin "@github/webauthn-json", to: "https://ga.jspm.io/npm:@github/webauthn-json@2.1.1/dist/esm/webauthn-json.js"\n)
+        elsif using_bun?
+          say "Adding webauthn-json to your package manager"
+          run "bun add @github/webauthn-json"
+        elsif has_package_json?
+          say "Adding webauthn-json to your package manager"
+          run "yarn add @github/webauthn-json"
+        else
+          puts "You must either be running with node (package.json) or importmap-rails (config/importmap.rb) to use this gem."
+        end
+      end
+
       def copy_initializer_file
         template "config/initializers/webauthn.rb"
       end
