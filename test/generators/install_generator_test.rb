@@ -126,7 +126,9 @@ class InstallGeneratorTest < Rails::Generators::TestCase
   end
 
   def add_gemfile
-    File.write(File.join(destination_root, "Gemfile"), "")
+    File.write(File.join(destination_root, "Gemfile"), <<~CONTENT)
+      source "https://rubygems.org"
+    CONTENT
   end
 
   def add_gemfile_lock
