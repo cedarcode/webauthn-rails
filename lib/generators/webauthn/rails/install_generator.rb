@@ -37,7 +37,7 @@ module Webauthn
         say "Add stimulus-rails gem to Gemfile"
         Bundler.with_unbundled_env do
           inside(destination_root) do
-            run "bundle add stimulus-rails --quiet"
+            run "bundle add stimulus-rails > /dev/null"
           end
         end
       end
