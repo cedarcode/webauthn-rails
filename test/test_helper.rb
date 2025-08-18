@@ -11,12 +11,3 @@ if ActiveSupport::TestCase.respond_to?(:fixture_paths=)
   ActiveSupport::TestCase.file_fixture_path = File.expand_path("fixtures", __dir__) + "/files"
   ActiveSupport::TestCase.fixtures :all
 end
-
-class ActiveSupport::TestCase
-  def add_virtual_authenticator
-    options = ::Selenium::WebDriver::VirtualAuthenticatorOptions.new
-    options.user_verification = true
-    options.user_verified = true
-    page.driver.browser.add_virtual_authenticator(options)
-  end
-end
