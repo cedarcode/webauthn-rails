@@ -45,8 +45,8 @@ module Webauthn
 
       def inject_js_packages
         if using_importmap?
-          say %(Appending: pin "@github/webauthn-json/browser-ponyfill", to: "@github--webauthn-json--browser-ponyfill.js")
-          run %(bin/importmap pin "@github/webauthn-json/browser-ponyfill")
+          say %(Appending: pin "@github/webauthn-json/browser-ponyfill", to: "https://ga.jspm.io/npm:@github/webauthn-json@2.1.1/dist/esm/webauthn-json.browser-ponyfill.js")
+          append_to_file "config/importmap.rb", %(pin "@github/webauthn-json/browser-ponyfill", to: "https://ga.jspm.io/npm:@github/webauthn-json@2.1.1/dist/esm/webauthn-json.browser-ponyfill.js"\n)
         elsif using_bun?
           say "Adding webauthn-json to your package manager"
           run "bun add @github/webauthn-json/browser-ponyfill"
