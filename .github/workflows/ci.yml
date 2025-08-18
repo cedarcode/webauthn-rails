@@ -39,10 +39,10 @@ jobs:
         bundler-cache: true
 
     - name: Run tests
-      run: bin/rails test
+      run: bundle exec rake test
 
-    - name: Run system tests
-      run: bin/rails test:system
+    - name: Run dummy app tests
+      run: bundle exec rake test_dummy
 
     - name: Keep screenshots from failed system tests
       uses: actions/upload-artifact@v4
