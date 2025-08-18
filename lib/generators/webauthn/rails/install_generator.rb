@@ -10,6 +10,9 @@ module Webauthn
 
       desc "Injects webauthn files to your application."
 
+      class_option :api, type: :boolean,
+        desc: "Generate API-only files, with no view templates"
+
       def copy_controllers_and_concerns
         say "Add Webauthn controllers"
         template "app/controllers/webauthn_credentials_controller.rb"
@@ -22,7 +25,9 @@ module Webauthn
         inject_into_class "app/controllers/application_controller.rb", "ApplicationController", "  include Authentication\n"
       end
 
-      hook_for :template_engine
+      hook_for :template_engine do |template_engine|
+        invoke template_engine unless options.api?
+      end
 
       def copy_stimulus_controllers
         if using_importmap? || using_bun? || has_package_json?
