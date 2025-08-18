@@ -22,12 +22,7 @@ module Webauthn
         inject_into_class "app/controllers/application_controller.rb", "ApplicationController", "  include Authentication\n"
       end
 
-      def copy_views
-        say "Add Webauthn views"
-        template "app/views/webauthn_credentials/new.html.erb.tt"
-        template "app/views/registrations/new.html.erb.tt"
-        template "app/views/sessions/new.html.erb.tt"
-      end
+      hook_for :template_engine
 
       def copy_stimulus_controllers
         if using_importmap? || using_bun? || has_package_json?
