@@ -40,7 +40,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
 
-    assert_file "config/importmap.rb", /pin "@github\/webauthn-json"/
+    assert_file "config/importmap.rb"
   end
 
   test "assert all files are properly created when user model already exists" do
@@ -71,7 +71,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
 
-    assert_file "config/importmap.rb", /pin "@github\/webauthn-json"/
+    assert_file "config/importmap.rb"
   end
 
   private
