@@ -11,7 +11,6 @@ module Webauthn
       desc "Injects webauthn files to your application."
 
       def copy_controllers_and_concerns
-        say "Adding Webauthn controllers..."
         template "app/controllers/webauthn_credentials_controller.rb"
         template "app/controllers/registrations_controller.rb"
         template "app/controllers/sessions_controller.rb"
@@ -23,7 +22,6 @@ module Webauthn
       end
 
       def copy_views
-        say "Adding Webauthn views..."
         template "app/views/webauthn_credentials/new.html.erb.tt"
         template "app/views/registrations/new.html.erb.tt"
         template "app/views/sessions/new.html.erb.tt"
@@ -31,11 +29,9 @@ module Webauthn
 
       def copy_stimulus_controllers
         if using_importmap? || using_bun? || has_package_json?
-          say "Adding Webauthn Stimulus controllers..."
           template "app/javascript/controllers/webauthn_credentials_controller.js"
 
           if using_bun? || has_package_json?
-            say "Updating Stimulus manifest..."
             run "bin/rails stimulus:manifest:update"
           end
         else
