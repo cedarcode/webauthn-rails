@@ -83,6 +83,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
         post(
           registration_url,
           params: { registration: { nickname: "USB Key", public_key_credential: public_key_credential.to_json } },
+          headers: { "User-Agent" => "Test Browser", "REMOTE_ADDR" => "127.0.0.1" }
         )
       end
     end

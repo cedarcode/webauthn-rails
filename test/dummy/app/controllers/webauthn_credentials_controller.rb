@@ -1,6 +1,4 @@
 class WebauthnCredentialsController < ApplicationController
-  before_action :enforce_current_user, only: %i[create_options create destroy]
-
   def create_options
     create_options = WebAuthn::Credential.options_for_create(
       user: {
