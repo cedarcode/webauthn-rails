@@ -1,5 +1,5 @@
 require "webauthn/rails/version"
-require "webauthn/rails/engine"
+require "webauthn"
 
 module Webauthn
   module Rails
