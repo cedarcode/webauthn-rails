@@ -1,5 +1,5 @@
 class RegistrationsController < ApplicationController
-  before_action :enforce_no_current_user, only: %i[new create_options create]
+  allow_unauthenticated_access only: %i[new create_options create]
 
   def new
   end
@@ -43,9 +43,9 @@ class RegistrationsController < ApplicationController
       )
 
       if user.save
-        sign_in(user)
+        start_new_session_for(user)
 
-        redirect_to root_path, notice: "Security Key registered successfully"
+        redirect_to after_authentication_url, notice: "Security Key registered successfully"
       else
         redirect_to new_registration_path, alert: "Error registering credential"
       end

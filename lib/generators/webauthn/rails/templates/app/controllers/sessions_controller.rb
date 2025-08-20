@@ -1,5 +1,5 @@
 class SessionsController < ApplicationController
-  before_action :enforce_no_current_user, only: %i[new get_options create]
+  allow_unauthenticated_access only: %i[new get_options create]
 
   def new
   end
@@ -38,9 +38,9 @@ class SessionsController < ApplicationController
       )
 
       stored_credential.update!(sign_count: webauthn_credential.sign_count)
-      sign_in(user)
+      start_new_session_for(user)
 
-      redirect_to root_path, notice: "Credential authenticated successfully"
+      redirect_to after_authentication_url, notice: "Credential authenticated successfully"
     rescue WebAuthn::Error => e
       render json: "Verification failed: #{e.message}", status: :unprocessable_entity
     ensure
@@ -49,7 +49,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    sign_out
+    terminate_session
 
     redirect_to root_path
   end
