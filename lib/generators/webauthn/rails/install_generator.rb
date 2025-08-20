@@ -43,17 +43,24 @@ module Webauthn
         template "config/initializers/webauthn.rb"
       end
 
+      def inject_session_and_current
+        template "app/models/session.rb"
+        template "app/models/current.rb"
+        migration_template "db/migrate/create_sessions.rb", "db/migrate/create_sessions.rb"
+      end
+
       def inject_webauthn_content
         if File.exist?(File.join(destination_root, "app/models/user.rb"))
           inject_into_class "app/models/user.rb", "User" do
             <<-RUBY.strip_heredoc.indent(2)
-              validates :username, presence: true, uniqueness: true
+                validates :username, presence: true, uniqueness: true
 
-              has_many :webauthn_credentials, dependent: :destroy
+                has_many :webauthn_credentials, dependent: :destroy
+                has_many :sessions, dependent: :destroy
 
-              after_initialize do
-                self.webauthn_id ||= WebAuthn.generate_user_id
-              end
+                after_initialize do
+                  self.webauthn_id ||= WebAuthn.generate_user_id
+                end
             RUBY
           end
 

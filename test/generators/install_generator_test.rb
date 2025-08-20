@@ -36,6 +36,9 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_migration "db/migrate/create_users.rb", /create_table :users/
     assert_file "app/models/webauthn_credential.rb", /belongs_to :user/
     assert_migration "db/migrate/create_webauthn_credentials.rb", /create_table :webauthn_credentials/
+    assert_file "app/models/session.rb", /belongs_to :user/
+    assert_file "app/models/current.rb", /delegate :user, to: :session, allow_nil: true/
+    assert_migration "db/migrate/create_sessions.rb", /create_table :sessions/
 
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
