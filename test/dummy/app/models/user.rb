@@ -2,6 +2,7 @@ class User < ApplicationRecord
   CREDENTIAL_MIN_AMOUNT = 1
 
   has_many :webauthn_credentials, dependent: :destroy
+  has_many :sessions, dependent: :destroy
 
   validates :username, presence: true, uniqueness: true
 
