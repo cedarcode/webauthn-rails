@@ -81,12 +81,14 @@ module Webauthn
 
         template "app/models/webauthn_credential.rb"
         migration_template "db/migrate/create_webauthn_credentials.rb", "db/migrate/create_webauthn_credentials.rb"
-
-        say ""
-        say "Almost done! Now edit `config/initializers/webauthn.rb` and set the `allowed_origins` for your app.", :yellow
       end
 
       hook_for :test_framework
+
+      def final_message
+        say ""
+        say "Almost done! Now edit `config/initializers/webauthn.rb` and set the `allowed_origins` for your app.", :yellow
+      end
 
       private
 
