@@ -2,8 +2,8 @@
 ENV["RAILS_ENV"] = "test"
 ENV["DATABASE_URL"] = "sqlite3::memory:"
 
-require "active_record/railtie"
 require "minitest/autorun"
+require "active_record/railtie"
 
 # Create a test application to run the generator
 class TestApp < Rails::Application
