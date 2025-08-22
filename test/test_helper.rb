@@ -4,15 +4,7 @@ ENV["DATABASE_URL"] = "sqlite3::memory:"
 
 require "minitest/autorun"
 require "active_record/railtie"
-
-# Create a test application to run the generator
-class TestApp < Rails::Application
-  config.root = File.dirname(__dir__)
-  config.eager_load = false
-end
-
-# Initialize the Rails application
-Rails.application.initialize!
+require_relative "support/rails_mock"
 
 # Load fixtures from the engine
 if ActiveSupport::TestCase.respond_to?(:fixture_paths=)
