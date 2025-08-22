@@ -30,10 +30,6 @@ module Webauthn
       end
 
       def add_stimulus_rails_gem
-        gemfile_path = File.join(destination_root, "Gemfile")
-
-        return if File.read(gemfile_path).match?(/^\s*gem ["']stimulus-rails["']/)
-
         say "Add stimulus-rails gem to Gemfile"
         Bundler.with_unbundled_env do
           inside(destination_root) do

@@ -80,16 +80,6 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "Gemfile.lock", /railties/
   end
 
-  test "does not modify Gemfile when stimulus-rails already present" do
-    add_stimulus_rails_gem
-
-    original_content = File.read(File.join(destination_root, "Gemfile"))
-
-    run_generator
-
-    assert_equal original_content, File.read(File.join(destination_root, "Gemfile"))
-  end
-
   private
 
   def add_config_folder
@@ -133,9 +123,5 @@ class InstallGeneratorTest < Rails::Generators::TestCase
 
   def add_gemfile_lock
     File.write(File.join(destination_root, "Gemfile.lock"), "")
-  end
-
-  def add_stimulus_rails_gem
-    File.open(File.join(destination_root, "Gemfile"), "a") { |f| f.puts "gem \"stimulus-rails\"" }
   end
 end
