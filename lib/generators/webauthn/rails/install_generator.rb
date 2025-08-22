@@ -148,7 +148,7 @@ module Webauthn
       end
 
       def inject_webauthn_model_content
-        inject_into_class "app/models/webauthn_credential.rb", "WebauthnCredential" do
+        inject_into_file "app/models/webauthn_credential.rb", after: "belongs_to :user\n" do
           <<-RUBY.strip_heredoc.indent(2)
             validates :external_id, :public_key, :nickname, :sign_count, presence: true
             validates :external_id, uniqueness: true
