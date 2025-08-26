@@ -47,7 +47,11 @@ module Webauthn
         @generator_class = ::Rails::Generators.find_by_namespace("active_record:model")
         if File.exist?(File.join(destination_root, "app/models/user.rb"))
           inject_user_model_content
-          migration_template "db/migrate/add_webauthn_to_users.rb", "db/migrate/add_webauthn_to_users.rb"
+          invoke("active_record:migration", [
+            "AddWebauthnToUsers",
+            "username:string:uniq",
+            "webauthn_id:string"
+          ])
         else
           create_user_model_and_migration
         end

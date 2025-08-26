@@ -26,6 +26,10 @@ module Rails
     def active_record
       @active_record ||= MockActiveRecordConfig.new
     end
+
+    def root
+      File.expand_path("../../tmp", __FILE__)
+    end
   end
 
   # Mock ActiveRecord config
