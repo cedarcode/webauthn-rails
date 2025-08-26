@@ -13,8 +13,8 @@
 ActiveRecord::Schema[7.2].define(version: 2025_08_04_165453) do
   create_table "sessions", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.string "user_agent", null: false
-    t.string "ip_address", null: false
+    t.string "user_agent"
+    t.string "ip_address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_sessions_on_user_id"
