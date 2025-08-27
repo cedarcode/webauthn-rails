@@ -4,6 +4,8 @@ ENV["RAILS_ENV"] = "test"
 require "minitest/autorun"
 require "active_record/railtie"
 
+require "pry-byebug"
+
 # Load fixtures from the engine
 if ActiveSupport::TestCase.respond_to?(:fixture_paths=)
   ActiveSupport::TestCase.fixture_paths = [ File.expand_path("fixtures", __dir__) ]
