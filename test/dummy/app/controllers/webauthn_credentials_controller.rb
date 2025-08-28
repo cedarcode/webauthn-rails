@@ -2,10 +2,10 @@ class WebauthnCredentialsController < ApplicationController
   def create_options
     create_options = WebAuthn::Credential.options_for_create(
       user: {
-        id: current_user.webauthn_id,
-        name: current_user.username
+        id: Current.user.webauthn_id,
+        name: Current.user.username
       },
-      exclude: current_user.webauthn_credentials.pluck(:external_id),
+      exclude: Current.user.webauthn_credentials.pluck(:external_id),
       authenticator_selection: { user_verification: "required" }
     )
 
@@ -23,7 +23,7 @@ class WebauthnCredentialsController < ApplicationController
         user_verification: true,
       )
 
-      credential = current_user.webauthn_credentials.find_or_initialize_by(
+      credential = Current.user.webauthn_credentials.find_or_initialize_by(
         external_id: webauthn_credential.id
       )
 
@@ -44,8 +44,8 @@ class WebauthnCredentialsController < ApplicationController
   end
 
   def destroy
-    if current_user&.can_delete_credentials?
-      current_user.webauthn_credentials.destroy(params[:id])
+    if Current.user&.can_delete_credentials?
+      Current.user.webauthn_credentials.destroy(params[:id])
     end
 
     redirect_to root_path
