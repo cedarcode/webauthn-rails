@@ -1,5 +1,6 @@
 require "test_helper"
 require "rails/generators/test_case"
+require "minitest/mock"
 require "generators/webauthn/rails/install_generator"
 
 class InstallGeneratorTest < Rails::Generators::TestCase
@@ -15,7 +16,8 @@ class InstallGeneratorTest < Rails::Generators::TestCase
   end
 
   test "assert all files are properly created when user model does not exist" do
-    run_generator
+    generator([ destination_root ])
+    run_generator_instance
 
     assert_file "app/controllers/registrations_controller.rb"
     assert_file "app/controllers/sessions_controller.rb"
@@ -36,9 +38,10 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_migration "db/migrate/create_users.rb", /create_table :users/
     assert_file "app/models/webauthn_credential.rb", /belongs_to :user/
     assert_migration "db/migrate/create_webauthn_credentials.rb", /create_table :webauthn_credentials/
+
     assert_file "app/models/session.rb", /belongs_to :user/
     assert_file "app/models/current.rb", /delegate :user, to: :session, allow_nil: true/
-    assert_migration "db/migrate/create_sessions.rb", /create_table :sessions/
+    assert_includes @rails_commands, "generate migration CreateSessions user:references ip_address:string user_agent:string --force"
 
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
@@ -48,8 +51,8 @@ class InstallGeneratorTest < Rails::Generators::TestCase
 
   test "assert all files are properly created when user model already exists" do
     add_user_model
-
-    run_generator
+    generator([ destination_root ])
+    run_generator_instance
 
     assert_file "app/controllers/registrations_controller.rb"
     assert_file "app/controllers/sessions_controller.rb"
@@ -70,6 +73,10 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_migration "db/migrate/add_webauthn_to_users.rb", /change_table :users/
     assert_file "app/models/webauthn_credential.rb", /belongs_to :user/
     assert_migration "db/migrate/create_webauthn_credentials.rb", /create_table :webauthn_credentials/
+
+    assert_file "app/models/session.rb", /belongs_to :user/
+    assert_file "app/models/current.rb", /delegate :user, to: :session, allow_nil: true/
+    assert_includes @rails_commands, "generate migration CreateSessions user:references ip_address:string user_agent:string --force"
 
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
@@ -110,5 +117,16 @@ class InstallGeneratorTest < Rails::Generators::TestCase
       class ApplicationController < ActionController::Base
       end
     CONTENT
+  end
+
+  def run_generator_instance
+    @rails_commands = []
+    @rails_command_stub ||= ->(command, *_) { @rails_commands << command }
+
+    generator.stub(:rails_command, @rails_command_stub) do
+      capture(:stdout) do
+        generator.invoke_all
+      end
+    end
   end
 end
