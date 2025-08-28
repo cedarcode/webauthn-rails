@@ -45,7 +45,7 @@ module Webauthn
 
       def inject_webauthn_content
         if File.exist?(File.join(destination_root, "app/models/user.rb"))
-          inject_user_model_content
+          inject_webauthn_content_to_user_model
           generate "migration", "AddWebauthnToUsers", "username:string:uniq webauthn_id:string"
 
         else
@@ -92,7 +92,7 @@ module Webauthn
         File.exist?(File.join(destination_root, "package.json"))
       end
 
-      def inject_user_model_content
+      def inject_webauthn_content_to_user_model
         inject_into_class "app/models/user.rb", "User" do
           <<-RUBY.strip_heredoc.indent(2)
             validates :username, presence: true, uniqueness: true
