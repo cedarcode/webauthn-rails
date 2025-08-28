@@ -49,7 +49,8 @@ module Webauthn
           generate "migration", "AddWebauthnToUsers", "username:string:uniq webauthn_id:string"
 
         else
-          create_user_model_and_migration
+          template "app/models/user.rb"
+          generate "migration", "CreateUsers", "username:string:uniq webauthn_id:string"
         end
 
         inject_into_file "config/routes.rb", after: "Rails.application.routes.draw do\n" do
@@ -68,7 +69,8 @@ module Webauthn
           RUBY
         end
 
-        create_webauthn_model_and_migration
+        template "app/models/webauthn_credential.rb"
+        generate "migration", "CreateWebauthnCredentials", "user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"
 
         say ""
         say "Almost done! Now edit `config/initializers/webauthn.rb` and set the `allowed_origins` for your app.", :yellow
@@ -88,16 +90,6 @@ module Webauthn
 
       def has_package_json?
         File.exist?(File.join(destination_root, "package.json"))
-      end
-
-      def create_user_model_and_migration
-        template "app/models/user.rb"
-        generate "migration", "CreateUsers", "username:string:uniq webauthn_id:string"
-      end
-
-      def create_webauthn_model_and_migration
-        template "app/models/webauthn_credential.rb"
-        generate "migration", "CreateWebauthnCredentials", "user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"
       end
 
       def inject_user_model_content
