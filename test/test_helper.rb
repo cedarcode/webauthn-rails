@@ -3,7 +3,6 @@ ENV["RAILS_ENV"] = "test"
 
 require "minitest/autorun"
 require "active_record/railtie"
-require_relative "support/rails_method_mocks"
 
 # Load fixtures from the engine
 if ActiveSupport::TestCase.respond_to?(:fixture_paths=)
