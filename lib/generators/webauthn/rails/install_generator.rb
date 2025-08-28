@@ -61,7 +61,7 @@ module Webauthn
       def inject_session_and_current
         template "app/models/session.rb"
         template "app/models/current.rb"
-        migration_template "db/migrate/create_sessions.rb", "db/migrate/create_sessions.rb"
+        generate "migration", "CreateSessions", "user:references ip_address:string user_agent:string", "--force"
       end
 
       def inject_webauthn_content
