@@ -44,14 +44,10 @@ module Webauthn
       end
 
       def inject_webauthn_content
-        @generator_class = ::Rails::Generators.find_by_namespace("active_record:model")
         if File.exist?(File.join(destination_root, "app/models/user.rb"))
           inject_user_model_content
-          invoke("active_record:migration", [
-            "AddWebauthnToUsers",
-            "username:string:uniq",
-            "webauthn_id:string"
-          ])
+          generate "migration", "AddWebauthnToUsers", "username:string:uniq webauthn_id:string", "--force"
+
         else
           create_user_model_and_migration
         end
@@ -95,46 +91,13 @@ module Webauthn
       end
 
       def create_user_model_and_migration
-        generator_instance = @generator_class.new([
-          "User",
-          "username:string:uniq",
-          "webauthn_id:string"
-        ], {
-          migration: true,
-          timestamps: true,
-          test_framework: false
-        }, {
-          destination_root: destination_root
-        })
-        generator_instance.invoke_all
-
-        inject_user_model_content
+        template "app/models/user.rb"
+        generate "migration", "CreateUsers", "username:string:uniq webauthn_id:string", "--force"
       end
 
       def create_webauthn_model_and_migration
-        generator_instance = @generator_class.new([
-          "WebauthnCredential",
-          "user:references",
-          "external_id:string:uniq",
-          "public_key:string",
-          "nickname:string",
-          "sign_count:integer{8}"
-        ], {
-          migration: true,
-          test_framework: false,
-          timestamps: true
-        }, {
-          destination_root: destination_root
-        })
-        generator_instance.invoke_all
-
-        inject_webauthn_model_content
-
-        # Modify the generated migration to add null: false to user reference
-        migration_file = find_migration_file("create_webauthn_credentials")
-        if migration_file
-          gsub_file migration_file, "t.references :user, foreign_key: true", "t.references :user, null: false, foreign_key: true"
-        end
+        template "app/models/webauthn_credential.rb"
+        generate "migration", "CreateWebauthnCredentials", "user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}", "--force"
       end
 
       def inject_user_model_content
@@ -149,23 +112,6 @@ module Webauthn
             end
           RUBY
         end
-      end
-
-      def inject_webauthn_model_content
-        inject_into_file "app/models/webauthn_credential.rb", after: "belongs_to :user\n" do
-          <<-RUBY.strip_heredoc.indent(2)
-            validates :external_id, :public_key, :nickname, :sign_count, presence: true
-            validates :external_id, uniqueness: true
-            validates :sign_count, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 2**32 - 1 }
-          RUBY
-        end
-      end
-
-      def find_migration_file(base_name)
-        migrate_dir = File.join(destination_root, "db", "migrate")
-        return nil unless Dir.exist?(migrate_dir)
-
-        Dir.glob(File.join(migrate_dir, "*_#{base_name}.rb")).first
       end
     end
   end
