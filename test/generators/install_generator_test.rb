@@ -48,10 +48,10 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     end
 
     assert_file "app/models/user.rb", /has_many :webauthn_credentials/
-    assert_includes @rails_commands, "generate migration CreateUsers username:string:uniq webauthn_id:string --force"
+    assert_includes @rails_commands, "generate migration CreateUsers username:string:uniq webauthn_id:string"
 
     assert_file "app/models/webauthn_credential.rb", /belongs_to :user/
-    assert_includes @rails_commands, "generate migration CreateWebauthnCredentials user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8} --force"
+    assert_includes @rails_commands, "generate migration CreateWebauthnCredentials user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"
 
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
@@ -91,10 +91,10 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     end
 
     assert_file "app/models/user.rb", /has_many :webauthn_credentials/
-    assert_includes @rails_commands, "generate migration AddWebauthnToUsers username:string:uniq webauthn_id:string --force"
+    assert_includes @rails_commands, "generate migration AddWebauthnToUsers username:string:uniq webauthn_id:string"
 
     assert_file "app/models/webauthn_credential.rb", /belongs_to :user/
-    assert_includes @rails_commands, "generate migration CreateWebauthnCredentials user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8} --force"
+    assert_includes @rails_commands, "generate migration CreateWebauthnCredentials user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"
 
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/

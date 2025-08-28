@@ -46,7 +46,7 @@ module Webauthn
       def inject_webauthn_content
         if File.exist?(File.join(destination_root, "app/models/user.rb"))
           inject_user_model_content
-          generate "migration", "AddWebauthnToUsers", "username:string:uniq webauthn_id:string", "--force"
+          generate "migration", "AddWebauthnToUsers", "username:string:uniq webauthn_id:string"
 
         else
           create_user_model_and_migration
@@ -92,12 +92,12 @@ module Webauthn
 
       def create_user_model_and_migration
         template "app/models/user.rb"
-        generate "migration", "CreateUsers", "username:string:uniq webauthn_id:string", "--force"
+        generate "migration", "CreateUsers", "username:string:uniq webauthn_id:string"
       end
 
       def create_webauthn_model_and_migration
         template "app/models/webauthn_credential.rb"
-        generate "migration", "CreateWebauthnCredentials", "user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}", "--force"
+        generate "migration", "CreateWebauthnCredentials", "user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"
       end
 
       def inject_user_model_content
