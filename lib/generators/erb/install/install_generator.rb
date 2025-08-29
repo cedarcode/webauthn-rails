@@ -6,7 +6,6 @@ module Erb
       source_root File.expand_path("../templates", __FILE__)
 
       def create_files
-        say "Add Webauthn views"
         template "app/views/webauthn_credentials/new.html.erb.tt"
         template "app/views/registrations/new.html.erb.tt"
         template "app/views/sessions/new.html.erb.tt"
