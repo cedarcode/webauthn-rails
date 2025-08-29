@@ -1,6 +1,9 @@
 require "application_system_test_case"
+require_relative "../test_helpers/virtual_authenticator_test_helper"
 
-class RegistrationTest < ApplicationSystemTestCase
+class SignInTest < ApplicationSystemTestCase
+  include VirtualAuthenticatorTestHelper
+
   def setup
     @authenticator = add_virtual_authenticator
   end
@@ -9,7 +12,7 @@ class RegistrationTest < ApplicationSystemTestCase
     @authenticator.remove!
   end
 
-  test "register user" do
+  test "register and then sign in" do
     visit new_registration_path
 
     fill_in "registration_username", with: "User1"
@@ -19,7 +22,13 @@ class RegistrationTest < ApplicationSystemTestCase
     # wait for async response
     assert_selector "h3", text: "Your Security Keys"
 
+    click_on "Sign out"
+    assert_selector("input[type=submit][value='Sign in']")
+
+    fill_in "Username", with: "User1"
+
+    click_button "Sign in"
+    assert_selector "h3", text: "Your Security Keys"
     assert_current_path "/"
-    assert_selector "span", text: "USB key"
   end
 end
