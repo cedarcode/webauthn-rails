@@ -1,6 +1,9 @@
 require "application_system_test_case"
+require_relative "../test_helpers/virtual_authenticator_test_helper"
 
 class RegistrationTest < ApplicationSystemTestCase
+  include VirtualAuthenticatorTestHelper
+
   def setup
     @authenticator = add_virtual_authenticator
   end
