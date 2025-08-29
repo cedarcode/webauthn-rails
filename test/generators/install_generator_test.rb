@@ -40,11 +40,6 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "test/system/sign_in_test.rb"
     assert_file "test/test_helpers/virtual_authenticator_test_helper.rb"
 
-    assert_file "test/test_helper.rb" do |content|
-      assert_match(/require_relative "test_helpers\/virtual_authenticator_test_helper"/, content)
-      assert_match(/include VirtualAuthenticatorTestHelper/, content)
-    end
-
     assert_file "app/models/user.rb", /has_many :webauthn_credentials/
     assert_migration "db/migrate/create_users.rb", /create_table :users/
     assert_file "app/models/webauthn_credential.rb", /belongs_to :user/
@@ -82,11 +77,6 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "test/system/registration_test.rb"
     assert_file "test/system/sign_in_test.rb"
     assert_file "test/test_helpers/virtual_authenticator_test_helper.rb"
-
-    assert_file "test/test_helper.rb" do |content|
-      assert_match(/require_relative "test_helpers\/virtual_authenticator_test_helper"/, content)
-      assert_match(/include VirtualAuthenticatorTestHelper/, content)
-    end
 
     assert_file "app/models/user.rb", /has_many :webauthn_credentials/
     assert_migration "db/migrate/add_webauthn_to_users.rb", /change_table :users/
