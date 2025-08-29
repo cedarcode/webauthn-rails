@@ -39,6 +39,21 @@ module Webauthn
         end
       end
 
+      def inject_js_packages
+        if using_importmap?
+          say %(Appending: pin "@github/webauthn-json/browser-ponyfill", to: "https://ga.jspm.io/npm:@github/webauthn-json@2.1.1/dist/esm/webauthn-json.browser-ponyfill.js")
+          append_to_file "config/importmap.rb", %(pin "@github/webauthn-json/browser-ponyfill", to: "https://ga.jspm.io/npm:@github/webauthn-json@2.1.1/dist/esm/webauthn-json.browser-ponyfill.js"\n)
+        elsif using_bun?
+          say "Adding webauthn-json to your package manager"
+          run "bun add @github/webauthn-json/browser-ponyfill"
+        elsif has_package_json?
+          say "Adding webauthn-json to your package manager"
+          run "yarn add @github/webauthn-json/browser-ponyfill"
+        else
+          puts "You must either be running with node (package.json) or importmap-rails (config/importmap.rb) to use this gem."
+        end
+      end
+
       def copy_initializer_file
         template "config/initializers/webauthn.rb"
       end
@@ -77,6 +92,11 @@ module Webauthn
       end
 
       hook_for :test_framework
+
+      def final_message
+        say ""
+        say "Almost done! Now edit `config/initializers/webauthn.rb` and set the `allowed_origins` for your app.", :yellow
+      end
 
       private
 
