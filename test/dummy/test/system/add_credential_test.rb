@@ -1,6 +1,9 @@
 require "application_system_test_case"
+require_relative "../test_helpers/virtual_authenticator_test_helper"
 
 class AddCredentialTest < ApplicationSystemTestCase
+  include VirtualAuthenticatorTestHelper
+
   def setup
     sign_up(username: "User1")
 

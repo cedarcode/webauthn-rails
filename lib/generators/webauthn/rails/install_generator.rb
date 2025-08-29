@@ -14,7 +14,6 @@ module Webauthn
         desc: "Generate API-only files, with no view templates"
 
       def copy_controllers_and_concerns
-        say "Add Webauthn controllers"
         template "app/controllers/webauthn_credentials_controller.rb"
         template "app/controllers/registrations_controller.rb"
         template "app/controllers/sessions_controller.rb"
@@ -31,13 +30,26 @@ module Webauthn
 
       def copy_stimulus_controllers
         if using_importmap? || using_bun? || has_package_json?
-          say "Add Webauthn Stimulus controllers"
           template "app/javascript/controllers/webauthn_credentials_controller.js"
 
           if using_bun? || has_package_json?
-            say "Updating Stimulus manifest"
             run "bin/rails stimulus:manifest:update"
           end
+        else
+          puts "You must either be running with node (package.json) or importmap-rails (config/importmap.rb) to use this gem."
+        end
+      end
+
+      def inject_js_packages
+        if using_importmap?
+          say %(Appending: pin "@github/webauthn-json/browser-ponyfill", to: "https://ga.jspm.io/npm:@github/webauthn-json@2.1.1/dist/esm/webauthn-json.browser-ponyfill.js")
+          append_to_file "config/importmap.rb", %(pin "@github/webauthn-json/browser-ponyfill", to: "https://ga.jspm.io/npm:@github/webauthn-json@2.1.1/dist/esm/webauthn-json.browser-ponyfill.js"\n)
+        elsif using_bun?
+          say "Adding webauthn-json to your package manager"
+          run "bun add @github/webauthn-json/browser-ponyfill"
+        elsif has_package_json?
+          say "Adding webauthn-json to your package manager"
+          run "yarn add @github/webauthn-json/browser-ponyfill"
         else
           puts "You must either be running with node (package.json) or importmap-rails (config/importmap.rb) to use this gem."
         end
@@ -85,6 +97,13 @@ module Webauthn
 
         template "app/models/webauthn_credential.rb"
         migration_template "db/migrate/create_webauthn_credentials.rb", "db/migrate/create_webauthn_credentials.rb"
+      end
+
+      hook_for :test_framework
+
+      def final_message
+        say ""
+        say "Almost done! Now edit `config/initializers/webauthn.rb` and set the `allowed_origins` for your app.", :yellow
       end
 
       private
