@@ -1,5 +1,4 @@
 require "test_helper"
-require "minitest/mock"
 require "rails/generators/test_case"
 require "generators/webauthn/rails/install_generator"
 
