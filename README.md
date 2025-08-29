@@ -1,9 +1,8 @@
 # WebAuthn Rails
 
 [![Gem Version](https://badge.fury.io/rb/webauthn-rails.svg)](https://badge.fury.io/rb/webauthn-rails)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](MIT-LICENSE)
 
-A Rails engine that provides a complete WebAuthn authentication solution with passwordless login using security keys, biometrics, and other FIDO2 authenticators.
+This gem provides a Rails generator that sets up all the necessary files—controllers to enable user authentication with passkeys.
 
 ## Features
 
@@ -28,23 +27,15 @@ The generator automatically handles JavaScript dependencies based on your setup:
 - **Importmap**: Pins `@github/webauthn-json/browser-ponyfill` to your importmap
 - **Node.js/Yarn/Bun**: Adds the package to your package manager
 
-## Installation
+## Getting Started
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem "webauthn-rails"
-```
-
-Execute:
+Install the gem by running:
 
 ```bash
-bundle install
+bundle add webauthn-rails --group development
 ```
 
-## Setup
-
-Run the install generator to set up WebAuthn authentication in your Rails application:
+Next, you need to run the generator:
 
 ```bash
 rails generate webauthn:rails:install
@@ -84,7 +75,7 @@ end
 rails db:migrate
 ```
 
-## Usage
+## How it Works
 
 ### User Registration
 
@@ -209,7 +200,3 @@ Before submitting a PR, make sure both tests pass and there are no linting error
 ## License
 
 The gem is available as open source under the terms of the [MIT License](MIT-LICENSE).
-
-## Acknowledgments
-
-- Built on top of the excellent [webauthn-ruby](https://github.com/cedarcode/webauthn-ruby) library
