@@ -10,6 +10,9 @@ module Webauthn
 
       desc "Injects webauthn files to your application."
 
+      class_option :api, type: :boolean,
+        desc: "Generate API-only files, with no view templates"
+
       def copy_controllers_and_concerns
         template "app/controllers/webauthn_credentials_controller.rb"
         template "app/controllers/registrations_controller.rb"
@@ -21,10 +24,8 @@ module Webauthn
         inject_into_class "app/controllers/application_controller.rb", "ApplicationController", "  include Authentication\n"
       end
 
-      def copy_views
-        template "app/views/webauthn_credentials/new.html.erb.tt"
-        template "app/views/registrations/new.html.erb.tt"
-        template "app/views/sessions/new.html.erb.tt"
+      hook_for :template_engine do |template_engine|
+        invoke template_engine unless options.api?
       end
 
       def copy_stimulus_controllers
