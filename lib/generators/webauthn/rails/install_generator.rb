@@ -59,11 +59,16 @@ module Webauthn
         template "config/initializers/webauthn.rb"
       end
 
+      def inject_session_and_current
+        template "app/models/session.rb"
+        template "app/models/current.rb"
+        generate "migration", "CreateSessions", "user:references ip_address:string user_agent:string", "--force"
+      end
+
       def inject_webauthn_content
         if File.exist?(File.join(destination_root, "app/models/user.rb"))
           inject_webauthn_content_to_user_model
           generate "migration", "AddWebauthnToUsers", "username:string:uniq webauthn_id:string"
-
         else
           template "app/models/user.rb"
           generate "migration", "CreateUsers", "username:string:uniq webauthn_id:string"
@@ -116,12 +121,19 @@ module Webauthn
       def inject_webauthn_content_to_user_model
         inject_into_class "app/models/user.rb", "User" do
           <<-RUBY.strip_heredoc.indent(2)
+            CREDENTIAL_MIN_AMOUNT = 1
+
             validates :username, presence: true, uniqueness: true
 
             has_many :webauthn_credentials, dependent: :destroy
+            has_many :sessions, dependent: :destroy
 
             after_initialize do
               self.webauthn_id ||= WebAuthn.generate_user_id
+            end
+
+            def can_delete_credentials?
+              webauthn_credentials.size > CREDENTIAL_MIN_AMOUNT
             end
           RUBY
         end

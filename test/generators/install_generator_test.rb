@@ -1,5 +1,6 @@
 require "test_helper"
 require "rails/generators/test_case"
+require "minitest/mock"
 require "generators/webauthn/rails/install_generator"
 
 class InstallGeneratorTest < Rails::Generators::TestCase
@@ -47,6 +48,10 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "app/models/webauthn_credential.rb", /belongs_to :user/
     assert_includes @rails_commands, "generate migration CreateWebauthnCredentials user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"
 
+    assert_file "app/models/session.rb", /belongs_to :user/
+    assert_file "app/models/current.rb", /delegate :user, to: :session, allow_nil: true/
+    assert_includes @rails_commands, "generate migration CreateSessions user:references ip_address:string user_agent:string --force"
+
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
 
@@ -55,7 +60,6 @@ class InstallGeneratorTest < Rails::Generators::TestCase
 
   test "assert all files are properly created when user model already exists" do
     add_user_model
-
     generator([ destination_root ], [ "--test-framework=test_unit" ])
     run_generator_instance
 
@@ -86,6 +90,10 @@ class InstallGeneratorTest < Rails::Generators::TestCase
 
     assert_file "app/models/webauthn_credential.rb", /belongs_to :user/
     assert_includes @rails_commands, "generate migration CreateWebauthnCredentials user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"
+
+    assert_file "app/models/session.rb", /belongs_to :user/
+    assert_file "app/models/current.rb", /delegate :user, to: :session, allow_nil: true/
+    assert_includes @rails_commands, "generate migration CreateSessions user:references ip_address:string user_agent:string --force"
 
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
