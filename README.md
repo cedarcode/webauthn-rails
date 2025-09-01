@@ -185,8 +185,8 @@ bundle install
 To run the tests:
 
 ```bash
-bin/rails test
-bin/rails test:system
+$ bundle exec rake test
+$ bundle exec rake test_dummy
 ```
 
 To run the linter:
