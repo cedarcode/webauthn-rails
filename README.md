@@ -72,7 +72,7 @@ end
 2. Run the migrations:
 
 ```bash
-rails db:migrate
+$ bin/rails db:migrate
 ```
 
 ## How it Works
@@ -164,7 +164,7 @@ All generated controllers can be customized as needed. The controllers handle:
 
 - **RegistrationsController**: User registration with WebAuthn
 - **SessionsController**: User authentication and sign-out
-- **WebauthnCredentialsController**: Managing additional authenticators
+- **WebauthnCredentialsController**: Managing additional webauthn credentials
 
 ### Stimulus Controller
 
