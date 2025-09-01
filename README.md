@@ -199,4 +199,4 @@ Before submitting a PR, make sure both tests pass and there are no linting error
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](MIT-LICENSE).
+The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
