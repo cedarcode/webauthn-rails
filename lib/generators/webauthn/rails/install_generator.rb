@@ -61,22 +61,12 @@ module Webauthn
 
       def inject_webauthn_content
         if File.exist?(File.join(destination_root, "app/models/user.rb"))
-          inject_into_class "app/models/user.rb", "User" do
-            <<-RUBY.strip_heredoc.indent(2)
-              validates :username, presence: true, uniqueness: true
+          inject_webauthn_content_to_user_model
+          generate "migration", "AddWebauthnToUsers", "username:string:uniq webauthn_id:string"
 
-              has_many :webauthn_credentials, dependent: :destroy
-
-              after_initialize do
-                self.webauthn_id ||= WebAuthn.generate_user_id
-              end
-            RUBY
-          end
-
-          migration_template "db/migrate/add_webauthn_to_users.rb", "db/migrate/add_webauthn_to_users.rb"
         else
           template "app/models/user.rb"
-          migration_template "db/migrate/create_users.rb", "db/migrate/create_users.rb"
+          generate "migration", "CreateUsers", "username:string:uniq webauthn_id:string"
         end
 
         inject_into_file "config/routes.rb", after: "Rails.application.routes.draw do\n" do
@@ -96,7 +86,10 @@ module Webauthn
         end
 
         template "app/models/webauthn_credential.rb"
-        migration_template "db/migrate/create_webauthn_credentials.rb", "db/migrate/create_webauthn_credentials.rb"
+        generate "migration", "CreateWebauthnCredentials", "user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"
+
+        say ""
+        say "Almost done! Now edit `config/initializers/webauthn.rb` and set the `allowed_origins` for your app.", :yellow
       end
 
       hook_for :test_framework
@@ -118,6 +111,20 @@ module Webauthn
 
       def has_package_json?
         File.exist?(File.join(destination_root, "package.json"))
+      end
+
+      def inject_webauthn_content_to_user_model
+        inject_into_class "app/models/user.rb", "User" do
+          <<-RUBY.strip_heredoc.indent(2)
+            validates :username, presence: true, uniqueness: true
+
+            has_many :webauthn_credentials, dependent: :destroy
+
+            after_initialize do
+              self.webauthn_id ||= WebAuthn.generate_user_id
+            end
+          RUBY
+        end
       end
     end
   end
