@@ -121,6 +121,8 @@ module Webauthn
       def inject_webauthn_content_to_user_model
         inject_into_class "app/models/user.rb", "User" do
           <<-RUBY.strip_heredoc.indent(2)
+            CREDENTIAL_MIN_AMOUNT = 1
+
             validates :username, presence: true, uniqueness: true
 
             has_many :webauthn_credentials, dependent: :destroy
@@ -128,6 +130,10 @@ module Webauthn
 
             after_initialize do
               self.webauthn_id ||= WebAuthn.generate_user_id
+            end
+
+            def can_delete_credentials?
+              webauthn_credentials.size > CREDENTIAL_MIN_AMOUNT
             end
           RUBY
         end
