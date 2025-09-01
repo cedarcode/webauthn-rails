@@ -10,6 +10,9 @@ module Webauthn
 
       desc "Injects webauthn files to your application."
 
+      class_option :api, type: :boolean,
+        desc: "Generate API-only files, with no view templates"
+
       def copy_controllers_and_concerns
         template "app/controllers/webauthn_credentials_controller.rb"
         template "app/controllers/registrations_controller.rb"
@@ -21,10 +24,8 @@ module Webauthn
         inject_into_class "app/controllers/application_controller.rb", "ApplicationController", "  include Authentication\n"
       end
 
-      def copy_views
-        template "app/views/webauthn_credentials/new.html.erb.tt"
-        template "app/views/registrations/new.html.erb.tt"
-        template "app/views/sessions/new.html.erb.tt"
+      hook_for :template_engine do |template_engine|
+        invoke template_engine unless options.api?
       end
 
       def copy_stimulus_controllers
@@ -66,23 +67,11 @@ module Webauthn
 
       def inject_webauthn_content
         if File.exist?(File.join(destination_root, "app/models/user.rb"))
-          inject_into_class "app/models/user.rb", "User" do
-            <<-RUBY.strip_heredoc.indent(2)
-              validates :username, presence: true, uniqueness: true
-
-              has_many :webauthn_credentials, dependent: :destroy
-              has_many :sessions, dependent: :destroy
-
-              after_initialize do
-                self.webauthn_id ||= WebAuthn.generate_user_id
-              end
-            RUBY
-          end
-
-          migration_template "db/migrate/add_webauthn_to_users.rb", "db/migrate/add_webauthn_to_users.rb"
+          inject_webauthn_content_to_user_model
+          generate "migration", "AddWebauthnToUsers", "username:string:uniq webauthn_id:string"
         else
           template "app/models/user.rb"
-          migration_template "db/migrate/create_users.rb", "db/migrate/create_users.rb"
+          generate "migration", "CreateUsers", "username:string:uniq webauthn_id:string"
         end
 
         inject_into_file "config/routes.rb", after: "Rails.application.routes.draw do\n" do
@@ -102,8 +91,15 @@ module Webauthn
         end
 
         template "app/models/webauthn_credential.rb"
-        migration_template "db/migrate/create_webauthn_credentials.rb", "db/migrate/create_webauthn_credentials.rb"
+        generate "migration", "CreateWebauthnCredentials", "user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"
 
+        say ""
+        say "Almost done! Now edit `config/initializers/webauthn.rb` and set the `allowed_origins` for your app.", :yellow
+      end
+
+      hook_for :test_framework
+
+      def final_message
         say ""
         say "Almost done! Now edit `config/initializers/webauthn.rb` and set the `allowed_origins` for your app.", :yellow
       end
@@ -120,6 +116,21 @@ module Webauthn
 
       def has_package_json?
         File.exist?(File.join(destination_root, "package.json"))
+      end
+
+      def inject_webauthn_content_to_user_model
+        inject_into_class "app/models/user.rb", "User" do
+          <<-RUBY.strip_heredoc.indent(2)
+            validates :username, presence: true, uniqueness: true
+
+            has_many :webauthn_credentials, dependent: :destroy
+            has_many :sessions, dependent: :destroy
+
+            after_initialize do
+              self.webauthn_id ||= WebAuthn.generate_user_id
+            end
+          RUBY
+        end
       end
     end
   end
