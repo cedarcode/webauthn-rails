@@ -92,9 +92,6 @@ module Webauthn
 
         template "app/models/webauthn_credential.rb"
         generate "migration", "CreateWebauthnCredentials", "user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"
-
-        say ""
-        say "Almost done! Now edit `config/initializers/webauthn.rb` and set the `allowed_origins` for your app.", :yellow
       end
 
       hook_for :test_framework
