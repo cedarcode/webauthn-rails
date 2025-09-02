@@ -55,6 +55,13 @@ module Webauthn
         end
       end
 
+      def inject_webauthn_dependency
+        unless File.read(File.expand_path("Gemfile", destination_root)).include?('gem "webauthn"')
+          append_to_file "Gemfile", "\ngem 'webauthn'\n"
+          run "bundle install --quiet"
+        end
+      end
+
       def copy_initializer_file
         template "config/initializers/webauthn.rb"
       end
@@ -63,13 +70,6 @@ module Webauthn
         template "app/models/session.rb"
         template "app/models/current.rb"
         generate "migration", "CreateSessions", "user:references ip_address:string user_agent:string", "--force"
-      end
-
-      def inject_webauthn_dependency
-        unless File.read(File.expand_path("Gemfile", destination_root)).include?('gem "webauthn"')
-          append_to_file "Gemfile", "\ngem 'webauthn'\n"
-          run "bundle install --quiet"
-        end
       end
 
       def inject_webauthn_content
