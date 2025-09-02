@@ -15,8 +15,12 @@ Gem::Specification.new do |spec|
   spec.metadata["changelog_uri"] = "#{spec.homepage}/blob/main/CHANGELOG.md"
 
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
-    Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
+    Dir["{lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
   end
+
+  spec.require_paths = %w[lib]
+
+  spec.required_ruby_version = ">= 3.1"
 
   spec.add_dependency "railties", ">= 8"
   spec.add_dependency "webauthn", ">= 3"
