@@ -1,8 +1,6 @@
 require "bundler/setup"
 require 'rake/testtask'
 
-load "rails/tasks/statistics.rake"
-
 require "bundler/gem_tasks"
 
 Rake::TestTask.new(:test) do |t|
