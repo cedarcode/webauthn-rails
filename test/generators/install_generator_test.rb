@@ -14,6 +14,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     add_routes
     add_application_controller
     add_test_helper
+    add_gemfile
   end
 
   test "assert all files are properly created when user model does not exist" do
@@ -56,6 +57,10 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
 
     assert_file "config/importmap.rb", /pin "@github\/webauthn-json\/browser-ponyfill"/
+
+    assert_file "Gemfile" do |content|
+      assert_match(/gem 'webauthn'/, content)
+    end
   end
 
   test "assert all files are properly created when user model already exists" do
@@ -99,6 +104,10 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
 
     assert_file "config/importmap.rb", /pin "@github\/webauthn-json\/browser-ponyfill"/
+
+    assert_file "Gemfile" do |content|
+      assert_match(/gem 'webauthn'/, content)
+    end
   end
 
   test "assert all files except for views are created with api flag" do
@@ -127,6 +136,10 @@ class InstallGeneratorTest < Rails::Generators::TestCase
 
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
+
+    assert_file "Gemfile" do |content|
+      assert_match(/gem 'webauthn'/, content)
+    end
   end
 
   private
@@ -173,6 +186,12 @@ class InstallGeneratorTest < Rails::Generators::TestCase
         end
       end
     RUBY
+  end
+
+  def add_gemfile
+    File.write(File.join(destination_root, "Gemfile"), <<~CONTENT)
+      source "https://rubygems.org"
+    CONTENT
   end
 
   def run_generator_instance

@@ -65,6 +65,13 @@ module Webauthn
         generate "migration", "CreateSessions", "user:references ip_address:string user_agent:string", "--force"
       end
 
+      def inject_webauthn_dependency
+        unless File.read(File.expand_path("Gemfile", destination_root)).include?('gem "webauthn"')
+          append_to_file "Gemfile", "\ngem 'webauthn'\n"
+          run "bundle install --quiet"
+        end
+      end
+
       def inject_webauthn_content
         if File.exist?(File.join(destination_root, "app/models/user.rb"))
           inject_webauthn_content_to_user_model
