@@ -2,7 +2,7 @@
 
 [![Gem Version](https://badge.fury.io/rb/webauthn-rails.svg)](https://badge.fury.io/rb/webauthn-rails)
 
-This gem provides a Rails generator that sets up all the necessary files—controllers to enable user authentication with passkeys.
+This gem provides a Rails generator that sets up a basic passkeys-based authentication system.
 
 ## Features
 
@@ -27,7 +27,7 @@ The generator automatically handles JavaScript dependencies based on your setup:
 - **Importmap**: Pins `@github/webauthn-json/browser-ponyfill` to your importmap
 - **Node.js/Yarn/Bun**: Adds the package to your package manager
 
-## Getting Started
+## Usage
 
 Install the gem by running:
 
