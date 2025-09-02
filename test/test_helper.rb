@@ -3,3 +3,5 @@ require "webauthn/rails"
 
 require "minitest/autorun"
 require "active_record/railtie"
+
+require "pry-byebug"

@@ -1,5 +1,6 @@
 require "test_helper"
 require "rails/generators/test_case"
+require "minitest/mock"
 require "generators/webauthn/rails/install_generator"
 
 class InstallGeneratorTest < Rails::Generators::TestCase
@@ -16,7 +17,8 @@ class InstallGeneratorTest < Rails::Generators::TestCase
   end
 
   test "assert all files are properly created when user model does not exist" do
-    run_generator [ "--test-framework=test_unit" ]
+    generator([ destination_root ], [ "--test-framework=test_unit" ])
+    run_generator_instance
 
     assert_file "app/controllers/registrations_controller.rb"
     assert_file "app/controllers/sessions_controller.rb"
@@ -40,24 +42,26 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "test/system/sign_in_test.rb"
     assert_file "test/test_helpers/virtual_authenticator_test_helper.rb"
 
-    assert_file "test/test_helper.rb" do |content|
-      assert_match(/require_relative "test_helpers\/virtual_authenticator_test_helper"/, content)
-      assert_match(/include VirtualAuthenticatorTestHelper/, content)
-    end
-
     assert_file "app/models/user.rb", /has_many :webauthn_credentials/
-    assert_migration "db/migrate/create_users.rb", /create_table :users/
+    assert_includes @rails_commands, "generate migration CreateUsers username:string:uniq webauthn_id:string"
+
     assert_file "app/models/webauthn_credential.rb", /belongs_to :user/
-    assert_migration "db/migrate/create_webauthn_credentials.rb", /create_table :webauthn_credentials/
+    assert_includes @rails_commands, "generate migration CreateWebauthnCredentials user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"
+
+    assert_file "app/models/session.rb", /belongs_to :user/
+    assert_file "app/models/current.rb", /delegate :user, to: :session, allow_nil: true/
+    assert_includes @rails_commands, "generate migration CreateSessions user:references ip_address:string user_agent:string --force"
 
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
+
+    assert_file "config/importmap.rb", /pin "@github\/webauthn-json\/browser-ponyfill"/
   end
 
   test "assert all files are properly created when user model already exists" do
     add_user_model
-
-    run_generator [ "--test-framework=test_unit" ]
+    generator([ destination_root ], [ "--test-framework=test_unit" ])
+    run_generator_instance
 
     assert_file "app/controllers/registrations_controller.rb"
     assert_file "app/controllers/sessions_controller.rb"
@@ -81,15 +85,45 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "test/system/sign_in_test.rb"
     assert_file "test/test_helpers/virtual_authenticator_test_helper.rb"
 
-    assert_file "test/test_helper.rb" do |content|
-      assert_match(/require_relative "test_helpers\/virtual_authenticator_test_helper"/, content)
-      assert_match(/include VirtualAuthenticatorTestHelper/, content)
-    end
+    assert_file "app/models/user.rb", /has_many :webauthn_credentials/
+    assert_includes @rails_commands, "generate migration AddWebauthnToUsers username:string:uniq webauthn_id:string"
+
+    assert_file "app/models/webauthn_credential.rb", /belongs_to :user/
+    assert_includes @rails_commands, "generate migration CreateWebauthnCredentials user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"
+
+    assert_file "app/models/session.rb", /belongs_to :user/
+    assert_file "app/models/current.rb", /delegate :user, to: :session, allow_nil: true/
+    assert_includes @rails_commands, "generate migration CreateSessions user:references ip_address:string user_agent:string --force"
+
+    assert_file "config/routes.rb", /Rails.application.routes.draw do/
+    assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
+
+    assert_file "config/importmap.rb", /pin "@github\/webauthn-json\/browser-ponyfill"/
+  end
+
+  test "assert all files except for views are created with api flag" do
+    generator([ destination_root ], [ "--api" ])
+    run_generator_instance
+
+    assert_file "app/controllers/registrations_controller.rb"
+    assert_file "app/controllers/sessions_controller.rb"
+    assert_file "app/controllers/webauthn_credentials_controller.rb"
+    assert_file "app/controllers/concerns/authentication.rb"
+
+    assert_file "app/controllers/application_controller.rb", /include Authentication/
+
+    assert_no_file "app/views/webauthn_credentials/new.html.erb"
+    assert_no_file "app/views/registrations/new.html.erb"
+    assert_no_file "app/views/sessions/new.html.erb"
+
+    assert_file "app/javascript/controllers/webauthn_credentials_controller.js"
+
+    assert_file "config/initializers/webauthn.rb", /WebAuthn.configure/
 
     assert_file "app/models/user.rb", /has_many :webauthn_credentials/
-    assert_migration "db/migrate/add_webauthn_to_users.rb", /change_table :users/
+    assert_includes @rails_commands, "generate migration CreateUsers username:string:uniq webauthn_id:string"
     assert_file "app/models/webauthn_credential.rb", /belongs_to :user/
-    assert_migration "db/migrate/create_webauthn_credentials.rb", /create_table :webauthn_credentials/
+    assert_includes @rails_commands, "generate migration CreateWebauthnCredentials user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"
 
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
@@ -139,5 +173,16 @@ class InstallGeneratorTest < Rails::Generators::TestCase
         end
       end
     RUBY
+  end
+
+  def run_generator_instance
+    @rails_commands = []
+    @rails_command_stub ||= ->(command, *_) { @rails_commands << command }
+
+    generator.stub(:rails_command, @rails_command_stub) do
+      capture(:stdout) do
+        generator.invoke_all
+      end
+    end
   end
 end
