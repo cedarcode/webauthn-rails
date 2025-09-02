@@ -1,10 +1,9 @@
 require "test_helper"
 require "rails/generators/test_case"
-require "minitest/mock"
-require "generators/webauthn/rails/install_generator"
+require "generators/webauthn_authentication/webauthn_authentication_generator"
 
-class InstallGeneratorTest < Rails::Generators::TestCase
-  tests Webauthn::Rails::InstallGenerator
+class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
+  tests WebauthnAuthenticationGenerator
   destination File.expand_path("../../tmp", __FILE__)
 
   setup do
