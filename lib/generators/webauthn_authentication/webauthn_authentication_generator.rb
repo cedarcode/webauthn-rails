@@ -19,10 +19,6 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
     template "app/controllers/sessions_controller.rb"
   end
 
-  def configure_application_controller
-    inject_into_class "app/controllers/application_controller.rb", "ApplicationController", "  include Authentication\n"
-  end
-
   hook_for :template_engine do |template_engine|
     invoke template_engine unless options.api?
   end
