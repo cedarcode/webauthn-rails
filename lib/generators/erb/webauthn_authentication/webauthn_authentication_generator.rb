@@ -2,7 +2,8 @@ require "rails/generators/erb"
 
 module Erb
   module Generators
-    class InstallGenerator < Rails::Generators::Base
+    class WebauthnAuthenticationGenerator < Rails::Generators::Base
+      hide!
       source_root File.expand_path("../templates", __FILE__)
 
       def create_files

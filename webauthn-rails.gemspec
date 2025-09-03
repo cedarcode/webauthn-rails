@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
 
   spec.require_paths = %w[lib]
 
-  spec.required_ruby_version = ">= 3.1"
+  spec.required_ruby_version = ">= 3.2"
 
   spec.add_dependency "railties", ">= 8"
 end
