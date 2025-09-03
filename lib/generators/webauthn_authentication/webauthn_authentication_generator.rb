@@ -11,6 +11,8 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
   class_option :api, type: :boolean,
     desc: "Generate API-only files, with no view templates"
 
+  invoke "authentication"
+
   def copy_controllers_and_concerns
     template "app/controllers/webauthn_credentials_controller.rb"
     template "app/controllers/registrations_controller.rb"
