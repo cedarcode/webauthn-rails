@@ -17,7 +17,6 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
     template "app/controllers/webauthn_credentials_controller.rb"
     template "app/controllers/registrations_controller.rb"
     template "app/controllers/sessions_controller.rb"
-    template "app/controllers/concerns/authentication.rb"
   end
 
   def configure_application_controller
