@@ -1,10 +1,12 @@
 require "rails/generators/base"
 require "rails/generators/active_record/migration"
+require "generators/webauthn/rails/bundle_helper"
 
 module Webauthn
   module Rails
     class InstallGenerator < ::Rails::Generators::Base
       include ActiveRecord::Generators::Migration
+      include BundleHelper
 
       source_root File.expand_path("../templates", __FILE__)
 
@@ -57,8 +59,7 @@ module Webauthn
 
       def inject_webauthn_dependency
         unless File.read(File.expand_path("Gemfile", destination_root)).include?('gem "webauthn"')
-          append_to_file "Gemfile", "\ngem 'webauthn'\n"
-          run "bundle install --quiet"
+          bundle_command("add webauthn", {}, quiet: true)
         end
       end
 

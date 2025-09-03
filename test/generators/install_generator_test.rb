@@ -58,9 +58,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
 
     assert_file "config/importmap.rb", /pin "@github\/webauthn-json\/browser-ponyfill"/
 
-    assert_file "Gemfile" do |content|
-      assert_match(/gem 'webauthn'/, content)
-    end
+    assert_includes @bundle_commands, [ "add webauthn", {}, { quiet: true } ]
   end
 
   test "assert all files are properly created when user model already exists" do
@@ -105,9 +103,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
 
     assert_file "config/importmap.rb", /pin "@github\/webauthn-json\/browser-ponyfill"/
 
-    assert_file "Gemfile" do |content|
-      assert_match(/gem 'webauthn'/, content)
-    end
+    assert_includes @bundle_commands, [ "add webauthn", {}, { quiet: true } ]
   end
 
   test "assert all files except for views are created with api flag" do
@@ -137,9 +133,7 @@ class InstallGeneratorTest < Rails::Generators::TestCase
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
 
-    assert_file "Gemfile" do |content|
-      assert_match(/gem 'webauthn'/, content)
-    end
+    assert_includes @bundle_commands, [ "add webauthn", {}, { quiet: true } ]
   end
 
   private
@@ -195,12 +189,17 @@ class InstallGeneratorTest < Rails::Generators::TestCase
   end
 
   def run_generator_instance
+    @bundle_commands = []
+    command_stub ||= ->(command, *args) { @bundle_commands << [ command, *args ] }
+
     @rails_commands = []
     @rails_command_stub ||= ->(command, *_) { @rails_commands << command }
 
-    generator.stub(:rails_command, @rails_command_stub) do
-      capture(:stdout) do
-        generator.invoke_all
+    generator.stub(:bundle_command, command_stub) do
+      generator.stub(:rails_command, @rails_command_stub) do
+        capture(:stdout) do
+          generator.invoke_all
+        end
       end
     end
   end
