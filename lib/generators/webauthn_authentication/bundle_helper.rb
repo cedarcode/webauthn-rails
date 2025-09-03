@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# Extracted from: https://github.com/rails/rails/blob/7549ba77254f038b1ca6304a0be6cbda8e2a09c4/railties/lib/rails/generators/bundle_helper.rb
 
 module BundleHelper # :nodoc:
   def bundle_command(command, env = {}, params = {})
