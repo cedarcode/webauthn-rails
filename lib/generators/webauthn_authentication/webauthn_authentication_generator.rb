@@ -54,12 +54,6 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
     template "config/initializers/webauthn.rb"
   end
 
-  def inject_session_and_current
-    template "app/models/session.rb"
-    template "app/models/current.rb"
-    generate "migration", "CreateSessions", "user:references ip_address:string user_agent:string", "--force"
-  end
-
   def inject_webauthn_content
     if File.exist?(File.join(destination_root, "app/models/user.rb"))
       inject_webauthn_content_to_user_model
