@@ -3,12 +3,7 @@
 <%%= form_with(
   scope: :registration,
   url: registration_path,
-  id: "new-registration",
-  data: {
-    controller: "webauthn-credentials",
-    action: "webauthn-credentials#create:prevent",
-    "webauthn-credentials-options-url-value": create_options_registration_path,
-  }) do |form| %>
+  ) do |form| %>
 
   <div class="field">
     <p><%%= form.label :username %></p>
@@ -16,11 +11,14 @@
   </div>
 
   <div class="field">
-    <p><%%= form.label :nickname, 'Security Key nickname' %></p>
-    <p><%%= form.text_field :nickname, required: true %></p>
+    <p><%%= form.label :password, 'Password' %></p>
+    <p><%%= form.password_field :password, required: true %></p>
   </div>
 
-  <%%= form.hidden_field :public_key_credential, data: { "webauthn-credentials-target": "credentialHiddenInput" } %>
+  <div class="field">
+    <p><%%= form.label :password_confirmation, 'Confirm Password' %></p>
+    <p><%%= form.password_field :password_confirmation, required: true %></p>
+  </div>
 
   <div class="actions">
     <%%= form.submit "Sign up" %>
