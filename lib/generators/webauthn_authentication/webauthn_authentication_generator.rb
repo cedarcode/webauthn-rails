@@ -1,6 +1,7 @@
 require "rails/generators/base"
 require "rails/generators/active_record/migration"
-require "generators/webauthn_authentication/bundle_helper"
+require "generators/webauthn_authentication/bundle_helper" if Rails.version.to_f < 8.1
+require "rails/generators/bundle_helper" if Rails.version.to_f >= 8.1
 
 class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
   include ActiveRecord::Generators::Migration
