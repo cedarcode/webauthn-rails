@@ -55,13 +55,8 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
   end
 
   def inject_webauthn_content
-    if File.exist?(File.join(destination_root, "app/models/user.rb"))
-      inject_webauthn_content_to_user_model
-      generate "migration", "AddWebauthnToUsers", "username:string:uniq webauthn_id:string"
-    else
-      template "app/models/user.rb"
-      generate "migration", "CreateUsers", "username:string:uniq webauthn_id:string"
-    end
+    generate "migration", "AddWebauthnToUsers", "username:string:uniq webauthn_id:string"
+    inject_webauthn_content_to_user_model
 
     inject_into_file "config/routes.rb", after: "Rails.application.routes.draw do\n" do
       <<-RUBY.strip_heredoc.indent(2)
@@ -105,7 +100,7 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
   end
 
   def inject_webauthn_content_to_user_model
-    inject_into_class "app/models/user.rb", "User" do
+    inject_into_file "app/models/user.rb", after: "normalizes :email_address, with: ->(e) { e.strip.downcase }\n"  do
       <<-RUBY.strip_heredoc.indent(2)
         CREDENTIAL_MIN_AMOUNT = 1
 
