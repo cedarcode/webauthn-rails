@@ -27,3 +27,5 @@ gem "minitest-stub_any_instance"
 gem "rubocop-rails-omakase", require: false
 
 gem "pry-byebug", "~> 3.11"
+
+gem "bcrypt", "~> 3.1.7"
