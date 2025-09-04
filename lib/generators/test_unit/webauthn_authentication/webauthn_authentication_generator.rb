@@ -8,7 +8,7 @@ module TestUnit
 
       def create_controller_test_files
         template "test/controllers/registrations_controller_test.rb"
-        template "test/controllers/sessions_controller_test.rb"
+        template "test/controllers/webauthn_sessions_controller_test.rb"
       end
 
       def create_system_test_files

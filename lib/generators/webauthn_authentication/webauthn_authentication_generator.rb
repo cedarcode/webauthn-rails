@@ -16,7 +16,7 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
   def copy_controllers_and_concerns
     template "app/controllers/webauthn_credentials_controller.rb"
     template "app/controllers/registrations_controller.rb"
-    template "app/controllers/sessions_controller.rb"
+    template "app/controllers/webauthn_sessions_controller.rb"
   end
 
   hook_for :template_engine do |template_engine|
@@ -69,7 +69,7 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
           post :create_options, on: :collection
         end
 
-        resource :session, only: [ :new, :create, :destroy ] do
+        resource :webauthn_session, only: [ :new, :create, :destroy ] do
           post :get_options, on: :collection
         end
 
@@ -112,7 +112,7 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
         validates :username, presence: true, uniqueness: true
 
         has_many :webauthn_credentials, dependent: :destroy
-        has_many :sessions, dependent: :destroy
+        has_many :webauthn_sessions, dependent: :destroy
 
         after_initialize do
           self.webauthn_id ||= WebAuthn.generate_user_id

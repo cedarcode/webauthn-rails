@@ -9,7 +9,7 @@ module Erb
       def create_files
         template "app/views/webauthn_credentials/new.html.erb.tt"
         template "app/views/registrations/new.html.erb.tt"
-        template "app/views/sessions/new.html.erb.tt"
+        template "app/views/webauthn_sessions/new.html.erb.tt"
       end
     end
   end

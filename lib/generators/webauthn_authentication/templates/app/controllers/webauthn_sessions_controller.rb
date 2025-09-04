@@ -1,4 +1,4 @@
-class SessionsController < ApplicationController
+class WebauthnSessionsController < ApplicationController
   allow_unauthenticated_access only: %i[new get_options create]
 
   def new
