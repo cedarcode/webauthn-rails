@@ -3,7 +3,7 @@ Rails.application.routes.draw do
     post :create_options, on: :collection
   end
 
-  resource :session, only: [ :new, :create, :destroy ] do
+  resource :webauthn_session, only: [ :new, :create, :destroy ] do
     post :get_options, on: :collection
   end
 

@@ -2,12 +2,12 @@
 
 <%%= form_with(
   scope: :session,
-  url: session_path,
+  url: webauthn_session_path,
   id: "new-session",
   data: {
     controller: "webauthn-credentials",
     action: "webauthn-credentials#get:prevent",
-    "webauthn-credentials-options-url-value": get_options_session_path,
+    "webauthn-credentials-options-url-value": get_options_webauthn_session_path,
   }) do |form| %>
 
   <div class="field">
