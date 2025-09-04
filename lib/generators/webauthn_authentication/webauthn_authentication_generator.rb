@@ -104,8 +104,6 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
       <<-RUBY.strip_heredoc.indent(2)
         CREDENTIAL_MIN_AMOUNT = 1
 
-        validates :username, presence: true, uniqueness: true
-
         has_many :webauthn_credentials, dependent: :destroy
         has_many :webauthn_sessions, dependent: :destroy
 
