@@ -1,6 +1,7 @@
 require "test_helper"
 require "rails/generators/test_case"
 require "generators/webauthn_authentication/webauthn_authentication_generator"
+require "minitest/stub_any_instance"
 
 class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
   tests WebauthnAuthenticationGenerator
@@ -17,7 +18,10 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
 
   test "assert all files are properly created when user model does not exist" do
     generator([ destination_root ], [ "--test-framework=test_unit" ])
-    run_generator_instance
+
+    Rails::Generators::AuthenticationGenerator.stub_any_instance(:invoke_all, nil) do
+      run_generator_instance
+    end
 
     assert_file "app/controllers/registrations_controller.rb"
     assert_file "app/controllers/webauthn_sessions_controller.rb"
@@ -60,7 +64,10 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
   test "assert all files are properly created when user model already exists" do
     add_user_model
     generator([ destination_root ], [ "--test-framework=test_unit" ])
-    run_generator_instance
+
+    Rails::Generators::AuthenticationGenerator.stub_any_instance(:invoke_all, nil) do
+      run_generator_instance
+    end
 
     assert_file "app/controllers/registrations_controller.rb"
     assert_file "app/controllers/webauthn_sessions_controller.rb"
@@ -102,7 +109,10 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
 
   test "assert all files except for views are created with api flag" do
     generator([ destination_root ], [ "--api" ])
-    run_generator_instance
+
+    Rails::Generators::AuthenticationGenerator.stub_any_instance(:invoke_all, nil) do
+      run_generator_instance
+    end
 
     assert_file "app/controllers/registrations_controller.rb"
     assert_file "app/controllers/webauthn_sessions_controller.rb"
