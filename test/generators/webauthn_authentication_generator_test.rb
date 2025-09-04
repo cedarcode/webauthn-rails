@@ -45,7 +45,7 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     assert_file "test/test_helpers/virtual_authenticator_test_helper.rb"
 
     assert_file "app/models/user.rb", /has_many :webauthn_credentials/
-    assert_includes @rails_commands, "generate migration AddWebauthnToUsers username:string:uniq webauthn_id:string"
+    assert_includes @rails_commands, "generate migration AddWebauthnToUsers webauthn_id:string"
 
     assert_file "app/models/webauthn_credential.rb", /belongs_to :user/
     assert_includes @rails_commands, "generate migration CreateWebauthnCredentials user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"
@@ -76,7 +76,7 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     assert_file "config/initializers/webauthn.rb", /WebAuthn.configure/
 
     assert_file "app/models/user.rb", /has_many :webauthn_credentials/
-    assert_includes @rails_commands, "generate migration AddWebauthnToUsers username:string:uniq webauthn_id:string"
+    assert_includes @rails_commands, "generate migration AddWebauthnToUsers webauthn_id:string"
 
     assert_file "app/models/webauthn_credential.rb", /belongs_to :user/
     assert_includes @rails_commands, "generate migration CreateWebauthnCredentials user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"

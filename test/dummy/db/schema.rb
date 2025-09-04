@@ -25,10 +25,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_04_175236) do
     t.string "password_digest", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "username"
     t.string "webauthn_id"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
-    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
   create_table "webauthn_credentials", force: :cascade do |t|

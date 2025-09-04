@@ -55,7 +55,7 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
   end
 
   def inject_webauthn_content
-    generate "migration", "AddWebauthnToUsers", "username:string:uniq webauthn_id:string"
+    generate "migration", "AddWebauthnToUsers", "webauthn_id:string"
     inject_webauthn_content_to_user_model
 
     inject_into_file "config/routes.rb", after: "Rails.application.routes.draw do\n" do
