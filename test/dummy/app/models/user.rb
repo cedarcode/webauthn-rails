@@ -3,6 +3,8 @@ class User < ApplicationRecord
   has_many :sessions, dependent: :destroy
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
+  validates :email_address, presence: true, uniqueness: true
+
   CREDENTIAL_MIN_AMOUNT = 1
 
   has_many :webauthn_credentials, dependent: :destroy

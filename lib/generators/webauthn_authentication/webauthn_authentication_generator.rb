@@ -102,6 +102,8 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
   def inject_webauthn_content_to_user_model
     inject_into_file "app/models/user.rb", after: "normalizes :email_address, with: ->(e) { e.strip.downcase }\n"  do
       <<-RUBY.strip_heredoc.indent(2)
+        validates :email_address, presence: true, uniqueness: true
+
         CREDENTIAL_MIN_AMOUNT = 1
 
         has_many :webauthn_credentials, dependent: :destroy

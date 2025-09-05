@@ -16,7 +16,8 @@ class RegistrationsController < ApplicationController
 
       redirect_to after_authentication_url, notice: "User registered successfully"
     else
-      redirect_to new_registration_path, alert: "Error registering user"
+      flash[:alert] = user.errors.full_messages.join("\n")
+      render :new
     end
   end
 
