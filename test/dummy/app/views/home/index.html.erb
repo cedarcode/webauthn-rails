@@ -1,6 +1,9 @@
 <%= link_to 'Sign out', session_path, data: { turbo_method: :delete } %>
 
 <h3>Your Security Keys</h3>
+<%= tag.div(flash[:alert], style: "color:red") if flash[:alert] %>
+<%= tag.div(flash[:notice], style: "color:green") if flash[:notice] %>
+
 <ul>
   <% Current.user.webauthn_credentials.each do |credential| %>
     <li>
