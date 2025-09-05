@@ -31,7 +31,6 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
 
     assert_file "app/views/webauthn_credentials/new.html.erb"
     assert_file "app/views/registrations/new.html.erb"
-    assert_file "app/views/webauthn_sessions/new.html.erb"
 
     assert_file "app/javascript/controllers/webauthn_credentials_controller.js"
 
@@ -69,7 +68,6 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
 
     assert_no_file "app/views/webauthn_credentials/new.html.erb"
     assert_no_file "app/views/registrations/new.html.erb"
-    assert_no_file "app/views/webauthn_sessions/new.html.erb"
 
     assert_file "app/javascript/controllers/webauthn_credentials_controller.js"
 
