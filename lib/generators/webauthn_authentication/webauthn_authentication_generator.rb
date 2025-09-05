@@ -15,7 +15,6 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
 
   def copy_controllers_and_concerns
     template "app/controllers/webauthn_credentials_controller.rb"
-    template "app/controllers/registrations_controller.rb"
     template "app/controllers/webauthn_sessions_controller.rb"
   end
 
@@ -60,10 +59,6 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
 
     inject_into_file "config/routes.rb", after: "Rails.application.routes.draw do\n" do
       <<-RUBY.strip_heredoc.indent(2)
-        resource :registration, only: [ :new, :create ] do
-          post :create_options, on: :collection
-        end
-
         resource :webauthn_session, only: [ :new, :create, :destroy ] do
           post :get_options, on: :collection
         end

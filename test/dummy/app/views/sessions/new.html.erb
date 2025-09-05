@@ -10,10 +10,6 @@
 
 <%= link_to "Forgot password?", new_password_path %>
 
-<div class="actions">
-  <%= link_to "Sign up", new_registration_path %>
-</div>
-
 <%= form_with(
   scope: :session,
   url: webauthn_session_path,

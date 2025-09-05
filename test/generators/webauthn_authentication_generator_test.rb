@@ -25,21 +25,17 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
       run_generator_instance
     end
 
-    assert_file "app/controllers/registrations_controller.rb"
     assert_file "app/controllers/webauthn_sessions_controller.rb"
     assert_file "app/controllers/webauthn_credentials_controller.rb"
 
     assert_file "app/views/webauthn_credentials/new.html.erb"
-    assert_file "app/views/registrations/new.html.erb"
 
     assert_file "app/javascript/controllers/webauthn_credentials_controller.js"
 
     assert_file "config/initializers/webauthn.rb", /WebAuthn.configure/
 
-    assert_file "test/controllers/registrations_controller_test.rb"
     assert_file "test/controllers/webauthn_sessions_controller_test.rb"
     assert_file "test/system/add_credential_test.rb"
-    assert_file "test/system/registration_test.rb"
     assert_file "test/system/sign_in_test.rb"
     assert_file "test/test_helpers/virtual_authenticator_test_helper.rb"
 
@@ -62,12 +58,10 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
       run_generator_instance
     end
 
-    assert_file "app/controllers/registrations_controller.rb"
     assert_file "app/controllers/webauthn_sessions_controller.rb"
     assert_file "app/controllers/webauthn_credentials_controller.rb"
 
     assert_no_file "app/views/webauthn_credentials/new.html.erb"
-    assert_no_file "app/views/registrations/new.html.erb"
 
     assert_file "app/javascript/controllers/webauthn_credentials_controller.js"
 

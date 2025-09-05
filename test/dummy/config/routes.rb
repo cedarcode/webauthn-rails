@@ -1,9 +1,6 @@
 Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
-  resource :registration, only: [ :new, :create ] do
-    post :create_options, on: :collection
-  end
 
   resource :webauthn_session, only: [ :new, :create, :destroy ] do
     post :get_options, on: :collection
