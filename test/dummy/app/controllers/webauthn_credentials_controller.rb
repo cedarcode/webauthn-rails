@@ -6,7 +6,10 @@ class WebauthnCredentialsController < ApplicationController
         name: Current.user.email_address
       },
       exclude: Current.user.webauthn_credentials.pluck(:external_id),
-      authenticator_selection: { user_verification: "required" }
+      authenticator_selection: {
+          resident_key: 'required',
+          user_verification: 'required'
+        }
     )
 
     session[:current_registration] = { challenge: create_options.challenge }

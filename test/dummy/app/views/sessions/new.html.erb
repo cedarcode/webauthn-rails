@@ -8,5 +8,27 @@
 <% end %>
 <br>
 
-<%= link_to "Forgot password?", new_password_path %>
-<%= link_to "Sign up", new_registration_path %>
+<div class="actions">
+  <%= link_to "Forgot password?", new_password_path %>
+</div>
+<div class="actions">
+  <%= link_to "Sign up", new_registration_path %>
+</div>
+
+<%= form_with(
+  scope: :session,
+  url: webauthn_session_path,
+  method: :post,
+  data: {
+    controller: "webauthn-credentials",
+    action: "webauthn-credentials#get:prevent",
+    "webauthn-credentials-options-url-value": get_options_webauthn_session_path,
+  }) do |f| %>
+
+    <%= f.hidden_field :public_key_credential, data: { "webauthn-credentials-target": "credentialHiddenInput" } %>
+
+    <div class="actions">
+      <%= f.submit "Ingresar con Passkey"%>
+    </div>
+
+<% end %>
