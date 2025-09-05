@@ -5,7 +5,11 @@ class RegistrationsController < ApplicationController
   end
 
   def create
-    user = User.new(username: registration_params[:username], password: registration_params[:password], password_confirmation: registration_params[:password_confirmation])
+    if registration_params[:password] != registration_params[:password_confirmation]
+      redirect_to new_registration_path, alert: "Password and confirmation do not match"
+      return
+    end
+    user = User.new(email_address: registration_params[:email_address], password: registration_params[:password])
 
     if user.save
       start_new_session_for user
@@ -19,6 +23,6 @@ class RegistrationsController < ApplicationController
   private
 
   def registration_params
-    params.require(:registration).permit(:username, :password, :password_confirmation)
+    params.require(:registration).permit(:email_address, :password, :password_confirmation)
   end
 end

@@ -6,8 +6,8 @@
   ) do |form| %>
 
   <div class="field">
-    <p><%= form.label :username %></p>
-    <p><%= form.text_field :username, autofocus: true, autocapitalize: "none", required: true %></p>
+    <p><%= form.label :email_address, 'Email' %></p>
+    <p><%= form.email_field :email_address, required: true %></p>
   </div>
 
   <div class="field">
