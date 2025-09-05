@@ -37,7 +37,8 @@ class WebauthnCredentialsController < ApplicationController
       )
         redirect_to root_path, notice: "Security Key registered successfully"
       else
-        redirect_to new_webauthn_credential_path, alert: "Error registering credential"
+        flash[:alert] = "Error registering credential"
+        render :new
       end
     rescue WebAuthn::Error => e
       render json: "Verification failed: #{e.message}", status: :unprocessable_entity
