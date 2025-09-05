@@ -52,7 +52,7 @@ class WebauthnCredentialsController < ApplicationController
       Current.user.webauthn_credentials.destroy(params[:id])
     end
 
-    redirect_to root_path
+    redirect_to root_path, notice: "Security Key deleted successfully"
   end
 
   private

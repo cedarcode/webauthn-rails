@@ -31,7 +31,7 @@ class WebauthnSessionsController < ApplicationController
       stored_credential.update!(sign_count: webauthn_credential.sign_count)
       start_new_session_for stored_credential.user
 
-      redirect_to after_authentication_url, notice: "Credential authenticated successfully"
+      redirect_to after_authentication_url
     rescue WebAuthn::Error => e
       render json: "Verification failed: #{e.message}", status: :unprocessable_entity
     ensure
