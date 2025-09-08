@@ -17,7 +17,7 @@ class SessionsController < ApplicationController
 
       render json: get_options
     else
-      render json: { errors: [ "Username doesn't exist" ] }, status: :unprocessable_entity
+      render json: { errors: [ "Username doesn't exist" ] }, status: :unprocessable_content
     end
   end
 
@@ -42,7 +42,7 @@ class SessionsController < ApplicationController
 
       redirect_to after_authentication_url, notice: "Credential authenticated successfully"
     rescue WebAuthn::Error => e
-      render json: "Verification failed: #{e.message}", status: :unprocessable_entity
+      render json: "Verification failed: #{e.message}", status: :unprocessable_content
     ensure
       session.delete(:current_authentication)
     end

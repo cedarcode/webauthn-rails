@@ -37,7 +37,7 @@ class WebauthnCredentialsController < ApplicationController
         redirect_to new_webauthn_credential_path, alert: "Error registering credential"
       end
     rescue WebAuthn::Error => e
-      render json: "Verification failed: #{e.message}", status: :unprocessable_entity
+      render json: "Verification failed: #{e.message}", status: :unprocessable_content
     ensure
       session.delete(:current_registration)
     end

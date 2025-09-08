@@ -20,7 +20,7 @@ class RegistrationsController < ApplicationController
 
       render json: create_options
     else
-      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: user.errors.full_messages }, status: :unprocessable_content
     end
   end
 
@@ -50,7 +50,7 @@ class RegistrationsController < ApplicationController
         redirect_to new_registration_path, alert: "Error registering credential"
       end
     rescue WebAuthn::Error => e
-      render json: "Verification failed: #{e.message}", status: :unprocessable_entity
+      render json: "Verification failed: #{e.message}", status: :unprocessable_content
     ensure
       session.delete(:current_registration)
     end
