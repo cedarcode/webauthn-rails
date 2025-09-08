@@ -13,7 +13,6 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     add_config_folder
     add_importmap
     add_routes
-    add_application_controller
     add_test_helper
     add_rails_auth_user_model
     add_session_view
@@ -109,15 +108,6 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
         has_many :sessions, dependent: :destroy
 
         normalizes :email_address, with: ->(e) { e.strip.downcase }
-      end
-    CONTENT
-  end
-
-  def add_application_controller
-    app_folder = FileUtils.mkdir_p(File.join(destination_root, "app"))
-    FileUtils.mkdir_p(File.join(app_folder, "controllers"))
-    File.write(File.join(destination_root, "app", "controllers", "application_controller.rb"), <<~CONTENT)
-      class ApplicationController < ActionController::Base
       end
     CONTENT
   end
