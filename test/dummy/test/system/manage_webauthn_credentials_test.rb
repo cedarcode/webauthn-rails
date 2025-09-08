@@ -1,6 +1,5 @@
 require "application_system_test_case"
 require_relative "../test_helpers/virtual_authenticator_test_helper"
-require "test_helper"
 
 class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
   include VirtualAuthenticatorTestHelper
