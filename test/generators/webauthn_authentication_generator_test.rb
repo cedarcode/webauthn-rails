@@ -16,6 +16,7 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     add_application_controller
     add_test_helper
     add_rails_auth_user_model
+    add_session_view
   end
 
   test "generates all expected files and successfully runs the Rails authentication generator" do
@@ -35,8 +36,8 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     assert_file "config/initializers/webauthn.rb", /WebAuthn.configure/
 
     assert_file "test/controllers/webauthn_sessions_controller_test.rb"
-    assert_file "test/system/add_credential_test.rb"
-    assert_file "test/system/sign_in_test.rb"
+    assert_file "test/controllers/webauthn_credentials_controller_test.rb"
+    assert_file "test/system/manage_webauthn_credentials_test.rb"
     assert_file "test/test_helpers/virtual_authenticator_test_helper.rb"
 
     assert_file "app/models/user.rb", /has_many :webauthn_credentials/
@@ -52,7 +53,7 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
   end
 
   test "assert all files except for views are created with api flag" do
-    generator([ destination_root ], [ "--api" ])
+    generator([ destination_root ], [ "--api", "--test-framework=test_unit" ])
 
     Rails::Generators::AuthenticationGenerator.stub_any_instance(:invoke_all, nil) do
       run_generator_instance
@@ -66,6 +67,11 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     assert_file "app/javascript/controllers/webauthn_credentials_controller.js"
 
     assert_file "config/initializers/webauthn.rb", /WebAuthn.configure/
+
+    assert_file "test/controllers/webauthn_sessions_controller_test.rb"
+    assert_file "test/controllers/webauthn_credentials_controller_test.rb"
+    assert_file "test/system/manage_webauthn_credentials_test.rb"
+    assert_file "test/test_helpers/virtual_authenticator_test_helper.rb"
 
     assert_file "app/models/user.rb", /has_many :webauthn_credentials/
     assert_includes @rails_commands, "generate migration AddWebauthnToUsers webauthn_id:string"
@@ -125,6 +131,12 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
         end
       end
     RUBY
+  end
+
+  def add_session_view
+    FileUtils.mkdir_p("#{destination_root}/app/views/sessions")
+    File.write("#{destination_root}/app/views/sessions/new.html.erb", <<~ERB)
+    ERB
   end
 
   def run_generator_instance
