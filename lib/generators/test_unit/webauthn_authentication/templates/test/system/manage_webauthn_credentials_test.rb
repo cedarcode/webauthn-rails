@@ -5,8 +5,8 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
   include VirtualAuthenticatorTestHelper
 
   def setup
-    @user = users(:one)
-    sign_in_as(@user)
+    user = users(:one)
+    sign_in_as(user)
     @authenticator = add_virtual_authenticator
   end
 
