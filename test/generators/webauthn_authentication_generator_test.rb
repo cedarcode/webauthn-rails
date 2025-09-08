@@ -13,6 +13,7 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     add_routes
     add_application_controller
     add_test_helper
+    add_gemfile
   end
 
   test "assert all files are properly created when user model does not exist" do
@@ -55,6 +56,8 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
 
     assert_file "config/importmap.rb", /pin "@github\/webauthn-json\/browser-ponyfill"/
+
+    assert_includes @bundle_commands, [ "add webauthn", {}, { quiet: true } ]
   end
 
   test "assert all files are properly created when user model already exists" do
@@ -98,6 +101,8 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
 
     assert_file "config/importmap.rb", /pin "@github\/webauthn-json\/browser-ponyfill"/
+
+    assert_includes @bundle_commands, [ "add webauthn", {}, { quiet: true } ]
   end
 
   test "assert all files except for views are created with api flag" do
@@ -126,6 +131,8 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
 
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
+
+    assert_includes @bundle_commands, [ "add webauthn", {}, { quiet: true } ]
   end
 
   private
@@ -174,13 +181,24 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     RUBY
   end
 
+  def add_gemfile
+    File.write(File.join(destination_root, "Gemfile"), <<~CONTENT)
+      source "https://rubygems.org"
+    CONTENT
+  end
+
   def run_generator_instance
+    @bundle_commands = []
+    command_stub ||= ->(command, *args) { @bundle_commands << [ command, *args ] }
+
     @rails_commands = []
     @rails_command_stub ||= ->(command, *_) { @rails_commands << command }
 
-    generator.stub(:rails_command, @rails_command_stub) do
-      capture(:stdout) do
-        generator.invoke_all
+    generator.stub(:bundle_command, command_stub) do
+      generator.stub(:rails_command, @rails_command_stub) do
+        capture(:stdout) do
+          generator.invoke_all
+        end
       end
     end
   end
