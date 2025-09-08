@@ -1,4 +1,4 @@
-require 'bcrypt'
+require "bcrypt"
 
 User.create!(
   email_address: "test@example.com",

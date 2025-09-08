@@ -7,8 +7,8 @@ class WebauthnCredentialsController < ApplicationController
       },
       exclude: Current.user.webauthn_credentials.pluck(:external_id),
       authenticator_selection: {
-          resident_key: 'required',
-          user_verification: 'required'
+          resident_key: "required",
+          user_verification: "required"
         }
     )
 
