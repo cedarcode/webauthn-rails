@@ -8,6 +8,8 @@
 
     <%= stylesheet_link_tag :app %>
     <%= javascript_importmap_tags %>
+
+    <%= capybara_lockstep if defined?(Capybara::Lockstep) %>
   </head>
 
   <body>
