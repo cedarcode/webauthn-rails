@@ -16,6 +16,7 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     add_test_helper
     add_rails_auth_user_model
     add_session_view
+    add_gemfile
   end
 
   test "generates all expected files and successfully runs the Rails authentication generator" do
@@ -49,6 +50,8 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
 
     assert_file "config/importmap.rb", /pin "@github\/webauthn-json\/browser-ponyfill"/
+
+    assert_includes @bundle_commands, [ "add webauthn", {}, { quiet: true } ]
   end
 
   test "assert all files except for views are created with api flag" do
@@ -80,6 +83,8 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
 
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
+
+    assert_includes @bundle_commands, [ "add webauthn", {}, { quiet: true } ]
   end
 
   private
@@ -123,6 +128,12 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     RUBY
   end
 
+  def add_gemfile
+    File.write(File.join(destination_root, "Gemfile"), <<~CONTENT)
+      source "https://rubygems.org"
+    CONTENT
+  end
+
   def add_session_view
     FileUtils.mkdir_p("#{destination_root}/app/views/sessions")
     File.write("#{destination_root}/app/views/sessions/new.html.erb", <<~ERB)
@@ -130,12 +141,17 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
   end
 
   def run_generator_instance
+    @bundle_commands = []
+    command_stub ||= ->(command, *args) { @bundle_commands << [ command, *args ] }
+
     @rails_commands = []
     @rails_command_stub ||= ->(command, *_) { @rails_commands << command }
 
-    generator.stub(:rails_command, @rails_command_stub) do
-      capture(:stdout) do
-        generator.invoke_all
+    generator.stub(:bundle_command, command_stub) do
+      generator.stub(:rails_command, @rails_command_stub) do
+        capture(:stdout) do
+          generator.invoke_all
+        end
       end
     end
   end

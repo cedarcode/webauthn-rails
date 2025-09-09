@@ -1,8 +1,14 @@
 require "rails/generators/base"
 require "rails/generators/active_record/migration"
+if Rails.version >= "8.1"
+  require "rails/generators/bundle_helper"
+else
+  require "generators/webauthn_authentication/bundle_helper"
+end
 
 class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
   include ActiveRecord::Generators::Migration
+  include BundleHelper
 
   source_root File.expand_path("../templates", __FILE__)
 
@@ -46,6 +52,12 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
       run "yarn add @github/webauthn-json/browser-ponyfill"
     else
       puts "You must either be running with node (package.json) or importmap-rails (config/importmap.rb) to use this gem."
+    end
+  end
+
+  def inject_webauthn_dependency
+    unless File.read(File.expand_path("Gemfile", destination_root)).include?('gem "webauthn"')
+      bundle_command("add webauthn", {}, quiet: true)
     end
   end
 
