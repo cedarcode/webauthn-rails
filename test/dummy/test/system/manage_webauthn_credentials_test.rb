@@ -16,6 +16,7 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
 
   test "add credentials and sign in" do
     visit root_path
+    puts "DEBUG: Current path is #{current_path}"
 
     click_on "Add credential"
 
