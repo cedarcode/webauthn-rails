@@ -114,7 +114,6 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
         CREDENTIAL_MIN_AMOUNT = 1
 
         has_many :webauthn_credentials, dependent: :destroy
-        has_many :webauthn_sessions, dependent: :destroy
 
         after_initialize do
           self.webauthn_id ||= WebAuthn.generate_user_id
