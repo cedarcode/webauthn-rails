@@ -40,7 +40,7 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
     visit new_session_path
 
     fill_in "email_address", with: user.email_address
-    fill_in "password", with: "password"
+    fill_in "password", with: "S3cr3tP@ssw0rd!"
 
     click_on "Sign in"
 
