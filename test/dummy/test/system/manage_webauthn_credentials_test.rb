@@ -9,6 +9,8 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
     puts "DEBUG: Signing in as user with email #{user.email_address}"
     sign_in_as(user)
     @authenticator = add_virtual_authenticator
+
+    Capybara::Lockstep.debug = true
   end
 
   def teardown
