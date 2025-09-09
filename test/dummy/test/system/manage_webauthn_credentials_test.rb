@@ -25,6 +25,7 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
     assert_selector "span", text: "Touch ID"
 
     click_on "Sign out"
+    sleep 5
     assert_selector("input[type=submit][value='Sign in']")
 
     click_on "Sign in with Passkey"
