@@ -31,3 +31,5 @@ gem "pry-byebug", "~> 3.11"
 gem "bcrypt", "~> 3.1.7"
 
 gem "webauthn"
+
+gem "capybara-lockstep"
