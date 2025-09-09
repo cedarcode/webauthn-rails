@@ -19,6 +19,7 @@ class WebauthnCredentialsController < ApplicationController
 
   def create
     webauthn_credential = WebAuthn::Credential.from_create(JSON.parse(create_credential_params[:public_key_credential]))
+    puts "DEBUG #{webauthn_credential}"
 
     begin
       webauthn_credential.verify(
@@ -41,6 +42,7 @@ class WebauthnCredentialsController < ApplicationController
         render :new
       end
     rescue WebAuthn::Error => e
+      puts "DEBUG ERROR #{e.message}"
       render json: "Verification failed: #{e.message}", status: :unprocessable_content
     ensure
       session.delete(:current_registration)

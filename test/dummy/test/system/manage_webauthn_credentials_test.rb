@@ -6,6 +6,7 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
 
   def setup
     user = users(:one)
+    puts "DEBUG: Signing in as user with email #{user.email_address}"
     sign_in_as(user)
     @authenticator = add_virtual_authenticator
   end
