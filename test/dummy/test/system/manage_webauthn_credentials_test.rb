@@ -15,10 +15,7 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
   end
 
   test "add credentials and sign in" do
-    visit root_path
-    puts "DEBUG: Current path is #{current_path}"
-
-    click_on "Add credential"
+    visit new_webauthn_credential_path
 
     fill_in("Security Key nickname", with: "Touch ID")
     click_on "Add Security Key"
