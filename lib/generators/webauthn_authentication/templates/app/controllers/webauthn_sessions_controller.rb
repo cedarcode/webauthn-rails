@@ -21,7 +21,7 @@ class WebauthnSessionsController < ApplicationController
     end
 
     begin
-    webauthn_credential.verify(
+      webauthn_credential.verify(
         session[:current_authentication][:challenge] || session[:current_authentication]["challenge"],
         public_key: stored_credential.public_key,
         sign_count: stored_credential.sign_count,
