@@ -14,6 +14,7 @@ class WebauthnSessionsController < ApplicationController
   def create
     webauthn_credential = WebAuthn::Credential.from_get(JSON.parse(session_params[:public_key_credential]))
 
+    puts "DEBUG #{webauthn_credential}"
     stored_credential = WebauthnCredential.find_by(external_id: webauthn_credential.id)
     unless stored_credential
       render json: { errors: [ "Credential not recognized" ] }, status: :unprocessable_content
@@ -21,6 +22,7 @@ class WebauthnSessionsController < ApplicationController
     end
 
     begin
+      puts "DEBUG #{stored_credential}"
       webauthn_credential.verify(
         session[:current_authentication][:challenge] || session[:current_authentication]["challenge"],
         public_key: stored_credential.public_key,
@@ -33,6 +35,7 @@ class WebauthnSessionsController < ApplicationController
 
       redirect_to after_authentication_url
     rescue WebAuthn::Error => e
+      puts "DEBUG #{e.message}"
       render json: "Verification failed: #{e.message}", status: :unprocessable_entity
     ensure
       session.delete(:current_authentication)
