@@ -2,17 +2,9 @@
 
 [![Gem Version](https://badge.fury.io/rb/webauthn-rails.svg)](https://badge.fury.io/rb/webauthn-rails)
 
-This gem provides a Rails generator that sets up a basic passkeys-based authentication system.
-
-## Features
-
-- 🔐 **Passwordless Authentication**: Complete user registration and sign-in using WebAuthn
-- 🔑 **Multiple Authenticators**: Support for security keys, biometrics, and platform authenticators
-- 📱 **Cross-Platform**: Works on desktop and mobile browsers with WebAuthn support
-- ⚡ **Stimulus Integration**: Pre-built Stimulus controllers for seamless frontend integration
-- 🛡️ **Security Best Practices**: Built on the robust [webauthn-ruby](https://github.com/cedarcode/webauthn-ruby) library
-- 🎨 **Customizable Views**: Generate views that you can customize to match your application's design
-- 🔧 **Rails Generator**: One-command setup with intelligent detection of existing User models
+Webauthn-Rails is a gem that adds passkeys authentication to your application by building on top of the Rails Authentication system. It follows the [WebAuthn specification](https://www.w3.org/TR/webauthn-2/)
+ and comes with a generator that produces a fully working setup: it includes the Rails Authentication files along with the additional WebAuthn components required for seamless integration. On the frontend, it leverages [Stimulus](https://stimulus.hotwired.dev/) for handling WebAuthn interactions, while on the backend it relies on the [WebAuthn Ruby gem](https://github.com/cedarcode/webauthn-ruby)
+ to perform the server-side operations—giving you a ready-to-use, secure, and modern authentication system with minimal effort.
 
 ## Requirements
 
