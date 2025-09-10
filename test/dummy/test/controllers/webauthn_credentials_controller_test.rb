@@ -2,7 +2,7 @@ require "test_helper"
 
 class WebauthnCredentialsControllerTest < ActionDispatch::IntegrationTest
   test "initiates Passkey creation when user is authenticated" do
-    user = User.create!(email_address: "alice@example.com", password: "password")
+    user = User.create!(email_address: "alice@example.com", password: BCrypt::Password.create("S3cr3tP@ssw0rd!"))
     sign_in_as user
     post create_options_webauthn_credentials_url
 

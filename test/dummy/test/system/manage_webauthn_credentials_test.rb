@@ -5,7 +5,7 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
   include VirtualAuthenticatorTestHelper
 
   def setup
-    user = users(:one)
+    user = User.create!(email_address: "alice@example.com", password: BCrypt::Password.create("S3cr3tP@ssw0rd!"))
     sign_in_as(user)
     @authenticator = add_virtual_authenticator
   end
@@ -41,7 +41,7 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
     visit new_session_path
 
     fill_in "email_address", with: user.email_address
-    fill_in "password", with: "password"
+    fill_in "password", with: user.password
 
     click_on "Sign in"
 
