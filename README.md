@@ -2,9 +2,9 @@
 
 [![Gem Version](https://badge.fury.io/rb/webauthn-rails.svg)](https://badge.fury.io/rb/webauthn-rails)
 
-Webauthn-Rails is a gem that adds passkeys authentication to your application by building on top of the Rails Authentication system. It follows the [WebAuthn specification](https://www.w3.org/TR/webauthn-2/)
- and comes with a generator that produces a fully working setup: it includes the Rails Authentication files along with the additional WebAuthn components required for seamless integration. On the frontend, it leverages [Stimulus](https://stimulus.hotwired.dev/) for handling WebAuthn interactions, while on the backend it relies on the [WebAuthn Ruby gem](https://github.com/cedarcode/webauthn-ruby)
- to perform the server-side operations—giving you a ready-to-use, secure, and modern authentication system with minimal effort.
+**Webauthn-Rails** adds passkeys authentication to your Rails app with almost no setup. Built on top of the [Rails Authentication system](https://guides.rubyonrails.org/security.html) and following the [WebAuthn specification](https://www.w3.org/TR/webauthn-3/)
+, it ships with a generator that installs everything you need for a secure, passwordless login flow. Webauthn-Rails combines [Stimulus](https://stimulus.hotwired.dev/) for the frontend experience with the [WebAuthn Ruby gem](https://github.com/cedarcode/webauthn-ruby) on the server side—giving you a ready-to-use, modern, and future-proof authentication system.
+
 
 ## Requirements
 
@@ -35,14 +35,14 @@ rails generate webauthn:rails:install
 
 This generator will:
 
-- Create authentication controllers (`RegistrationsController`, `SessionsController`, `WebauthnCredentialsController`)
-- Add an `Authentication` concern to your `ApplicationController`
-- Generate view templates for registration and sign-in
-- Create or modify your `User` model with WebAuthn associations
-- Generate database migrations for users and WebAuthn credentials
-- Add routes for authentication endpoints
-- Install and configure the Stimulus controller for WebAuthn interactions
-- Set up the WebAuthn initializer
+- Invoke the [Rails Authentication generator](https://github.com/rails/rails/blob/main/railties/lib/rails/generators/rails/authentication/authentication_generator.rb).
+- Create authentication controllers - adds `WebauthnSessionsController` and `WebauthnCredentialsController` for handling passkey login and credential management.
+- Enhance your application views with passkey authentication.
+- Update the `User` model.
+- Generate database migrations for WebAuthn credentials.
+- Add authentication routes.
+- Install and configure a Stimulus controller for WebAuthn interactions.
+- Create the WebAuthn initializer.
 
 ### Post-Installation Configuration
 
@@ -69,27 +69,23 @@ $ bin/rails db:migrate
 
 ## How it Works
 
-### User Registration
-
-Users can register by visiting `/registration/new`. The registration flow:
-
-1. User enters a username and nickname for their authenticator
-2. JavaScript triggers the WebAuthn credential creation ceremony
-3. User authenticates with their chosen method (security key, biometric, etc.)
-4. New user account and credential are saved
-
 ### User Sign-In
 
-Users can sign in by visiting `/session/new`. The sign-in flow:
+Users can sign in by visiting `/session/new`. The generated setup supports two ways to log in:
 
-1. User enters their username
-2. JavaScript triggers the WebAuthn authentication ceremony
-3. User authenticates with their registered authenticator
-4. User is signed in and redirected
+- Email and password – via the standard Rails Authentication flow.
+- Passkey (WebAuthn) – by selecting a [passkey](https://www.w3.org/TR/webauthn-3/#discoverable-credential) linked to the user’s account.
 
-### Adding Additional Credentials
+The WebAuthn sign-in flow works as follows:
+1. User clicks "Sign in with Passkey", starting a WebAuthn authentication ceremony.
+2. Browser shows available passkeys.
+3. User selects a passkey and verifies with their [authenticator](https://www.w3.org/TR/webauthn-3/#webauthn-authenticator).
+4. The server verifies the response and signs in the user.
 
-Signed-in users can add more authenticators by visiting `/webauthn_credentials/new`.
+
+### Adding Passkeys
+
+Signed-in users can add more passkeys by visiting `/webauthn_credentials/new`.
 
 ### Routes
 
