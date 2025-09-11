@@ -17,12 +17,6 @@ module TestUnit
 
       def create_test_helper_files
         template "test/test_helpers/virtual_authenticator_test_helper.rb"
-        template "test/test_helpers/session_test_helper.rb"
-      end
-
-      def inject_into_test_helper
-        inject_into_file "test/test_helper.rb", "require_relative \"test_helpers/session_test_helper\"\n", after: "require \"rails/test_help\"\n"
-        inject_into_class "test/test_helper.rb", "TestCase", "    include SessionTestHelper\n"
       end
 
       def inject_user_into_fixture

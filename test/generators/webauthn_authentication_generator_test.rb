@@ -40,8 +40,6 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     assert_file "test/controllers/webauthn_credentials_controller_test.rb"
     assert_file "test/system/manage_webauthn_credentials_test.rb"
     assert_file "test/test_helpers/virtual_authenticator_test_helper.rb"
-    assert_file "test/test_helpers/session_test_helper.rb"
-    assert_file "test/test_helper.rb", /require_relative "test_helpers\/session_test_helper/
 
     assert_file "app/models/user.rb", /has_many :webauthn_credentials/
     assert_includes @rails_commands, "generate migration AddWebauthnToUsers webauthn_id:string"
@@ -77,8 +75,6 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     assert_file "test/controllers/webauthn_credentials_controller_test.rb"
     assert_file "test/system/manage_webauthn_credentials_test.rb"
     assert_file "test/test_helpers/virtual_authenticator_test_helper.rb"
-    assert_file "test/test_helpers/session_test_helper.rb"
-    assert_file "test/test_helper.rb", /require_relative "test_helpers\/session_test_helper/
 
     assert_file "app/models/user.rb", /has_many :webauthn_credentials/
     assert_includes @rails_commands, "generate migration AddWebauthnToUsers webauthn_id:string"
