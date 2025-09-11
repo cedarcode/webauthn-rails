@@ -7,3 +7,7 @@ one:
 two:
   email_address: two@example.com
   password_digest: <%= password_digest %>
+
+user_with_strong_password:
+  email_address: alice@example.com
+  password_digest: <%= BCrypt::Password.create("S3cr3tP@ssw0rd!") %>

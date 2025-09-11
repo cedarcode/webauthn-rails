@@ -17,6 +17,7 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     add_rails_auth_user_model
     add_session_view
     add_gemfile
+    add_user_fixture
   end
 
   test "generates all expected files and successfully runs the Rails authentication generator" do
@@ -142,6 +143,21 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     FileUtils.mkdir_p("#{destination_root}/app/views/sessions")
     File.write("#{destination_root}/app/views/sessions/new.html.erb", <<~ERB)
     ERB
+  end
+
+  def add_user_fixture
+    FileUtils.mkdir_p("#{destination_root}/test/fixtures")
+    File.write("#{destination_root}/test/fixtures/users.yml", <<~YAML)
+    <% password_digest = BCrypt::Password.create("password") %>
+
+    one:
+      email_address: one@example.com
+      password_digest: <%= password_digest %>
+
+    two:
+      email_address: two@example.com
+      password_digest: <%= password_digest %>
+    YAML
   end
 
   def run_generator_instance

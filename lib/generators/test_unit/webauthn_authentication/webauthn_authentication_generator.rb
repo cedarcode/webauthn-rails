@@ -24,6 +24,17 @@ module TestUnit
         inject_into_file "test/test_helper.rb", "require_relative \"test_helpers/session_test_helper\"\n", after: "require \"rails/test_help\"\n"
         inject_into_class "test/test_helper.rb", "TestCase", "    include SessionTestHelper\n"
       end
+
+      def inject_user_into_fixture
+        append_to_file "test/fixtures/users.yml" do
+          <<~RUBY
+
+          user_with_strong_password:
+            email_address: alice@example.com
+            password_digest: <%= BCrypt::Password.create("S3cr3tP@ssw0rd!") %>
+          RUBY
+        end
+      end
     end
   end
 end
