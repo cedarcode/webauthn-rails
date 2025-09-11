@@ -1,4 +1,4 @@
-class WebauthnCredentialsController < ApplicationController
+class PasskeysController < ApplicationController
   def create_options
     create_options = WebAuthn::Credential.options_for_create(
       user: {

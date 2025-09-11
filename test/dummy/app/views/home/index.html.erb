@@ -18,10 +18,10 @@
       </span>
 
       <% if Current.user.can_delete_credentials? %>
-        <%= link_to "Delete credential", webauthn_credential_path(credential), data: { turbo_method: :delete } %>
+        <%= link_to "Delete credential", passkey_path(credential), data: { turbo_method: :delete } %>
       <% end %>
     </li>
   <% end %>
 </ul>
 
-<%= link_to 'Add credential', new_webauthn_credential_path %>
+<%= link_to 'Add credential', new_passkey_path %>
