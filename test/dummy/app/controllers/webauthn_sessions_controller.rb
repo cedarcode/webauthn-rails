@@ -1,8 +1,5 @@
 class WebauthnSessionsController < ApplicationController
-  allow_unauthenticated_access only: %i[new get_options create]
-
-  def new
-  end
+  allow_unauthenticated_access only: %i[get_options create]
 
   def get_options
     get_options = WebAuthn::Credential.options_for_get(user_verification: "required")

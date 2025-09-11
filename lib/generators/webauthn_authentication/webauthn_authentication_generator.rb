@@ -71,7 +71,7 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
 
     inject_into_file "config/routes.rb", after: "Rails.application.routes.draw do\n" do
       <<-RUBY.strip_heredoc.indent(2)
-        resource :webauthn_session, only: [ :new, :create, :destroy ] do
+        resource :webauthn_session, only: [ :create, :destroy ] do
           post :get_options, on: :collection
         end
 
