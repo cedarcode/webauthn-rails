@@ -15,15 +15,4 @@ class WebauthnCredentialsControllerTest < ActionDispatch::IntegrationTest
     assert_response :redirect
     assert_redirected_to new_session_url
   end
-
-  private
-
-  def sign_in_as(user)
-    Current.session = user.sessions.create!
-
-    ActionDispatch::TestRequest.create.cookie_jar.tap do |cookie_jar|
-      cookie_jar.signed[:session_id] = Current.session.id
-      cookies[:session_id] = cookie_jar[:session_id]
-    end
-  end
 end
