@@ -22,12 +22,8 @@ module Erb
                 action: "webauthn-credentials#get:prevent",
                 "webauthn-credentials-options-url-value": get_options_webauthn_session_path,
               }) do |f| %>
-
                 <%= f.hidden_field :public_key_credential, data: { "webauthn-credentials-target": "credentialHiddenInput" } %>
-
-                <div class="actions">
-                  <%= f.submit "Sign In with Passkey"%>
-                </div>
+                <%= f.submit "Sign In with Passkey"%>
             <% end %>
           ERB
         end
