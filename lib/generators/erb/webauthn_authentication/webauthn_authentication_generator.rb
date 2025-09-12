@@ -12,7 +12,7 @@ module Erb
 
       def inject_into_rails_session_view
         append_to_file "app/views/sessions/new.html.erb" do
-          <<-ERB.strip_heredoc.indent(2)
+          <<-ERB.strip_heredoc
             <%= form_with(
               scope: :session,
               url: webauthn_session_path,
