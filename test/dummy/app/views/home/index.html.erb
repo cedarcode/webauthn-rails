@@ -5,7 +5,7 @@
 <%= tag.div(flash[:notice], style: "color:green") if flash[:notice] %>
 
 <ul>
-  <% Current.user.webauthn_credentials.each do |credential| %>
+  <% Current.user.passkeys.each do |credential| %>
     <li>
       <span>
         <span>

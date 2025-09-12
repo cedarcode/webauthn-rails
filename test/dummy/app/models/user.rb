@@ -6,13 +6,14 @@ class User < ApplicationRecord
 
   CREDENTIAL_MIN_AMOUNT = 1
 
-  has_many :webauthn_credentials, dependent: :destroy
+  has_many :second_factor_webauthn_credentials, -> { second_factor }, class_name: "WebauthnCredential"
+  has_many :passkeys, -> { passkey }, class_name: "WebauthnCredential"
 
   after_initialize do
     self.webauthn_id ||= WebAuthn.generate_user_id
   end
 
   def can_delete_credentials?
-    webauthn_credentials.size > CREDENTIAL_MIN_AMOUNT
+    passkeys.size > CREDENTIAL_MIN_AMOUNT
   end
 end

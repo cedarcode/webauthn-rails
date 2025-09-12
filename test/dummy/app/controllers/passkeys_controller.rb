@@ -5,7 +5,7 @@ class PasskeysController < ApplicationController
         id: Current.user.webauthn_id,
         name: Current.user.email_address
       },
-      exclude: Current.user.webauthn_credentials.pluck(:external_id),
+      exclude: Current.user.passkeys.pluck(:external_id),
       authenticator_selection: {
           resident_key: "required",
           user_verification: "required"
@@ -18,22 +18,22 @@ class PasskeysController < ApplicationController
   end
 
   def create
-    webauthn_credential = WebAuthn::Credential.from_create(JSON.parse(create_credential_params[:public_key_credential]))
+    passkey = WebAuthn::Credential.from_create(JSON.parse(create_credential_params[:public_key_credential]))
 
     begin
-      webauthn_credential.verify(
+      passkey.verify(
         session[:current_registration][:challenge] || session[:current_registration]["challenge"],
         user_verification: true,
       )
 
-      credential = Current.user.webauthn_credentials.find_or_initialize_by(
-        external_id: webauthn_credential.id
+      credential = Current.user.passkeys.find_or_initialize_by(
+        external_id: passkey.id
       )
 
       if credential.update(
         nickname: create_credential_params[:nickname],
-        public_key: webauthn_credential.public_key,
-        sign_count: webauthn_credential.sign_count
+        public_key: passkey.public_key,
+        sign_count: passkey.sign_count
       )
         redirect_to root_path, notice: "Security Key registered successfully"
       else
@@ -49,7 +49,7 @@ class PasskeysController < ApplicationController
 
   def destroy
     if Current.user&.can_delete_credentials?
-      Current.user.webauthn_credentials.destroy(params[:id])
+      Current.user.passkeys.destroy(params[:id])
     end
 
     redirect_to root_path, notice: "Security Key deleted successfully"
