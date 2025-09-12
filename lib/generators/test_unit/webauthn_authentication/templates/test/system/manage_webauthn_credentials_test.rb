@@ -29,7 +29,7 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
     click_on "Sign out"
     assert_selector("input[type=submit][value='Sign in']")
 
-    click_on "Sign in with Passkey"
+    click_on "Sign In with Passkey"
 
     assert_selector "h3", text: "Your Security Keys"
     assert_current_path "/"

@@ -26,7 +26,7 @@ module Erb
                 <%= f.hidden_field :public_key_credential, data: { "webauthn-credentials-target": "credentialHiddenInput" } %>
 
                 <div class="actions">
-                  <%= f.submit "Ingresar con Passkey"%>
+                  <%= f.submit "Sign In with Passkey"%>
                 </div>
             <% end %>
           ERB
