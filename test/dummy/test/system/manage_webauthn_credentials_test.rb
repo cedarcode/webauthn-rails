@@ -17,10 +17,10 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
   test "add credentials and sign in" do
     visit root_path
 
-    click_on "Add credential"
+    click_on "Add Passkey"
 
-    fill_in("Security Key nickname", with: "Touch ID")
-    click_on "Add Security Key"
+    fill_in("Passkey nickname", with: "Touch ID")
+    click_on "Add Passkey"
 
     assert_text "Security Key registered successfully"
     assert_selector "span", text: "Touch ID"

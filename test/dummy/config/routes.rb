@@ -10,5 +10,9 @@ Rails.application.routes.draw do
     post :create_options, on: :collection
   end
 
+  resources :second_factor_webauthn_credentials, only: [ :new, :create, :destroy ] do
+    post :create_options, on: :collection
+  end
+
   root "home#index"
 end

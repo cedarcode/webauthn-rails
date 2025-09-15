@@ -1,27 +1,21 @@
 <%= link_to 'Sign out', session_path, data: { turbo_method: :delete } %>
 
-<h3>Your Security Keys</h3>
 <%= tag.div(flash[:alert], style: "color:red") if flash[:alert] %>
 <%= tag.div(flash[:notice], style: "color:green") if flash[:notice] %>
 
-<ul>
-  <% Current.user.passkeys.each do |credential| %>
-    <li>
-      <span>
-        <span>
-          <%= credential.nickname %>
-        </span>
+<%= render partial: "credentials_list", locals: {
+  title: "Your Passkeys",
+  credentials: Current.user.passkeys,
+  can_delete: -> { Current.user.can_delete_passkeys? },
+  delete_path: ->(credential) { passkey_path(credential) }
+} %>
 
-        <span>
-          <%= credential.external_id %>
-        </span>
-      </span>
+<%= render partial: "credentials_list", locals: {
+  title: "Your Second Factor Keys",
+  credentials: Current.user.second_factor_webauthn_credentials,
+  can_delete: -> { Current.user.can_delete_second_factor_credentials? },
+  delete_path: ->(credential) { second_factor_webauthn_credential_path(credential) }
+} %>
 
-      <% if Current.user.can_delete_credentials? %>
-        <%= link_to "Delete credential", passkey_path(credential), data: { turbo_method: :delete } %>
-      <% end %>
-    </li>
-  <% end %>
-</ul>
-
-<%= link_to 'Add credential', new_passkey_path %>
+<div>Passkeys: <%= link_to 'Add Passkey', new_passkey_path %></div>
+<div>2FA: <%= link_to 'Add Second Factor Key', new_second_factor_webauthn_credential_path %></div>

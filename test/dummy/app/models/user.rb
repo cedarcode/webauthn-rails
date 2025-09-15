@@ -13,7 +13,11 @@ class User < ApplicationRecord
     self.webauthn_id ||= WebAuthn.generate_user_id
   end
 
-  def can_delete_credentials?
+  def can_delete_passkeys?
     passkeys.size > CREDENTIAL_MIN_AMOUNT
+  end
+
+  def can_delete_second_factor_credentials?
+    second_factor_webauthn_credentials.size > CREDENTIAL_MIN_AMOUNT
   end
 end

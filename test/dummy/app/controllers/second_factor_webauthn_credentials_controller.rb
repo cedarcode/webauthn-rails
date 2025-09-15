@@ -1,4 +1,4 @@
-class PasskeysController < ApplicationController
+class SecondFactorWebauthnCredentialsController < ApplicationController
   def create_options
     create_options = WebAuthn::Credential.options_for_create(
       user: {
@@ -7,7 +7,7 @@ class PasskeysController < ApplicationController
       },
       exclude: Current.user.passkeys.pluck(:external_id),
       authenticator_selection: {
-          resident_key: "required",
+          resident_key: "discouraged",
           user_verification: "required"
         }
     )
@@ -18,22 +18,22 @@ class PasskeysController < ApplicationController
   end
 
   def create
-    passkey = WebAuthn::Credential.from_create(JSON.parse(create_credential_params[:public_key_credential]))
+    webauthn_credential = WebAuthn::Credential.from_create(JSON.parse(create_credential_params[:public_key_credential]))
 
     begin
-      passkey.verify(
+      webauthn_credential.verify(
         session[:current_registration][:challenge] || session[:current_registration]["challenge"],
         user_verification: true,
       )
 
-      credential = Current.user.passkeys.find_or_initialize_by(
-        external_id: passkey.id
+      credential = Current.user.second_factor_webauthn_credentials.find_or_initialize_by(
+        external_id: webauthn_credential.id
       )
 
       if credential.update(
         nickname: create_credential_params[:nickname],
-        public_key: passkey.public_key,
-        sign_count: passkey.sign_count
+        public_key: webauthn_credential.public_key,
+        sign_count: webauthn_credential.sign_count
       )
         redirect_to root_path, notice: "Security Key registered successfully"
       else
@@ -48,8 +48,8 @@ class PasskeysController < ApplicationController
   end
 
   def destroy
-    if Current.user&.can_delete_passkeys?
-      Current.user.passkeys.destroy(params[:id])
+    if Current.user&.can_delete_second_factor_credentials?
+      Current.user.second_factor_webauthn_credentials.destroy(params[:id])
     end
 
     redirect_to root_path, notice: "Security Key deleted successfully"
