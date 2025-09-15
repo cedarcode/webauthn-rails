@@ -30,7 +30,7 @@ class WebauthnSessionsController < ApplicationController
 
       redirect_to after_authentication_url
     rescue WebAuthn::Error => e
-      render json: "Verification failed: #{e.message}", status: :unprocessable_entity
+      render json: "Verification failed: #{e.message}", status: :unprocessable_content
     ensure
       session.delete(:current_authentication)
     end
