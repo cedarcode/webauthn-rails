@@ -14,5 +14,9 @@ Rails.application.routes.draw do
     post :create_options, on: :collection
   end
 
+  resource :second_factor_authentication, controller: "second_factor_authentication", only: [:new, :create] do
+    post :get_options, on: :collection
+  end
+
   root "home#index"
 end

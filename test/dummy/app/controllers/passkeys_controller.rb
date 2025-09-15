@@ -5,7 +5,7 @@ class PasskeysController < ApplicationController
         id: Current.user.webauthn_id,
         name: Current.user.email_address
       },
-      exclude: Current.user.passkeys.pluck(:external_id),
+      exclude: Current.user.webauthn_credentials.pluck(:external_id),
       authenticator_selection: {
           resident_key: "required",
           user_verification: "required"

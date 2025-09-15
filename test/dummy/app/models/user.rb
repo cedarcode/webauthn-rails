@@ -6,6 +6,7 @@ class User < ApplicationRecord
 
   CREDENTIAL_MIN_AMOUNT = 1
 
+  has_many :webauthn_credentials
   has_many :second_factor_webauthn_credentials, -> { second_factor }, class_name: "WebauthnCredential"
   has_many :passkeys, -> { passkey }, class_name: "WebauthnCredential"
 
@@ -19,5 +20,9 @@ class User < ApplicationRecord
 
   def can_delete_second_factor_credentials?
     second_factor_webauthn_credentials.size > CREDENTIAL_MIN_AMOUNT
+  end
+
+  def second_factor_enabled?
+    webauthn_credentials.any?
   end
 end

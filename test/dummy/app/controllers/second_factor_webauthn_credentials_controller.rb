@@ -5,11 +5,11 @@ class SecondFactorWebauthnCredentialsController < ApplicationController
         id: Current.user.webauthn_id,
         name: Current.user.email_address
       },
-      exclude: Current.user.passkeys.pluck(:external_id),
+      exclude: Current.user.webauthn_credentials.pluck(:external_id),
       authenticator_selection: {
-          resident_key: "discouraged",
-          user_verification: "required"
-        }
+        resident_key: "discouraged",
+        user_verification: "required"
+      }
     )
 
     session[:current_registration] = { challenge: create_options.challenge }
@@ -31,9 +31,9 @@ class SecondFactorWebauthnCredentialsController < ApplicationController
       )
 
       if credential.update(
-        nickname: create_credential_params[:nickname],
-        public_key: webauthn_credential.public_key,
-        sign_count: webauthn_credential.sign_count
+          nickname: create_credential_params[:nickname],
+          public_key: webauthn_credential.public_key,
+          sign_count: webauthn_credential.sign_count
       )
         redirect_to root_path, notice: "Security Key registered successfully"
       else
