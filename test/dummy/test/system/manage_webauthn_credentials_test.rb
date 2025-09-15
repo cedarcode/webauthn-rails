@@ -31,7 +31,33 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
 
     click_on "Sign In with Passkey"
 
-    assert_selector "h3", text: "Your Security Keys"
+    assert_selector "h3", text: "Your Passkeys"
+    assert_current_path "/"
+  end
+
+  test "sign in with 2FA WebAuthn credential" do
+    visit root_path
+
+    click_on "Add Second Factor Key"
+
+    fill_in("Security Key nickname", with: "Touch ID")
+    click_on "Add Security Key"
+
+    assert_text "Security Key registered successfully"
+    assert_selector "span", text: "Touch ID"
+    assert_current_path "/"
+
+    click_on "Sign out"
+    assert_selector("input[type=submit][value='Sign in']")
+
+    fill_in "email_address", with: "alice@example.com"
+    fill_in "password", with: "S3cr3tP@ssw0rd!"
+    click_on "Sign in"
+
+    assert_selector "h3", text: "Two-factor authentication"
+    click_on "Sign In With Security Key"
+
+    assert_selector "h3", text: "Your Passkeys"
     assert_current_path "/"
   end
 
@@ -45,6 +71,6 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
 
     click_on "Sign in"
 
-    assert_selector "h3", text: "Your Security Keys"
+    assert_selector "h3", text: "Your Passkeys"
   end
 end
