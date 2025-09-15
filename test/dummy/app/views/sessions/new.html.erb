@@ -1,25 +1,24 @@
-<h2>Sign in</h2>
+<%= tag.div(flash[:alert], style: "color:red") if flash[:alert] %>
+<%= tag.div(flash[:notice], style: "color:green") if flash[:notice] %>
+
+<%= form_with url: session_path do |form| %>
+  <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address] %><br>
+  <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72 %><br>
+  <%= form.submit "Sign in" %>
+<% end %>
+<br>
+
+<%= link_to "Forgot password?", new_password_path %>
 
 <%= form_with(
   scope: :session,
-  url: session_path,
-  id: "new-session",
+  url: webauthn_session_path,
+  method: :post,
   data: {
     controller: "webauthn-credentials",
     action: "webauthn-credentials#get:prevent",
-    "webauthn-credentials-options-url-value": get_options_session_path,
-  }) do |form| %>
-
-  <div class="field">
-    <p><%= form.label :username %></p>
-    <p><%= form.text_field :username, autofocus: true, autocapitalize: "none", required: true %></p>
-  </div>
-
-  <%= form.hidden_field :public_key_credential, data: { "webauthn-credentials-target": "credentialHiddenInput" } %>
-
-  <div class="actions">
-    <%= form.submit "Sign in" %>
-  </div>
+    "webauthn-credentials-options-url-value": get_options_webauthn_session_path,
+  }) do |f| %>
+    <%= f.hidden_field :public_key_credential, data: { "webauthn-credentials-target": "credentialHiddenInput" } %>
+    <%= f.submit "Sign In with Passkey"%>
 <% end %>
-
-<%= link_to "Sign up", new_registration_path %>

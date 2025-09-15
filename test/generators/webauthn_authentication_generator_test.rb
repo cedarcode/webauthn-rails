@@ -1,6 +1,8 @@
 require "test_helper"
 require "rails/generators/test_case"
 require "generators/webauthn_authentication/webauthn_authentication_generator"
+require "minitest/stub_any_instance"
+require "rails/generators/rails/authentication/authentication_generator"
 
 class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
   tests WebauthnAuthenticationGenerator
@@ -11,91 +13,38 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     add_config_folder
     add_importmap
     add_routes
-    add_application_controller
     add_test_helper
+    add_rails_auth_user_model
+    add_session_view
     add_gemfile
   end
 
-  test "assert all files are properly created when user model does not exist" do
+  test "generates all expected files and successfully runs the Rails authentication generator" do
     generator([ destination_root ], [ "--test-framework=test_unit" ])
-    run_generator_instance
 
-    assert_file "app/controllers/registrations_controller.rb"
-    assert_file "app/controllers/sessions_controller.rb"
+    Rails::Generators::AuthenticationGenerator.stub_any_instance(:invoke_all, nil) do
+      run_generator_instance
+    end
+
+    assert_file "app/controllers/webauthn_sessions_controller.rb"
     assert_file "app/controllers/webauthn_credentials_controller.rb"
-    assert_file "app/controllers/concerns/authentication.rb"
-
-    assert_file "app/controllers/application_controller.rb", /include Authentication/
 
     assert_file "app/views/webauthn_credentials/new.html.erb"
-    assert_file "app/views/registrations/new.html.erb"
-    assert_file "app/views/sessions/new.html.erb"
 
     assert_file "app/javascript/controllers/webauthn_credentials_controller.js"
 
     assert_file "config/initializers/webauthn.rb", /WebAuthn.configure/
 
-    assert_file "test/controllers/registrations_controller_test.rb"
-    assert_file "test/controllers/sessions_controller_test.rb"
-    assert_file "test/system/add_credential_test.rb"
-    assert_file "test/system/registration_test.rb"
-    assert_file "test/system/sign_in_test.rb"
+    assert_file "test/controllers/webauthn_sessions_controller_test.rb"
+    assert_file "test/controllers/webauthn_credentials_controller_test.rb"
+    assert_file "test/system/manage_webauthn_credentials_test.rb"
     assert_file "test/test_helpers/virtual_authenticator_test_helper.rb"
 
     assert_file "app/models/user.rb", /has_many :webauthn_credentials/
-    assert_includes @rails_commands, "generate migration CreateUsers username:string:uniq webauthn_id:string"
+    assert_includes @rails_commands, "generate migration AddWebauthnToUsers webauthn_id:string"
 
     assert_file "app/models/webauthn_credential.rb", /belongs_to :user/
     assert_includes @rails_commands, "generate migration CreateWebauthnCredentials user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"
-
-    assert_file "app/models/session.rb", /belongs_to :user/
-    assert_file "app/models/current.rb", /delegate :user, to: :session, allow_nil: true/
-    assert_includes @rails_commands, "generate migration CreateSessions user:references ip_address:string user_agent:string --force"
-
-    assert_file "config/routes.rb", /Rails.application.routes.draw do/
-    assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
-
-    assert_file "config/importmap.rb", /pin "@github\/webauthn-json\/browser-ponyfill"/
-
-    assert_includes @bundle_commands, [ "add webauthn", {}, { quiet: true } ]
-  end
-
-  test "assert all files are properly created when user model already exists" do
-    add_user_model
-    generator([ destination_root ], [ "--test-framework=test_unit" ])
-    run_generator_instance
-
-    assert_file "app/controllers/registrations_controller.rb"
-    assert_file "app/controllers/sessions_controller.rb"
-    assert_file "app/controllers/webauthn_credentials_controller.rb"
-    assert_file "app/controllers/concerns/authentication.rb"
-
-    assert_file "app/controllers/application_controller.rb", /include Authentication/
-
-    assert_file "app/views/webauthn_credentials/new.html.erb"
-    assert_file "app/views/registrations/new.html.erb"
-    assert_file "app/views/sessions/new.html.erb"
-
-    assert_file "app/javascript/controllers/webauthn_credentials_controller.js"
-
-    assert_file "config/initializers/webauthn.rb", /WebAuthn.configure/
-
-    assert_file "test/controllers/registrations_controller_test.rb"
-    assert_file "test/controllers/sessions_controller_test.rb"
-    assert_file "test/system/add_credential_test.rb"
-    assert_file "test/system/registration_test.rb"
-    assert_file "test/system/sign_in_test.rb"
-    assert_file "test/test_helpers/virtual_authenticator_test_helper.rb"
-
-    assert_file "app/models/user.rb", /has_many :webauthn_credentials/
-    assert_includes @rails_commands, "generate migration AddWebauthnToUsers username:string:uniq webauthn_id:string"
-
-    assert_file "app/models/webauthn_credential.rb", /belongs_to :user/
-    assert_includes @rails_commands, "generate migration CreateWebauthnCredentials user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"
-
-    assert_file "app/models/session.rb", /belongs_to :user/
-    assert_file "app/models/current.rb", /delegate :user, to: :session, allow_nil: true/
-    assert_includes @rails_commands, "generate migration CreateSessions user:references ip_address:string user_agent:string --force"
 
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
@@ -106,26 +55,29 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
   end
 
   test "assert all files except for views are created with api flag" do
-    generator([ destination_root ], [ "--api" ])
-    run_generator_instance
+    generator([ destination_root ], [ "--api", "--test-framework=test_unit" ])
 
-    assert_file "app/controllers/registrations_controller.rb"
-    assert_file "app/controllers/sessions_controller.rb"
+    Rails::Generators::AuthenticationGenerator.stub_any_instance(:invoke_all, nil) do
+      run_generator_instance
+    end
+
+    assert_file "app/controllers/webauthn_sessions_controller.rb"
     assert_file "app/controllers/webauthn_credentials_controller.rb"
-    assert_file "app/controllers/concerns/authentication.rb"
-
-    assert_file "app/controllers/application_controller.rb", /include Authentication/
 
     assert_no_file "app/views/webauthn_credentials/new.html.erb"
-    assert_no_file "app/views/registrations/new.html.erb"
-    assert_no_file "app/views/sessions/new.html.erb"
 
     assert_file "app/javascript/controllers/webauthn_credentials_controller.js"
 
     assert_file "config/initializers/webauthn.rb", /WebAuthn.configure/
 
+    assert_file "test/controllers/webauthn_sessions_controller_test.rb"
+    assert_file "test/controllers/webauthn_credentials_controller_test.rb"
+    assert_file "test/system/manage_webauthn_credentials_test.rb"
+    assert_file "test/test_helpers/virtual_authenticator_test_helper.rb"
+
     assert_file "app/models/user.rb", /has_many :webauthn_credentials/
-    assert_includes @rails_commands, "generate migration CreateUsers username:string:uniq webauthn_id:string"
+    assert_includes @rails_commands, "generate migration AddWebauthnToUsers webauthn_id:string"
+
     assert_file "app/models/webauthn_credential.rb", /belongs_to :user/
     assert_includes @rails_commands, "generate migration CreateWebauthnCredentials user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"
 
@@ -152,20 +104,15 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     CONTENT
   end
 
-  def add_user_model
+  def add_rails_auth_user_model
     app_folder = FileUtils.mkdir_p(File.join(destination_root, "app"))
     FileUtils.mkdir_p(File.join(app_folder, "models"))
     File.write(File.join(destination_root, "app", "models", "user.rb"), <<~CONTENT)
       class User < ApplicationRecord
-      end
-    CONTENT
-  end
+        has_secure_password
+        has_many :sessions, dependent: :destroy
 
-  def add_application_controller
-    app_folder = FileUtils.mkdir_p(File.join(destination_root, "app"))
-    FileUtils.mkdir_p(File.join(app_folder, "controllers"))
-    File.write(File.join(destination_root, "app", "controllers", "application_controller.rb"), <<~CONTENT)
-      class ApplicationController < ActionController::Base
+        normalizes :email_address, with: ->(e) { e.strip.downcase }
       end
     CONTENT
   end
@@ -185,6 +132,12 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     File.write(File.join(destination_root, "Gemfile"), <<~CONTENT)
       source "https://rubygems.org"
     CONTENT
+  end
+
+  def add_session_view
+    FileUtils.mkdir_p("#{destination_root}/app/views/sessions")
+    File.write("#{destination_root}/app/views/sessions/new.html.erb", <<~ERB)
+    ERB
   end
 
   def run_generator_instance

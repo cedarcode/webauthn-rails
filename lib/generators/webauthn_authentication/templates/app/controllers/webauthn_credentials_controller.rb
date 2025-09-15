@@ -3,10 +3,13 @@ class WebauthnCredentialsController < ApplicationController
     create_options = WebAuthn::Credential.options_for_create(
       user: {
         id: Current.user.webauthn_id,
-        name: Current.user.username
+        name: Current.user.email_address
       },
       exclude: Current.user.webauthn_credentials.pluck(:external_id),
-      authenticator_selection: { user_verification: "required" }
+      authenticator_selection: {
+          resident_key: "required",
+          user_verification: "required"
+        }
     )
 
     session[:current_registration] = { challenge: create_options.challenge }
@@ -34,7 +37,8 @@ class WebauthnCredentialsController < ApplicationController
       )
         redirect_to root_path, notice: "Security Key registered successfully"
       else
-        redirect_to new_webauthn_credential_path, alert: "Error registering credential"
+        flash[:alert] = "Error registering credential"
+        render :new
       end
     rescue WebAuthn::Error => e
       render json: "Verification failed: #{e.message}", status: :unprocessable_content
@@ -48,7 +52,7 @@ class WebauthnCredentialsController < ApplicationController
       Current.user.webauthn_credentials.destroy(params[:id])
     end
 
-    redirect_to root_path
+    redirect_to root_path, notice: "Security Key deleted successfully"
   end
 
   private

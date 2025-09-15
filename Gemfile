@@ -28,4 +28,6 @@ gem "rubocop-rails-omakase", require: false
 
 gem "pry-byebug", "~> 3.11"
 
+gem "bcrypt", "~> 3.1.7"
+
 gem "webauthn"

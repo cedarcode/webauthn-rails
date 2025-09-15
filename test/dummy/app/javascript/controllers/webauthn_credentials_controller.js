@@ -16,7 +16,7 @@ export default class extends Controller {
       });
 
       const optionsJson = await optionsResponse.json();
-      if (optionsResponse.ok && optionsJson.user) {
+      if (optionsResponse.ok) {
         const credentialOptions = PublicKeyCredential.parseCreationOptionsFromJSON(optionsJson);
         const credential = await createWebAuthnJSON({ publicKey: credentialOptions });
 

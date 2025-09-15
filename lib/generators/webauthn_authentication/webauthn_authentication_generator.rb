@@ -17,15 +17,11 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
   class_option :api, type: :boolean,
     desc: "Generate API-only files, with no view templates"
 
+  invoke "authentication"
+
   def copy_controllers_and_concerns
     template "app/controllers/webauthn_credentials_controller.rb"
-    template "app/controllers/registrations_controller.rb"
-    template "app/controllers/sessions_controller.rb"
-    template "app/controllers/concerns/authentication.rb"
-  end
-
-  def configure_application_controller
-    inject_into_class "app/controllers/application_controller.rb", "ApplicationController", "  include Authentication\n"
+    template "app/controllers/webauthn_sessions_controller.rb"
   end
 
   hook_for :template_engine do |template_engine|
@@ -69,28 +65,13 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
     template "config/initializers/webauthn.rb"
   end
 
-  def inject_session_and_current
-    template "app/models/session.rb"
-    template "app/models/current.rb"
-    generate "migration", "CreateSessions", "user:references ip_address:string user_agent:string", "--force"
-  end
-
   def inject_webauthn_content
-    if File.exist?(File.join(destination_root, "app/models/user.rb"))
-      inject_webauthn_content_to_user_model
-      generate "migration", "AddWebauthnToUsers", "username:string:uniq webauthn_id:string"
-    else
-      template "app/models/user.rb"
-      generate "migration", "CreateUsers", "username:string:uniq webauthn_id:string"
-    end
+    generate "migration", "AddWebauthnToUsers", "webauthn_id:string"
+    inject_webauthn_content_to_user_model
 
     inject_into_file "config/routes.rb", after: "Rails.application.routes.draw do\n" do
       <<-RUBY.strip_heredoc.indent(2)
-        resource :registration, only: [ :new, :create ] do
-          post :create_options, on: :collection
-        end
-
-        resource :session, only: [ :new, :create, :destroy ] do
+        resource :webauthn_session, only: [ :create, :destroy ] do
           post :get_options, on: :collection
         end
 
@@ -126,14 +107,12 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
   end
 
   def inject_webauthn_content_to_user_model
-    inject_into_class "app/models/user.rb", "User" do
+    inject_into_file "app/models/user.rb", after: "normalizes :email_address, with: ->(e) { e.strip.downcase }\n"  do
       <<-RUBY.strip_heredoc.indent(2)
+
         CREDENTIAL_MIN_AMOUNT = 1
 
-        validates :username, presence: true, uniqueness: true
-
         has_many :webauthn_credentials, dependent: :destroy
-        has_many :sessions, dependent: :destroy
 
         after_initialize do
           self.webauthn_id ||= WebAuthn.generate_user_id
