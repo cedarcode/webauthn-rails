@@ -2,8 +2,8 @@
 
 [![Gem Version](https://badge.fury.io/rb/webauthn-rails.svg)](https://badge.fury.io/rb/webauthn-rails)
 
-**Webauthn-Rails** adds passkeys authentication to your Rails app with almost no setup. Built on top of the [Rails Authentication system](https://guides.rubyonrails.org/security.html) and following the [WebAuthn specification](https://www.w3.org/TR/webauthn-3/)
-, it ships with a generator that installs everything you need for a secure, passwordless login flow. Webauthn-Rails combines [Stimulus](https://stimulus.hotwired.dev/) for the frontend experience with the [WebAuthn Ruby gem](https://github.com/cedarcode/webauthn-ruby) on the server side—giving you a ready-to-use, modern, and future-proof authentication system.
+**Webauthn-Rails** adds passkeys authentication to your Rails app with almost no setup. Built on top of the [Rails Authentication system](https://guides.rubyonrails.org/security.html)
+, it ships with a generator that installs everything you need for a secure, passwordless login flow. Webauthn-Rails combines [Stimulus](https://stimulus.hotwired.dev/) for the frontend experience with the [WebAuthn Ruby gem](https://github.com/cedarcode/webauthn-ruby) on the server side – giving you a ready-to-use, modern, and future-proof authentication system.
 
 
 ## Requirements
@@ -36,12 +36,12 @@ rails generate webauthn:rails:install
 This generator will:
 
 - Invoke the [Rails Authentication generator](https://github.com/rails/rails/blob/main/railties/lib/rails/generators/rails/authentication/authentication_generator.rb).
-- Create authentication controllers - adds `WebauthnSessionsController` and `WebauthnCredentialsController` for handling passkey login and credential management.
+- Create controllers for handling passkey login and credential management - adds `WebauthnSessionsController` and `WebauthnCredentialsController`.
 - Enhance your application views with passkey authentication.
-- Update the `User` model.
+- Update the `User` model to include association with passkeys and webauthn-related logic.
 - Generate database migrations for WebAuthn credentials.
-- Add authentication routes.
-- Install and configure a Stimulus controller for WebAuthn interactions.
+- Add passkey authentication and management routes.
+- Generate a Stimulus controller for WebAuthn interactions.
 - Create the WebAuthn initializer.
 
 ### Post-Installation Configuration
@@ -85,7 +85,7 @@ The WebAuthn sign-in flow works as follows:
 
 ### Adding Passkeys
 
-Signed-in users can add more passkeys by visiting `/webauthn_credentials/new`.
+Signed-in users can add passkeys by visiting `/webauthn_credentials/new`.
 
 ### Routes
 
