@@ -2,8 +2,8 @@
 
 [![Gem Version](https://badge.fury.io/rb/webauthn-rails.svg)](https://badge.fury.io/rb/webauthn-rails)
 
-**Webauthn-Rails** adds passkeys authentication to your Rails app with almost no setup. Built on top of the [Rails Authentication system](https://guides.rubyonrails.org/security.html)
-, it ships with a generator that installs everything you need for a secure, passwordless login flow. Webauthn-Rails combines [Stimulus](https://stimulus.hotwired.dev/) for the frontend experience with the [WebAuthn Ruby gem](https://github.com/cedarcode/webauthn-ruby) on the server side – giving you a ready-to-use, modern, and future-proof authentication system.
+**Webauthn-Rails** adds passkeys authentication to your Rails app with almost no setup. Built on top of the [Rails Authentication system](https://guides.rubyonrails.org/security.html), 
+it ships with a generator that installs everything you need for a secure, passwordless login flow. Webauthn-Rails combines [Stimulus](https://stimulus.hotwired.dev/) for the frontend experience with the [WebAuthn Ruby gem](https://github.com/cedarcode/webauthn-ruby) on the server side – giving you a ready-to-use, modern, and future-proof authentication system.
 
 
 ## Requirements
