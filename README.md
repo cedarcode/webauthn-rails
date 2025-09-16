@@ -37,7 +37,8 @@ This generator will:
 
 - Invoke the [Rails Authentication generator](https://github.com/rails/rails/blob/main/railties/lib/rails/generators/rails/authentication/authentication_generator.rb).
 - Create controllers for handling passkey login and credential management - adds `WebauthnSessionsController` and `WebauthnCredentialsController`.
-- Enhance your application views with passkey authentication.
+- Update new session views to support passkey authentication.
+- Add views to create new passkeys.
 - Update the `User` model to include association with passkeys and webauthn-related logic.
 - Generate database migrations for WebAuthn credentials.
 - Add passkey authentication and management routes.
