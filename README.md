@@ -95,7 +95,6 @@ The generator adds WebAuthn functionality to your User model:
 
 ```ruby
 class User < ApplicationRecord
-  validates :username, presence: true, uniqueness: true
   has_many :webauthn_credentials, dependent: :destroy
 
   after_initialize do
