@@ -24,13 +24,13 @@ The generator automatically handles JavaScript dependencies based on your setup:
 Install the gem by running:
 
 ```bash
-bundle add webauthn-rails --group development
+$ bundle add webauthn-rails --group development
 ```
 
 Next, you need to run the generator:
 
 ```bash
-rails generate webauthn:rails:install
+$ rails generate webauthn:rails:install
 ```
 
 This generator will:
@@ -138,7 +138,7 @@ Issues and pull requests are welcome on GitHub at https://github.com/cedarcode/w
 After checking out the repo, run:
 
 ```bash
-bundle install
+$ bundle install
 ```
 
 To run the tests:
@@ -151,7 +151,7 @@ $ bundle exec rake test_dummy
 To run the linter:
 
 ```bash
-bundle exec rubocop
+$ bundle exec rubocop
 ```
 
 Before submitting a PR, make sure both tests pass and there are no linting errors.
