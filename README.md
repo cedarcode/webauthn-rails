@@ -87,24 +87,6 @@ The WebAuthn sign-in flow works as follows:
 
 Signed-in users can add passkeys by visiting `/webauthn_credentials/new`.
 
-### Routes
-
-The generator adds these routes to your application:
-
-```ruby
-resource :registration, only: [:new, :create] do
-  post :create_options, on: :collection
-end
-
-resource :session, only: [:new, :create, :destroy] do
-  post :get_options, on: :collection
-end
-
-resources :webauthn_credentials, only: [:new, :create, :destroy] do
-  post :create_options, on: :collection
-end
-```
-
 ### Models
 
 #### User Model
