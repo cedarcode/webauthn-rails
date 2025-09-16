@@ -7,9 +7,9 @@ class WebauthnCredentialsController < ApplicationController
       },
       exclude: Current.user.webauthn_credentials.pluck(:external_id),
       authenticator_selection: {
-          resident_key: "required",
-          user_verification: "required"
-        }
+        resident_key: "required",
+        user_verification: "required"
+      }
     )
 
     session[:current_registration] = { challenge: create_options.challenge }
@@ -31,9 +31,9 @@ class WebauthnCredentialsController < ApplicationController
       )
 
       if credential.update(
-        nickname: create_credential_params[:nickname],
-        public_key: webauthn_credential.public_key,
-        sign_count: webauthn_credential.sign_count
+          nickname: create_credential_params[:nickname],
+          public_key: webauthn_credential.public_key,
+          sign_count: webauthn_credential.sign_count
       )
         redirect_to root_path, notice: "Security Key registered successfully"
       else
