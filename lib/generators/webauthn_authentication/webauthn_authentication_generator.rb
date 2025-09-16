@@ -17,7 +17,12 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
   class_option :api, type: :boolean,
     desc: "Generate API-only files, with no view templates"
 
-  invoke "authentication"
+  class_option :with_rails_authentication, type: :boolean,
+    desc: "Run the Ruby on Rails authentication generator"
+
+  def invoke_rails_authentication
+    invoke "authentication" if options.with_rails_authentication?
+  end
 
   def copy_controllers_and_concerns
     template "app/controllers/webauthn_credentials_controller.rb"

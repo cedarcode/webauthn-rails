@@ -19,12 +19,10 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     add_gemfile
   end
 
-  test "generates all expected files and successfully runs the Rails authentication generator" do
+  test "generates all expected files" do
     generator([ destination_root ], [ "--test-framework=test_unit" ])
 
-    Rails::Generators::AuthenticationGenerator.stub_any_instance(:invoke_all, nil) do
-      run_generator_instance
-    end
+    run_generator_instance
 
     assert_file "app/controllers/webauthn_sessions_controller.rb"
     assert_file "app/controllers/webauthn_credentials_controller.rb"
@@ -57,9 +55,7 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
   test "assert all files except for views are created with api flag" do
     generator([ destination_root ], [ "--api", "--test-framework=test_unit" ])
 
-    Rails::Generators::AuthenticationGenerator.stub_any_instance(:invoke_all, nil) do
-      run_generator_instance
-    end
+    run_generator_instance
 
     assert_file "app/controllers/webauthn_sessions_controller.rb"
     assert_file "app/controllers/webauthn_credentials_controller.rb"
@@ -85,6 +81,17 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
 
     assert_includes @bundle_commands, [ "add webauthn", {}, { quiet: true } ]
+  end
+
+  test "rails authentication generator is invoked when flag is passed" do
+    generator([ destination_root ], [ "--with_rails_authentication" ])
+
+    invoked = false
+    Rails::Generators::AuthenticationGenerator.stub_any_instance(:invoke_all, -> { invoked = true }) do
+      run_generator_instance
+    end
+
+    assert invoked, "Rails::Generators::AuthenticationGenerator was not invoked"
   end
 
   private
