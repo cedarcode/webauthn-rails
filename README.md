@@ -121,19 +121,9 @@ end
 
 ### Views
 
-The generator creates view templates that you can customize:
+The generator creates a view template that you can customize:
 
-- `app/views/registrations/new.html.erb` - User registration form
-- `app/views/sessions/new.html.erb` - User sign-in form
-- `app/views/webauthn_credentials/new.html.erb` - Add new authenticator form
-
-### Controllers
-
-All generated controllers can be customized as needed. The controllers handle:
-
-- **RegistrationsController**: User registration with WebAuthn
-- **SessionsController**: User authentication and sign-out
-- **WebauthnCredentialsController**: Managing additional webauthn credentials
+- `app/views/webauthn_credentials/new.html.erb` - Add new passkey form
 
 ### Stimulus Controller
 
