@@ -89,7 +89,7 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
 
   def final_message
     say ""
-    say "Almost done! Now edit `config/initializers/webauthn.rb` and set the `allowed_origins` for your app.", :yellow
+    say "Almost done! Now edit `config/initializers/webauthn.rb` and set the `allowed_origins` and `rp_name` for your app.", :yellow
   end
 
   private
