@@ -49,7 +49,7 @@ This generator will:
 
 After running the generator, you **must** configure the WebAuthn settings:
 
-1. Edit `config/initializers/webauthn.rb` and set your allowed origins:
+1. Edit `config/initializers/webauthn.rb` and set your allowed origins and Relying Party name:
 
 ```ruby
 WebAuthn.configure do |config|
