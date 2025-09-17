@@ -1,7 +1,6 @@
 require "test_helper"
 require "rails/generators/test_case"
 require "generators/webauthn_authentication/webauthn_authentication_generator"
-require "minitest/stub_any_instance"
 require "rails/generators/rails/authentication/authentication_generator"
 
 class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
@@ -86,12 +85,9 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
   test "rails authentication generator is invoked when flag is passed" do
     generator([ destination_root ], [ "--with_rails_authentication" ])
 
-    invoked = false
-    Rails::Generators::AuthenticationGenerator.stub_any_instance(:invoke_all, -> { invoked = true }) do
-      run_generator_instance
-    end
+    run_generator_stubbing_rails_auth_generator
 
-    assert invoked, "Rails::Generators::AuthenticationGenerator was not invoked"
+    assert @rails_auth_generator_invoked, "Rails::Generators::AuthenticationGenerator was not invoked"
   end
 
   private
@@ -145,6 +141,15 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     FileUtils.mkdir_p("#{destination_root}/app/views/sessions")
     File.write("#{destination_root}/app/views/sessions/new.html.erb", <<~ERB)
     ERB
+  end
+
+  def run_generator_stubbing_rails_auth_generator
+    @rails_auth_generator_invoked = false
+    @rails_auth_generator_stub ||= ->(invoked_generator, *args) { @rails_auth_generator_invoked ||= invoked_generator == "authentication" }
+
+    generator.stub(:invoke, @rails_auth_generator_stub) do
+      run_generator_instance
+    end
   end
 
   def run_generator_instance
