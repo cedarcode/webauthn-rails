@@ -22,8 +22,6 @@ gem "capybara"
 
 gem "selenium-webdriver"
 
-gem "minitest-stub_any_instance"
-
 gem "rubocop-rails-omakase", require: false
 
 gem "pry-byebug", "~> 3.11"
