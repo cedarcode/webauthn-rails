@@ -31,7 +31,7 @@ $ bundle add webauthn-rails --group development
 Next, you need to run the generator:
 
 ```bash
-$ rails generate webauthn:rails:install
+$ rails generate webauthn_authentication
 ```
 
 This generator will:
