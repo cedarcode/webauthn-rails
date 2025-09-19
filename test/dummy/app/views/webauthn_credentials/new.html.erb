@@ -14,5 +14,5 @@
     <%= form.text_field :nickname, required: true %>
   </div>
   <%= form.hidden_field :public_key_credential, data: { "webauthn-credentials-target": "credentialHiddenInput" } %>
-  <%= form.submit "Add Security Key" %>
+  <%= form.submit "Add Security Key", disabled: true, data: { "webauthn-credentials-target": "submitButton" } %>
 <% end %>

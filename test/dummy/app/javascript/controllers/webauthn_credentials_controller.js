@@ -2,8 +2,12 @@ import { Controller } from "@hotwired/stimulus";
 import { create as createWebAuthnJSON, get as getWebAuthnJSON } from "@github/webauthn-json/browser-ponyfill";
 
 export default class extends Controller {
-  static targets = ["credentialHiddenInput"];
+  static targets = ["credentialHiddenInput", "submitButton"];
   static values = { optionsUrl: String }
+
+  connect() {
+    this.submitButtonTarget.disabled = false;
+  }
 
   async create() {
     try {
