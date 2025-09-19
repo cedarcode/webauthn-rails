@@ -42,9 +42,9 @@ class WebauthnCredentialsController < ApplicationController
       end
     rescue WebAuthn::Error => e
       redirect_to new_webauthn_credential_path, alert: "Verification failed: #{e.message}"
-    ensure
-      session.delete(:current_registration)
     end
+  ensure
+    session.delete(:current_registration)
   end
 
   def destroy

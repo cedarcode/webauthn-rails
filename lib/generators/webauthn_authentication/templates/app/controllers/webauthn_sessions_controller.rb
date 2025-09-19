@@ -31,9 +31,9 @@ class WebauthnSessionsController < ApplicationController
       redirect_to after_authentication_url
     rescue WebAuthn::Error => e
       redirect_to new_session_path, alert: "Verification failed: #{e.message}"
-    ensure
-      session.delete(:current_authentication)
     end
+  ensure
+    session.delete(:current_authentication)
   end
 
   def destroy
