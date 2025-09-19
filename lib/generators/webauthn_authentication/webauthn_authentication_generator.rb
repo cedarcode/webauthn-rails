@@ -115,16 +115,10 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
     inject_into_file "app/models/user.rb", after: "normalizes :email_address, with: ->(e) { e.strip.downcase }\n"  do
       <<-RUBY.strip_heredoc.indent(2)
 
-        CREDENTIAL_MIN_AMOUNT = 1
-
         has_many :webauthn_credentials, dependent: :destroy
 
         after_initialize do
           self.webauthn_id ||= WebAuthn.generate_user_id
-        end
-
-        def can_delete_credentials?
-          webauthn_credentials.size > CREDENTIAL_MIN_AMOUNT
         end
       RUBY
     end

@@ -48,9 +48,7 @@ class WebauthnCredentialsController < ApplicationController
   end
 
   def destroy
-    if Current.user&.can_delete_credentials?
-      Current.user.webauthn_credentials.destroy(params[:id])
-    end
+    Current.user.webauthn_credentials.destroy(params[:id])
 
     redirect_to root_path, notice: "Security Key deleted successfully"
   end
