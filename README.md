@@ -34,12 +34,12 @@ $ rails generate webauthn_authentication
 
 If you haven't generated Rails authentication yet, you can pass the `--with-rails-authentication` flag in order to generate it alongside the webauthn authentication:
 ```bash
-$ rails generate webauthn:rails:install --with-rails-authentication
+$ rails generate webauthn_authentication --with-rails-authentication
 ```
 
 This generator will:
 
-- **Optionally** invoke the [Rails Authentication generator](https://github.com/rails/rails/blob/main/railties/lib/rails/generators/rails/authentication/authentication_generator.rb), only if the `--with-rails-authentication` flag is passed.
+- **Optionally** invoke the [Rails Authentication generator](https://github.com/rails/rails/blob/main/railties/lib/rails/generators/rails/authentication/authentication_generator.rb) if the `--with-rails-authentication` flag is passed.
 - Create controllers for handling passkey login and credential management - adds `WebauthnSessionsController` and `WebauthnCredentialsController`.
 - Update new session views to support passkey authentication.
 - Add views to create new passkeys.
