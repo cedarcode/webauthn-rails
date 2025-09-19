@@ -5,7 +5,6 @@
 **Webauthn-Rails** adds passkeys authentication to your Rails app with almost no setup. Built on top of the [Rails Authentication system](https://guides.rubyonrails.org/security.html), 
 it ships with a generator that installs everything you need for a secure, passwordless login flow. Webauthn-Rails combines [Stimulus](https://stimulus.hotwired.dev/) for the frontend experience with the [WebAuthn Ruby gem](https://github.com/cedarcode/webauthn-ruby) on the server side – giving you a ready-to-use authentication system.
 
-
 ## Requirements
 
 - **Ruby**: 3.2+
@@ -30,12 +29,17 @@ $ bundle add webauthn-rails --group development
 Next, you need to run the generator:
 
 ```bash
-$ rails generate webauthn_authentication
+$ bin/rails generate webauthn_authentication
+```
+
+If you haven't generated Rails authentication yet, you can pass the `--with-rails-authentication` flag in order to generate it alongside the webauthn authentication:
+```bash
+$ bin/rails generate webauthn_authentication --with-rails-authentication
 ```
 
 This generator will:
 
-- Invoke the [Rails Authentication generator](https://github.com/rails/rails/blob/main/railties/lib/rails/generators/rails/authentication/authentication_generator.rb).
+- **Optionally** invoke the [Rails Authentication generator](https://github.com/rails/rails/blob/main/railties/lib/rails/generators/rails/authentication/authentication_generator.rb) if the `--with-rails-authentication` flag is passed.
 - Create controllers for handling passkey login and credential management - adds `WebauthnSessionsController` and `WebauthnCredentialsController`.
 - Update new session views to support passkey authentication.
 - Add views to create new passkeys.
