@@ -22,7 +22,7 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
     fill_in("Security Key nickname", with: "Touch ID")
     click_on "Add Security Key"
 
-    assert_text "Security Key registered successfully"
+    assert_selector "div", text: "Security Key registered successfully"
     assert_selector "span", text: "Touch ID"
     assert_current_path "/"
 
