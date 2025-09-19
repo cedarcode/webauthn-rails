@@ -29,12 +29,12 @@ $ bundle add webauthn-rails --group development
 Next, you need to run the generator:
 
 ```bash
-$ rails generate webauthn_authentication
+$ bin/rails generate webauthn_authentication
 ```
 
 If you haven't generated Rails authentication yet, you can pass the `--with-rails-authentication` flag in order to generate it alongside the webauthn authentication:
 ```bash
-$ rails generate webauthn_authentication --with-rails-authentication
+$ bin/rails generate webauthn_authentication --with-rails-authentication
 ```
 
 This generator will:
