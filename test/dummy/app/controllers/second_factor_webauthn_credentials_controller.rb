@@ -8,7 +8,7 @@ class SecondFactorWebauthnCredentialsController < ApplicationController
       exclude: Current.user.webauthn_credentials.pluck(:external_id),
       authenticator_selection: {
         resident_key: "discouraged",
-        user_verification: "required"
+        user_verification: "discouraged"
       }
     )
 
@@ -22,8 +22,7 @@ class SecondFactorWebauthnCredentialsController < ApplicationController
 
     begin
       webauthn_credential.verify(
-        session[:current_registration][:challenge] || session[:current_registration]["challenge"],
-        user_verification: true,
+        session[:current_registration][:challenge] || session[:current_registration]["challenge"]
       )
 
       credential = Current.user.second_factor_webauthn_credentials.find_or_initialize_by(
