@@ -96,7 +96,8 @@ class PasskeysControllerTest < ActionDispatch::IntegrationTest
         user: @user,
         external_id: "external-id-#{i}",
         public_key: "public-key-#{i}",
-        sign_count: 0
+        sign_count: 0,
+        authentication_factor: 0
       )
     end
 
