@@ -15,6 +15,7 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     add_test_helper
     add_rails_auth_user_model
     add_session_view
+    add_sessions_controller
     add_gemfile
   end
 
@@ -24,16 +25,16 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     run_generator_instance
 
     assert_file "app/controllers/webauthn_sessions_controller.rb"
-    assert_file "app/controllers/webauthn_credentials_controller.rb"
+    assert_file "app/controllers/passkeys_controller.rb"
 
-    assert_file "app/views/webauthn_credentials/new.html.erb"
+    assert_file "app/views/passkeys/new.html.erb"
 
     assert_file "app/javascript/controllers/webauthn_credentials_controller.js"
 
     assert_file "config/initializers/webauthn.rb", /WebAuthn.configure/
 
     assert_file "test/controllers/webauthn_sessions_controller_test.rb"
-    assert_file "test/controllers/webauthn_credentials_controller_test.rb"
+    assert_file "test/controllers/passkeys_controller_test.rb"
     assert_file "test/system/manage_webauthn_credentials_test.rb"
     assert_file "test/test_helpers/virtual_authenticator_test_helper.rb"
 
@@ -44,7 +45,7 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     assert_includes @rails_commands, "generate migration CreateWebauthnCredentials user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8} authentication_factor:integer{1}!"
 
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
-    assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
+    assert_file "config/routes.rb", /resources :passkeys, only: \[\s*:new, :create, :destroy\s*\] do/
 
     assert_file "config/importmap.rb", /pin "@github\/webauthn-json\/browser-ponyfill"/
 
@@ -57,16 +58,16 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     run_generator_instance
 
     assert_file "app/controllers/webauthn_sessions_controller.rb"
-    assert_file "app/controllers/webauthn_credentials_controller.rb"
+    assert_file "app/controllers/passkeys_controller.rb"
 
-    assert_no_file "app/views/webauthn_credentials/new.html.erb"
+    assert_no_file "app/views/passkeys/new.html.erb"
 
     assert_file "app/javascript/controllers/webauthn_credentials_controller.js"
 
     assert_file "config/initializers/webauthn.rb", /WebAuthn.configure/
 
     assert_file "test/controllers/webauthn_sessions_controller_test.rb"
-    assert_file "test/controllers/webauthn_credentials_controller_test.rb"
+    assert_file "test/controllers/passkeys_controller_test.rb"
     assert_file "test/system/manage_webauthn_credentials_test.rb"
     assert_file "test/test_helpers/virtual_authenticator_test_helper.rb"
 
@@ -77,7 +78,7 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     assert_includes @rails_commands, "generate migration CreateWebauthnCredentials user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8} authentication_factor:integer{1}!"
 
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
-    assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
+    assert_file "config/routes.rb", /resources :passkeys, only: \[\s*:new, :create, :destroy\s*\] do/
 
     assert_includes @bundle_commands, [ "add webauthn", {}, { quiet: true } ]
   end
@@ -141,6 +142,16 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     FileUtils.mkdir_p("#{destination_root}/app/views/sessions")
     File.write("#{destination_root}/app/views/sessions/new.html.erb", <<~ERB)
     ERB
+  end
+
+  def add_sessions_controller
+    FileUtils.mkdir_p("#{destination_root}/app/controllers")
+    File.write("#{destination_root}/app/controllers/sessions_controller.rb", <<~RUBY)
+      class SessionsController < ApplicationController
+        def create
+        end
+      end
+    RUBY
   end
 
   def run_generator_stubbing_rails_auth_generator

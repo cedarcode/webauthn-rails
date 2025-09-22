@@ -45,7 +45,7 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
   end
 
   def copy_controllers_and_concerns
-    template "app/controllers/webauthn_credentials_controller.rb"
+    template "app/controllers/passkeys_controller.rb"
     template "app/controllers/webauthn_sessions_controller.rb"
   end
 
@@ -100,7 +100,7 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
           post :get_options, on: :collection
         end
 
-        resources :webauthn_credentials, only: [ :new, :create, :destroy ] do
+        resources :passkeys, only: [ :new, :create, :destroy ] do
           post :create_options, on: :collection
         end
       RUBY

@@ -7,7 +7,7 @@ module TestUnit
       source_root File.expand_path("../templates", __FILE__)
 
       def create_controller_test_files
-        template "test/controllers/webauthn_credentials_controller_test.rb"
+        template "test/controllers/passkeys_controller_test.rb"
         template "test/controllers/webauthn_sessions_controller_test.rb"
       end
 

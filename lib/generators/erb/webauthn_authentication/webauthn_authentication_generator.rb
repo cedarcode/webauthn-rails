@@ -7,7 +7,7 @@ module Erb
       source_root File.expand_path("../templates", __FILE__)
 
       def create_files
-        template "app/views/webauthn_credentials/new.html.erb.tt"
+        template "app/views/passkeys/new.html.erb.tt"
       end
 
       def inject_into_rails_session_view
