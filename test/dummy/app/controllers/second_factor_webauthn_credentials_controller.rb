@@ -1,4 +1,4 @@
-class WebauthnCredentialsController < ApplicationController
+class SecondFactorWebauthnCredentialsController < ApplicationController
   def create_options
     create_options = WebAuthn::Credential.options_for_create(
       user: {
@@ -7,8 +7,8 @@ class WebauthnCredentialsController < ApplicationController
       },
       exclude: Current.user.webauthn_credentials.pluck(:external_id),
       authenticator_selection: {
-        resident_key: "required",
-        user_verification: "required"
+        resident_key: "discouraged",
+        user_verification: "discouraged"
       }
     )
 
@@ -22,11 +22,10 @@ class WebauthnCredentialsController < ApplicationController
 
     begin
       webauthn_credential.verify(
-        session[:current_registration][:challenge] || session[:current_registration]["challenge"],
-        user_verification: true,
+        session[:current_registration][:challenge] || session[:current_registration]["challenge"]
       )
 
-      credential = Current.user.webauthn_credentials.find_or_initialize_by(
+      credential = Current.user.second_factor_webauthn_credentials.find_or_initialize_by(
         external_id: webauthn_credential.id
       )
 
@@ -41,14 +40,14 @@ class WebauthnCredentialsController < ApplicationController
         render :new
       end
     rescue WebAuthn::Error => e
-      redirect_to new_webauthn_credential_path, alert: "Verification failed: #{e.message}"
+      render json: "Verification failed: #{e.message}", status: :unprocessable_content
+    ensure
+      session.delete(:current_registration)
     end
-  ensure
-    session.delete(:current_registration)
   end
 
   def destroy
-    Current.user.webauthn_credentials.destroy(params[:id])
+    Current.user.second_factor_webauthn_credentials.destroy(params[:id])
 
     redirect_to root_path, notice: "Security Key deleted successfully"
   end

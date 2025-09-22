@@ -6,6 +6,7 @@ class CreateWebauthnCredentials < ActiveRecord::Migration[8.0]
       t.string :public_key
       t.string :nickname
       t.integer :sign_count, limit: 8
+      t.integer :authentication_factor, limit: 1, null: false
 
       t.timestamps
     end

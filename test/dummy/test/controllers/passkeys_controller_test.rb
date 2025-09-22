@@ -1,7 +1,7 @@
 require "test_helper"
 require "webauthn/fake_client"
 
-class WebauthnCredentialsControllerTest < ActionDispatch::IntegrationTest
+class PasskeysControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user = users(:one)
     @client = WebAuthn::FakeClient.new(WebAuthn.configuration.allowed_origins.first)
@@ -9,7 +9,7 @@ class WebauthnCredentialsControllerTest < ActionDispatch::IntegrationTest
 
   test "initiates Passkey creation when user is authenticated" do
     sign_in_as @user
-    post create_options_webauthn_credentials_url
+    post create_options_passkeys_url
 
     assert_response :success
     body = JSON.parse(response.body)
@@ -21,7 +21,7 @@ class WebauthnCredentialsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "requires authentication to initiate Passkey creation" do
-    post create_options_webauthn_credentials_url
+    post create_options_passkeys_url
 
     assert_response :redirect
     assert_redirected_to new_session_url
@@ -30,7 +30,7 @@ class WebauthnCredentialsControllerTest < ActionDispatch::IntegrationTest
   test "creates passkey when user is authenticated" do
     sign_in_as @user
 
-    post create_options_webauthn_credentials_url
+    post create_options_passkeys_url
     challenge = session[:current_registration][:challenge]
 
     public_key_credential = @client.create(
@@ -39,7 +39,7 @@ class WebauthnCredentialsControllerTest < ActionDispatch::IntegrationTest
     )
 
     assert_difference("WebauthnCredential.count", 1) do
-      post webauthn_credentials_url, params: {
+      post passkeys_url, params: {
         credential: {
           nickname: "My Passkey",
           public_key_credential: public_key_credential.to_json
@@ -55,7 +55,7 @@ class WebauthnCredentialsControllerTest < ActionDispatch::IntegrationTest
   test "does not create passkey when there is a Webauthn error" do
     sign_in_as @user
 
-    post create_options_webauthn_credentials_url
+    post create_options_passkeys_url
     challenge = session[:current_registration][:challenge]
 
     public_key_credential = @client.create(
@@ -64,7 +64,7 @@ class WebauthnCredentialsControllerTest < ActionDispatch::IntegrationTest
     )
 
     assert_no_difference("WebauthnCredential.count") do
-      post webauthn_credentials_url, params: {
+      post passkeys_url, params: {
         credential: {
           nickname: "My Passkey",
           public_key_credential: public_key_credential.to_json
@@ -72,13 +72,13 @@ class WebauthnCredentialsControllerTest < ActionDispatch::IntegrationTest
       }
     end
 
-    assert_redirected_to new_webauthn_credential_path
+    assert_redirected_to new_passkey_path
     assert_match (/Verification failed/), flash[:alert]
     assert_nil session[:current_registration]
   end
 
   test "requires authentication to create passkey" do
-    post webauthn_credentials_url, params: {
+    post passkeys_url, params: {
       credential: {
         nickname: "My Passkey",
         public_key_credential: "{}"
@@ -103,7 +103,7 @@ class WebauthnCredentialsControllerTest < ActionDispatch::IntegrationTest
     sign_in_as @user
 
     assert_difference("WebauthnCredential.count", -1) do
-      delete webauthn_credential_url(@user.webauthn_credentials.first)
+      delete passkey_url(@user.webauthn_credentials.first)
     end
     assert_redirected_to root_path
   end
