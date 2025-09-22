@@ -8,6 +8,8 @@ module Erb
 
       def create_files
         template "app/views/passkeys/new.html.erb.tt"
+        template "app/views/second_factor_authentication/new.html.erb.tt"
+        template "app/views/second_factor_webauthn_credentials/new.html.erb.tt"
       end
 
       def inject_into_rails_session_view
