@@ -7,8 +7,10 @@ class User < ApplicationRecord
   CREDENTIAL_MIN_AMOUNT = 1
 
   has_many :webauthn_credentials
-  has_many :second_factor_webauthn_credentials, -> { second_factor }, class_name: "WebauthnCredential"
-  has_many :passkeys, -> { passkey }, class_name: "WebauthnCredential"
+  with_options class_name: "WebauthnCredential" do
+    has_many :second_factor_webauthn_credentials, -> { second_factor }
+    has_many :passkeys, -> { passkey }
+  end
 
   after_initialize do
     self.webauthn_id ||= WebAuthn.generate_user_id
