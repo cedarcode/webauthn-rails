@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
   def create
     if user = User.authenticate_by(params.permit(:email_address, :password))
       if user.second_factor_enabled?
-        session[:webauthn_user_id] = user.id
+        session[:current_authentication] = { user_id: user.id }
 
         redirect_to new_second_factor_authentication_path
       else
