@@ -87,7 +87,7 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
     end
 
     template "app/models/webauthn_credential.rb"
-    generate "migration", "CreateWebauthnCredentials", "user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"
+    generate "migration", "CreateWebauthnCredentials", "user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8} authentication_factor:integer{1}!"
   end
 
   hook_for :test_framework

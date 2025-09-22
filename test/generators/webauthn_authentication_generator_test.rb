@@ -41,7 +41,7 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     assert_includes @rails_commands, "generate migration AddWebauthnToUsers webauthn_id:string"
 
     assert_file "app/models/webauthn_credential.rb", /belongs_to :user/
-    assert_includes @rails_commands, "generate migration CreateWebauthnCredentials user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"
+    assert_includes @rails_commands, "generate migration CreateWebauthnCredentials user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8} authentication_factor:integer{1}!"
 
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
@@ -74,7 +74,7 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     assert_includes @rails_commands, "generate migration AddWebauthnToUsers webauthn_id:string"
 
     assert_file "app/models/webauthn_credential.rb", /belongs_to :user/
-    assert_includes @rails_commands, "generate migration CreateWebauthnCredentials user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"
+    assert_includes @rails_commands, "generate migration CreateWebauthnCredentials user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8} authentication_factor:integer{1}!"
 
     assert_file "config/routes.rb", /Rails.application.routes.draw do/
     assert_file "config/routes.rb", /resources :webauthn_credentials, only: \[\s*:new, :create, :destroy\s*\] do/
