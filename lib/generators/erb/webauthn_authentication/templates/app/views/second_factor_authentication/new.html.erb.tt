@@ -1,3 +1,6 @@
+<%%= tag.div(flash[:alert], style: "color:red") if flash[:alert] %>
+<%%= tag.div(flash[:notice], style: "color:green") if flash[:notice] %>
+
 <h3>Two-factor authentication</h3>
 <p>Use a security key to sign in.</p>
 
