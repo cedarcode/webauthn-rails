@@ -14,6 +14,10 @@ class SecondFactorAuthenticationController < ApplicationController
     webauthn_credential = WebAuthn::Credential.from_get(JSON.parse(session_params[:public_key_credential]))
 
     credential = user.webauthn_credentials.find_by(external_id: webauthn_credential.id)
+    unless credential
+      redirect_to new_second_factor_authentication_path, alert: "Credential not recognized"
+      return
+    end
 
     begin
       webauthn_credential.verify(
