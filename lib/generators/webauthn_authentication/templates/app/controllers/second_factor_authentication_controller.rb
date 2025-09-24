@@ -5,7 +5,7 @@ class SecondFactorAuthenticationController < ApplicationController
 
   def get_options
     get_options = WebAuthn::Credential.options_for_get(allow: user.webauthn_credentials.pluck(:external_id))
-    session[:current_authentication] = { challenge: get_options.challenge, user_id: user.id }
+    session[:current_authentication][:challenge] = get_options.challenge
 
     render json: get_options
   end
