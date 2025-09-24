@@ -36,8 +36,7 @@ class SecondFactorWebauthnCredentialsController < ApplicationController
       )
         redirect_to root_path, notice: "Security Key registered successfully"
       else
-        flash[:alert] = "Error registering credential"
-        render :new
+        redirect_to new_second_factor_webauthn_credential_path, alert: "Error registering credential"
       end
     rescue WebAuthn::Error => e
       redirect_to new_second_factor_webauthn_credential_path, alert: "Verification failed: #{e.message}"
