@@ -44,6 +44,20 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
       RUBY
   end
 
+  def inject_ensure_user_not_authenticated
+    inject_into_file "app/controllers/concerns/authentication.rb",
+      after: /def terminate_session.*?end\n/m do
+        <<-RUBY.strip_heredoc.indent(4)
+
+          def ensure_user_not_authenticated
+            if Current.user
+              redirect_to root_path
+            end
+          end
+        RUBY
+      end
+  end
+
   def copy_controllers_and_concerns
     template "app/controllers/passkeys_controller.rb"
     template "app/controllers/webauthn_sessions_controller.rb"

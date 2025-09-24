@@ -16,6 +16,7 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     add_rails_auth_user_model
     add_session_view
     add_sessions_controller
+    add_authentication_concern
     add_gemfile
   end
 
@@ -156,6 +157,20 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
       class SessionsController < ApplicationController
         def create
         end
+      end
+    RUBY
+  end
+
+  def add_authentication_concern
+    FileUtils.mkdir_p("#{destination_root}/app/controllers/concerns")
+    File.write("#{destination_root}/app/controllers/concerns/authentication.rb", <<~RUBY)
+      module Authentication
+        extend ActiveSupport::Concern
+      end
+
+      def terminate_session
+        Current.session.destroy
+        cookies.delete(:session_id)
       end
     RUBY
   end

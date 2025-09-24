@@ -49,12 +49,6 @@ class SecondFactorAuthenticationController < ApplicationController
     end
   end
 
-  def ensure_user_not_authenticated
-    if Current.user
-      redirect_to root_path
-    end
-  end
-
   def session_params
     params.require(:session).permit(:public_key_credential)
   end

@@ -49,4 +49,10 @@ module Authentication
       Current.session.destroy
       cookies.delete(:session_id)
     end
+
+    def ensure_user_not_authenticated
+      if Current.user
+        redirect_to root_path
+      end
+    end
 end
