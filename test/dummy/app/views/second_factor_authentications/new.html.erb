@@ -14,5 +14,5 @@
     "webauthn-credentials-options-url-value": get_options_second_factor_authentication_path,
   }) do |f| %>
     <%= f.hidden_field :public_key_credential, data: { "webauthn-credentials-target": "credentialHiddenInput" } %>
-    <%= f.submit "Use Security Key"%>
+    <%= f.submit "Use Security Key", disabled: true, data: { "webauthn-credentials-target": "submitButton" } %>
 <% end %>
