@@ -23,7 +23,7 @@ module Erb
                 "webauthn-credentials-options-url-value": get_options_webauthn_session_path,
               }) do |f| %>
                 <%= f.hidden_field :public_key_credential, data: { "webauthn-credentials-target": "credentialHiddenInput" } %>
-                <%= f.submit "Sign In with Passkey"%>
+                <%= f.submit "Sign In with Passkey", disabled: true, data: { "webauthn-credentials-target": "submitButton" } %>
             <% end %>
           ERB
         end
