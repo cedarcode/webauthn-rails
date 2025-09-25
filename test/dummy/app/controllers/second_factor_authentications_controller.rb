@@ -1,6 +1,6 @@
 class SecondFactorAuthenticationsController < ApplicationController
   allow_unauthenticated_access only: %i[new get_options create]
-  before_action :ensure_user_not_authenticated
+  before_action :require_no_authentication
   before_action :ensure_login_initiated
 
   def get_options

@@ -50,7 +50,7 @@ module Authentication
       cookies.delete(:session_id)
     end
 
-    def ensure_user_not_authenticated
+    def require_no_authentication
       if Current.user
         redirect_to root_path
       end
