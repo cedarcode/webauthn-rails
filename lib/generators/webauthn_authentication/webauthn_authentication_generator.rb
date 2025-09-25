@@ -61,7 +61,7 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
   def copy_controllers_and_concerns
     template "app/controllers/passkeys_controller.rb"
     template "app/controllers/webauthn_sessions_controller.rb"
-    template "app/controllers/second_factor_authentication_controller.rb"
+    template "app/controllers/second_factor_authentications_controller.rb"
     template "app/controllers/second_factor_webauthn_credentials_controller.rb"
   end
 
@@ -124,7 +124,7 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
           post :create_options, on: :collection
         end
 
-        resource :second_factor_authentication, controller: "second_factor_authentication", only: [ :new, :create ] do
+        resource :second_factor_authentication, only: [ :new, :create ] do
           post :get_options, on: :collection
         end
       RUBY
