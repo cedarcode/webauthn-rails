@@ -15,7 +15,6 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     add_test_helper
     add_rails_auth_user_model
     add_session_view
-    add_sessions_controller
     add_authentication_concern
     add_gemfile
   end
@@ -25,6 +24,7 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
 
     run_generator_instance
 
+    assert_file "app/controllers/sessions_controller.rb"
     assert_file "app/controllers/webauthn_sessions_controller.rb"
     assert_file "app/controllers/passkeys_controller.rb"
     assert_file "app/controllers/second_factor_authentications_controller.rb"
@@ -62,6 +62,7 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
 
     run_generator_instance
 
+    assert_file "app/controllers/sessions_controller.rb"
     assert_file "app/controllers/webauthn_sessions_controller.rb"
     assert_file "app/controllers/passkeys_controller.rb"
     assert_file "app/controllers/second_factor_authentications_controller.rb"
@@ -149,16 +150,6 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
     FileUtils.mkdir_p("#{destination_root}/app/views/sessions")
     File.write("#{destination_root}/app/views/sessions/new.html.erb", <<~ERB)
     ERB
-  end
-
-  def add_sessions_controller
-    FileUtils.mkdir_p("#{destination_root}/app/controllers")
-    File.write("#{destination_root}/app/controllers/sessions_controller.rb", <<~RUBY)
-      class SessionsController < ApplicationController
-        def create
-        end
-      end
-    RUBY
   end
 
   def add_authentication_concern
