@@ -11,7 +11,7 @@ class WebauthnSessionsController < ApplicationController
   def create
     webauthn_credential = WebAuthn::Credential.from_get(JSON.parse(session_params[:public_key_credential]))
 
-    stored_credential = WebauthnCredential.find_by(external_id: webauthn_credential.id)
+    stored_credential = WebauthnCredential.passkey.find_by(external_id: webauthn_credential.id)
     unless stored_credential
       redirect_to new_session_path, alert: "Credential not recognized"
       return
