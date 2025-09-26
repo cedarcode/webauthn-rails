@@ -56,6 +56,6 @@ class PasskeysController < ApplicationController
   private
 
   def create_credential_params
-    params.require(:credential).permit(:nickname, :public_key_credential)
+    params.expect(credential: [ :nickname, :public_key_credential ])
   end
 end

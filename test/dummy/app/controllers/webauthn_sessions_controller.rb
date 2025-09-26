@@ -45,6 +45,6 @@ class WebauthnSessionsController < ApplicationController
   private
 
   def session_params
-    params.require(:session).permit(:public_key_credential)
+    params.expect(session: [ :public_key_credential ])
   end
 end
