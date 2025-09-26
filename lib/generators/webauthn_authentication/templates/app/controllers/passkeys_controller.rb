@@ -1,4 +1,4 @@
-class WebauthnCredentialsController < ApplicationController
+class PasskeysController < ApplicationController
   def create_options
     create_options = WebAuthn::Credential.options_for_create(
       user: {
@@ -26,7 +26,7 @@ class WebauthnCredentialsController < ApplicationController
         user_verification: true,
       )
 
-      credential = Current.user.webauthn_credentials.find_or_initialize_by(
+      credential = Current.user.passkeys.find_or_initialize_by(
         external_id: webauthn_credential.id
       )
 
@@ -41,14 +41,14 @@ class WebauthnCredentialsController < ApplicationController
         render :new
       end
     rescue WebAuthn::Error => e
-      redirect_to new_webauthn_credential_path, alert: "Verification failed: #{e.message}"
+      redirect_to new_passkey_path, alert: "Verification failed: #{e.message}"
     end
   ensure
     session.delete(:current_registration)
   end
 
   def destroy
-    Current.user.webauthn_credentials.destroy(params[:id])
+    Current.user.passkeys.destroy(params[:id])
 
     redirect_to root_path, notice: "Security Key deleted successfully"
   end

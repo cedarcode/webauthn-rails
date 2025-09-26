@@ -17,7 +17,8 @@ class WebauthnSessionsControllerTest < ActionDispatch::IntegrationTest
       user: @user,
       external_id: credential.id,
       public_key: credential.public_key,
-      sign_count: 0
+      sign_count: 0,
+      authentication_factor: 0
     )
   end
 

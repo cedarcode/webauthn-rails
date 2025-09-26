@@ -24,9 +24,26 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
     invoke "authentication" if options.with_rails_authentication?
   end
 
+  def inject_to_authentication_concern
+    inject_into_file "app/controllers/concerns/authentication.rb",
+      after: /def terminate_session.*?end\n/m do
+        <<-RUBY.strip_heredoc.indent(4)
+
+          def require_no_authentication
+            if Current.user
+              redirect_to root_path
+            end
+          end
+        RUBY
+      end
+  end
+
   def copy_controllers_and_concerns
-    template "app/controllers/webauthn_credentials_controller.rb"
+    template "app/controllers/sessions_controller.rb"
+    template "app/controllers/passkeys_controller.rb"
     template "app/controllers/webauthn_sessions_controller.rb"
+    template "app/controllers/second_factor_authentications_controller.rb"
+    template "app/controllers/second_factor_webauthn_credentials_controller.rb"
   end
 
   hook_for :template_engine do |template_engine|
@@ -80,14 +97,22 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
           post :get_options, on: :collection
         end
 
-        resources :webauthn_credentials, only: [ :new, :create, :destroy ] do
+        resources :passkeys, only: [ :new, :create, :destroy ] do
           post :create_options, on: :collection
+        end
+
+        resources :second_factor_webauthn_credentials, only: [ :new, :create, :destroy ] do
+          post :create_options, on: :collection
+        end
+
+        resource :second_factor_authentication, only: [ :new, :create ] do
+          post :get_options, on: :collection
         end
       RUBY
     end
 
     template "app/models/webauthn_credential.rb"
-    generate "migration", "CreateWebauthnCredentials", "user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8}"
+    generate "migration", "CreateWebauthnCredentials", "user:references! external_id:string:uniq public_key:string nickname:string sign_count:integer{8} authentication_factor:integer{1}!"
   end
 
   hook_for :test_framework
@@ -116,9 +141,17 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
       <<-RUBY.strip_heredoc.indent(2)
 
         has_many :webauthn_credentials, dependent: :destroy
+        with_options class_name: "WebauthnCredential" do
+          has_many :second_factor_webauthn_credentials, -> { second_factor }
+          has_many :passkeys, -> { passkey }
+        end
 
         after_initialize do
           self.webauthn_id ||= WebAuthn.generate_user_id
+        end
+
+        def second_factor_enabled?
+          webauthn_credentials.any?
         end
       RUBY
     end
