@@ -24,6 +24,26 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
     invoke "authentication" if options.with_rails_authentication?
   end
 
+  def modify_sessions_controller
+    gsub_file "app/controllers/sessions_controller.rb",
+      /^  def create.*?^  end/m,
+      <<~RUBY.strip_heredoc.indent(2)
+        def create
+          if user = User.authenticate_by(params.permit(:email_address, :password))
+            if user.second_factor_enabled?
+              session[:current_authentication] = { user_id: user.id }
+              redirect_to new_second_factor_authentication_path
+            else
+              start_new_session_for user
+              redirect_to after_authentication_url
+            end
+          else
+            redirect_to new_session_path, alert: "Try another email address or password."
+          end
+        end
+      RUBY
+  end
+
   def inject_to_authentication_concern
     inject_into_file "app/controllers/concerns/authentication.rb",
       after: /def terminate_session.*?end\n/m do
@@ -39,7 +59,6 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
   end
 
   def copy_controllers_and_concerns
-    template "app/controllers/sessions_controller.rb"
     template "app/controllers/passkeys_controller.rb"
     template "app/controllers/webauthn_sessions_controller.rb"
     template "app/controllers/second_factor_authentications_controller.rb"
