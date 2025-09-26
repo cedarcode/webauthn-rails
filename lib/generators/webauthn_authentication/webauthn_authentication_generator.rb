@@ -25,23 +25,27 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
   end
 
   def modify_sessions_controller
-    gsub_file "app/controllers/sessions_controller.rb",
-      /^  def create.*?^  end/m,
-      <<~RUBY.strip_heredoc.indent(2)
-        def create
-          if user = User.authenticate_by(params.permit(:email_address, :password))
-            if user.second_factor_enabled?
-              session[:current_authentication] = { user_id: user.id }
-              redirect_to new_second_factor_authentication_path
+    if File.exist?(File.join(destination_root, "app/controllers/sessions_controller.rb"))
+      gsub_file "app/controllers/sessions_controller.rb",
+        /^  def create.*?^  end/m,
+        <<~RUBY.strip_heredoc.indent(2)
+          def create
+            if user = User.authenticate_by(params.permit(:email_address, :password))
+              if user.second_factor_enabled?
+                session[:current_authentication] = { user_id: user.id }
+                redirect_to new_second_factor_authentication_path
+              else
+                start_new_session_for user
+                redirect_to after_authentication_url
+              end
             else
-              start_new_session_for user
-              redirect_to after_authentication_url
+              redirect_to new_session_path, alert: "Try another email address or password."
             end
-          else
-            redirect_to new_session_path, alert: "Try another email address or password."
           end
-        end
-      RUBY
+        RUBY
+    else
+      raise Thor::Error, "Could not find app/controllers/sessions_controller.rb. Please make sure the Rails Authentication generator was executed, or pass the --with-rails-authentication option."
+    end
   end
 
   def inject_to_authentication_concern
