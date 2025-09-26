@@ -3,11 +3,12 @@ require_relative "lib/webauthn/rails/version"
 Gem::Specification.new do |spec|
   spec.name        = "webauthn-rails"
   spec.version     = Webauthn::Rails::VERSION
-  spec.authors     = [ "Santiago Rodriguez" ]
-  spec.email       = [ "santiago.rodriguez@cedarcode.com" ]
+  spec.authors     = [ "Cedarcode" ]
+  spec.email       = [ "webauthn@cedarcode.com" ]
   spec.homepage    = "https://github.com/cedarcode/webauthn-rails"
-  spec.summary     = "Authentication for Rails using WebAuthn"
-  spec.description = "Authentication for Rails using WebAuthn"
+  spec.summary     = "Authentication for Rails using Passkeys"
+  spec.description = "Provides a set of generators that will extend your Rails 8+ application's authentication
+    to enable Passkey usage as first or second factor."
   spec.license     = "MIT"
 
   spec.metadata["homepage_uri"] = spec.homepage
