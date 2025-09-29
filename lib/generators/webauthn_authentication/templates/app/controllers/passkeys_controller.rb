@@ -9,7 +9,8 @@ class PasskeysController < ApplicationController
       authenticator_selection: {
         resident_key: "required",
         user_verification: "required"
-      }
+      },
+      extensions: { credProps: true }
     )
 
     session[:current_registration] = { challenge: create_options.challenge }
@@ -27,13 +28,14 @@ class PasskeysController < ApplicationController
       )
 
       credential = Current.user.passkeys.find_or_initialize_by(
-        external_id: webauthn_credential.id
+        external_id: webauthn_credential.id,
       )
 
       if credential.update(
           nickname: create_credential_params[:nickname],
           public_key: webauthn_credential.public_key,
-          sign_count: webauthn_credential.sign_count
+          sign_count: webauthn_credential.sign_count,
+          is_discoverable: webauthn_credential.client_extension_outputs.dig("credProps", "rk")
       )
         redirect_to root_path, notice: "Security Key registered successfully"
       else
