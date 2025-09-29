@@ -30,12 +30,14 @@ class SecondFactorWebauthnCredentialsController < ApplicationController
         external_id: webauthn_credential.id,
       )
 
+      credential_extensions = webauthn_credential.client_extension_outputs.is_a?(Hash)
+      discoverable = credential_extensions.is_a?(Hash) ? credential_extensions.dig("credProps", "rk") : false
+
       if credential.update(
           nickname: create_credential_params[:nickname],
           public_key: webauthn_credential.public_key,
           sign_count: webauthn_credential.sign_count,
-          is_discoverable: webauthn_credential.client_extension_outputs.dig("credProps", "rk")
-
+          is_discoverable: discoverable
       )
         redirect_to root_path, notice: "Security Key registered successfully"
       else
