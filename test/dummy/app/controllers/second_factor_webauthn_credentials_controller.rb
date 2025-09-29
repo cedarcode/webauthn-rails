@@ -50,6 +50,29 @@ class SecondFactorWebauthnCredentialsController < ApplicationController
     end
   end
 
+  def upgrade
+    webauthn_credential = WebAuthn::Credential.from_get(JSON.parse(session_params[:public_key_credential]))
+
+    credential = user.webauthn_credentials.find_by(external_id: webauthn_credential.id)
+    unless credential
+      redirect_to root_path, alert: "Credential not recognized"
+      return
+    end
+
+    begin
+      webauthn_credential.verify(
+        session[:current_authentication][:challenge] || session[:current_authentication]["challenge"],
+        public_key: credential.public_key,
+        sign_count: credential.sign_count
+      )
+
+      credential.update!(authenticator_factor: "first_factor")
+      redirect_to root_path
+    rescue WebAuthn::Error => e
+      redirect_to root_path, alert: "Verification failed: #{e.message}"
+    end
+  end
+
   def destroy
     Current.user.second_factor_webauthn_credentials.destroy(params[:id])
 

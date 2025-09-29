@@ -9,6 +9,8 @@ Rails.application.routes.draw do
 
   resources :second_factor_webauthn_credentials, only: [ :new, :create, :destroy ] do
     post :create_options, on: :collection
+    get :upgrade
+    post :upgrade
   end
 
   resource :second_factor_authentication, only: [ :new, :create ] do

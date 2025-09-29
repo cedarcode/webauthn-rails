@@ -1,0 +1,18 @@
+<h3>Upgrade your security key to a passkey</h3>
+
+<p>
+  You are about to upgrade your security key <%= @credential.nickname %> to a passkey.
+</p>
+<%= form_with(
+  url: second_factor_webauthn_credentials_upgrade,
+  data: {
+    controller: "webauthn-credentials",
+    action: "webauthn-credentials#get:prevent",
+    "webauthn-credentials-options-url-value": get_options_second_factor_webauthn_credentials_path,
+  }) do |form| %>
+  <%= form.hidden_field :public_key_credential, data: { "webauthn-credentials-target": "credentialHiddenInput" } %>
+
+  <div class="field">
+    <%= form.submit "Upgrade to passkey", disabled: true, data: { "webauthn-credentials-target": "submitButton" } %>
+  </div>
+<% end %>
