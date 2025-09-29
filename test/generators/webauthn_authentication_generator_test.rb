@@ -40,6 +40,8 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
 
     assert_file "test/controllers/webauthn_sessions_controller_test.rb"
     assert_file "test/controllers/passkeys_controller_test.rb"
+    assert_file "test/controllers/second_factor_authentications_controller_test.rb"
+    assert_file "test/controllers/second_factor_webauthn_credentials_controller_test.rb"
     assert_file "test/system/manage_webauthn_credentials_test.rb"
     assert_file "test/test_helpers/virtual_authenticator_test_helper.rb"
 
@@ -75,6 +77,8 @@ class WebauthnAuthenticationGeneratorTest < Rails::Generators::TestCase
 
     assert_file "test/controllers/webauthn_sessions_controller_test.rb"
     assert_file "test/controllers/passkeys_controller_test.rb"
+    assert_file "test/controllers/second_factor_authentications_controller_test.rb"
+    assert_file "test/controllers/second_factor_webauthn_credentials_controller_test.rb"
     assert_file "test/system/manage_webauthn_credentials_test.rb"
     assert_file "test/test_helpers/virtual_authenticator_test_helper.rb"
 

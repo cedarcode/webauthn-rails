@@ -9,6 +9,8 @@ module TestUnit
       def create_controller_test_files
         template "test/controllers/passkeys_controller_test.rb"
         template "test/controllers/webauthn_sessions_controller_test.rb"
+        template "test/controllers/second_factor_authentications_controller_test.rb"
+        template "test/controllers/second_factor_webauthn_credentials_controller_test.rb"
       end
 
       def create_system_test_files
