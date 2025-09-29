@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_22_185347) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_29_161612) do
   create_table "sessions", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "ip_address"
@@ -38,6 +38,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_22_185347) do
     t.integer "authentication_factor", limit: 1, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_discoverable"
     t.index ["external_id"], name: "index_webauthn_credentials_on_external_id", unique: true
     t.index ["user_id"], name: "index_webauthn_credentials_on_user_id"
   end
