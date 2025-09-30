@@ -90,21 +90,19 @@ class PasskeysControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "deletes passkey when user is authenticated" do
-    2.times do |i|
-      WebauthnCredential.create!(
-        nickname: "My Passkey #{i}",
-        user: @user,
-        external_id: "external-id-#{i}",
-        public_key: "public-key-#{i}",
-        sign_count: 0,
-        authentication_factor: 0
-      )
-    end
+    credential = WebauthnCredential.create!(
+      nickname: "My Passkey",
+      user: @user,
+      external_id: "external-id",
+      public_key: "public-key",
+      sign_count: 0,
+      authentication_factor: 0
+    )
 
     sign_in_as @user
 
     assert_difference("WebauthnCredential.count", -1) do
-      delete passkey_url(@user.webauthn_credentials.first)
+      delete passkey_url(credential)
     end
     assert_redirected_to root_path
   end
