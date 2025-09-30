@@ -22,7 +22,7 @@ class SecondFactorAuthenticationsControllerTest < ActionDispatch::IntegrationTes
     )
   end
 
-  test "should return get_options" do
+  test "get_options" do
     post session_path, params: { email_address: @user.email_address, password: "password" }
 
     post get_options_second_factor_authentication_url
@@ -35,7 +35,7 @@ class SecondFactorAuthenticationsControllerTest < ActionDispatch::IntegrationTes
     assert_equal session[:current_authentication][:challenge], body["challenge"]
   end
 
-  test "should create session with valid credential" do
+  test "create" do
     post session_path, params: { email_address: @user.email_address, password: "password" }
 
     post get_options_second_factor_authentication_url
@@ -53,7 +53,7 @@ class SecondFactorAuthenticationsControllerTest < ActionDispatch::IntegrationTes
     assert_nil session[:current_authentication]
   end
 
-  test "should not create session when there is a Webauthn error" do
+  test "create with WebAuthn error" do
     post session_path, params: { email_address: @user.email_address, password: "password" }
 
     post get_options_second_factor_authentication_url
@@ -73,7 +73,7 @@ class SecondFactorAuthenticationsControllerTest < ActionDispatch::IntegrationTes
     assert_nil session[:current_authentication]
   end
 
-  test "should not create session with unrecognized credential" do
+  test "create with unrecognized credential" do
     post session_path, params: { email_address: @user.email_address, password: "password" }
 
     post get_options_second_factor_authentication_url

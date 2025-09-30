@@ -7,7 +7,7 @@ class SecondFactorWebauthnCredentialsControllerTest < ActionDispatch::Integratio
     @client = WebAuthn::FakeClient.new(WebAuthn.configuration.allowed_origins.first)
   end
 
-  test "initiates second factor credential creation when user is authenticated" do
+  test "create_options" do
     sign_in_as @user
     post create_options_second_factor_webauthn_credentials_url
 
@@ -20,14 +20,14 @@ class SecondFactorWebauthnCredentialsControllerTest < ActionDispatch::Integratio
     assert_equal session[:current_registration][:challenge], body["challenge"]
   end
 
-  test "requires authentication to initiate second factor credential creation" do
+  test "create_options unauthenticated" do
     post create_options_second_factor_webauthn_credentials_url
 
     assert_response :redirect
     assert_redirected_to new_session_url
   end
 
-  test "creates second factor credential when user is authenticated" do
+  test "create" do
     sign_in_as @user
 
     post create_options_second_factor_webauthn_credentials_url
@@ -52,7 +52,7 @@ class SecondFactorWebauthnCredentialsControllerTest < ActionDispatch::Integratio
     assert_nil session[:current_registration]
   end
 
-  test "does not create second factor credential when there is a Webauthn error" do
+  test "create with WebAuthn error" do
     sign_in_as @user
 
     post create_options_second_factor_webauthn_credentials_url
@@ -75,14 +75,14 @@ class SecondFactorWebauthnCredentialsControllerTest < ActionDispatch::Integratio
     assert_nil session[:current_registration]
   end
 
-  test "requires authentication to create second factor credential" do
+  test "create unauthenticated" do
     post second_factor_webauthn_credentials_url
 
     assert_response :redirect
     assert_redirected_to new_session_url
   end
 
-  test "deletes second factor credential when user is authenticated" do
+  test "destroy" do
     credential = WebauthnCredential.second_factor.create!(
       user: @user,
       nickname: "My Security Key",
