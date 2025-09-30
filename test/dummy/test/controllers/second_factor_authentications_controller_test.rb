@@ -35,6 +35,21 @@ class SecondFactorAuthenticationsControllerTest < ActionDispatch::IntegrationTes
     assert_equal session[:current_authentication][:challenge], body["challenge"]
   end
 
+  test "get_options without initiating login" do
+    post get_options_second_factor_authentication_url
+
+    assert_redirected_to new_session_path
+  end
+
+  test "get_options already authenticated" do
+    post session_path, params: { email_address: @user.email_address, password: "password" }
+    sign_in_as @user
+
+    post get_options_second_factor_authentication_url
+
+    assert_redirected_to root_path
+  end
+
   test "create" do
     post session_path, params: { email_address: @user.email_address, password: "password" }
 
