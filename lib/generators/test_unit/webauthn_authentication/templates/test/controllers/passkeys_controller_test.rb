@@ -78,12 +78,7 @@ class PasskeysControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "requires authentication to create passkey" do
-    post passkeys_url, params: {
-      credential: {
-        nickname: "My Passkey",
-        public_key_credential: "{}"
-      }
-    }
+    post passkeys_url
 
     assert_response :redirect
     assert_redirected_to new_session_url
