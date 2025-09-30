@@ -85,13 +85,12 @@ class PasskeysControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "deletes passkey when user is authenticated" do
-    credential = WebauthnCredential.create!(
+    credential = WebauthnCredential.passkey.create!(
       nickname: "My Passkey",
       user: @user,
       external_id: "external-id",
       public_key: "public-key",
       sign_count: 0,
-      authentication_factor: 0
     )
 
     sign_in_as @user
