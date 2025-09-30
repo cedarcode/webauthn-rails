@@ -54,9 +54,7 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
         <<-RUBY.strip_heredoc.indent(4)
 
           def require_no_authentication
-            if Current.user
-              redirect_to root_path
-            end
+            redirect_to root_path if find_session_by_cookie
           end
         RUBY
       end
