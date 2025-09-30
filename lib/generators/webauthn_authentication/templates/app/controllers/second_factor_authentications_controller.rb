@@ -57,6 +57,6 @@ class SecondFactorAuthenticationsController < ApplicationController
   end
 
   def current_authentication_user_id
-    session[:current_authentication][:user_id] || session[:current_authentication]["user_id"]
+    session.dig(:current_authentication, :user_id) || session.dig(:current_authentication, "user_id")
   end
 end
