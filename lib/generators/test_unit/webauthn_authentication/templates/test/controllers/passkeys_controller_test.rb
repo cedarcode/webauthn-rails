@@ -7,7 +7,7 @@ class PasskeysControllerTest < ActionDispatch::IntegrationTest
     @client = WebAuthn::FakeClient.new(WebAuthn.configuration.allowed_origins.first)
   end
 
-  test "initiates Passkey creation when user is authenticated" do
+  test "create_options" do
     sign_in_as @user
     post create_options_passkeys_url
 
@@ -20,14 +20,14 @@ class PasskeysControllerTest < ActionDispatch::IntegrationTest
     assert_equal session[:current_registration][:challenge], body["challenge"]
   end
 
-  test "requires authentication to initiate Passkey creation" do
+  test "create_options unauthenticated" do
     post create_options_passkeys_url
 
     assert_response :redirect
     assert_redirected_to new_session_url
   end
 
-  test "creates passkey when user is authenticated" do
+  test "create" do
     sign_in_as @user
 
     post create_options_passkeys_url
@@ -52,7 +52,7 @@ class PasskeysControllerTest < ActionDispatch::IntegrationTest
     assert_nil session[:current_registration]
   end
 
-  test "does not create passkey when there is a Webauthn error" do
+  test "create with WebAuthn error" do
     sign_in_as @user
 
     post create_options_passkeys_url
@@ -77,7 +77,7 @@ class PasskeysControllerTest < ActionDispatch::IntegrationTest
     assert_nil session[:current_registration]
   end
 
-  test "requires authentication to create passkey" do
+  test "create unauthenticated" do
     post passkeys_url, params: {
       credential: {
         nickname: "My Passkey",
@@ -89,7 +89,7 @@ class PasskeysControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_session_url
   end
 
-  test "deletes passkey when user is authenticated" do
+  test "destroy" do
     2.times do |i|
       WebauthnCredential.create!(
         nickname: "My Passkey #{i}",

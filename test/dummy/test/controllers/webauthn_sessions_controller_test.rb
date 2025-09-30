@@ -22,7 +22,7 @@ class WebauthnSessionsControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
-  test "should return get_options" do
+  test "get_options" do
     post get_options_webauthn_session_url
 
     assert_response :success
@@ -33,7 +33,7 @@ class WebauthnSessionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal session[:current_authentication][:challenge], body["challenge"]
   end
 
-  test "should create session with valid credential" do
+  test "create" do
     post get_options_webauthn_session_url
     challenge = session[:current_authentication][:challenge]
 
@@ -49,7 +49,7 @@ class WebauthnSessionsControllerTest < ActionDispatch::IntegrationTest
     assert_nil session[:current_authentication]
   end
 
-  test "should not create session when there is a Webauthn error" do
+  test "create with WebAuthn error" do
     post get_options_webauthn_session_url
     challenge = session[:current_authentication][:challenge]
 
@@ -66,7 +66,7 @@ class WebauthnSessionsControllerTest < ActionDispatch::IntegrationTest
     assert_nil session[:current_authentication]
   end
 
-  test "should not create session with unrecognized credential" do
+  test "create with unrecognized credential" do
     post get_options_webauthn_session_url
     challenge = session[:current_authentication][:challenge]
 
@@ -84,7 +84,7 @@ class WebauthnSessionsControllerTest < ActionDispatch::IntegrationTest
     assert_nil session[:current_authentication]
   end
 
-  test "should not create session with a second factor credential" do
+  test "create with a second factor credential" do
     client = WebAuthn::FakeClient.new(WebAuthn.configuration.allowed_origins.first)
 
     creation_options = WebAuthn::Credential.options_for_create(
@@ -118,7 +118,7 @@ class WebauthnSessionsControllerTest < ActionDispatch::IntegrationTest
     assert_nil session[:current_authentication]
   end
 
-  test "should destroy session" do
+  test "destroy" do
     delete webauthn_session_url
     assert_redirected_to new_session_path
   end
