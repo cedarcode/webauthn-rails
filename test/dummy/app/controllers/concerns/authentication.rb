@@ -51,8 +51,6 @@ module Authentication
     end
 
     def require_no_authentication
-      if Current.user
-        redirect_to root_path
-      end
+      redirect_to root_path if find_session_by_cookie
     end
 end
