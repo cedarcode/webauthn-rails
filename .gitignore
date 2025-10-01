@@ -12,5 +12,6 @@
 /test/tmp
 
 /Gemfile.lock
+/gemfiles/*.gemfile.lock
 
 .byebug_history

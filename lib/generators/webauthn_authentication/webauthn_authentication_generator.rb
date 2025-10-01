@@ -8,7 +8,11 @@ end
 
 class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
   include ActiveRecord::Generators::Migration
-  include BundleHelper
+  if Rails.version >= "8.1"
+    include Rails::Generators::BundleHelper
+  else
+    include BundleHelper
+  end
 
   source_root File.expand_path("../templates", __FILE__)
 
