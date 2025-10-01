@@ -78,33 +78,25 @@ class PasskeysControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "create unauthenticated" do
-    post passkeys_url, params: {
-      credential: {
-        nickname: "My Passkey",
-        public_key_credential: "{}"
-      }
-    }
+    post passkeys_url
 
     assert_response :redirect
     assert_redirected_to new_session_url
   end
 
   test "destroy" do
-    2.times do |i|
-      WebauthnCredential.create!(
-        nickname: "My Passkey #{i}",
-        user: @user,
-        external_id: "external-id-#{i}",
-        public_key: "public-key-#{i}",
-        sign_count: 0,
-        authentication_factor: 0
-      )
-    end
+    credential = WebauthnCredential.passkey.create!(
+      nickname: "My Passkey",
+      user: @user,
+      external_id: "external-id",
+      public_key: "public-key",
+      sign_count: 0,
+    )
 
     sign_in_as @user
 
     assert_difference("WebauthnCredential.count", -1) do
-      delete passkey_url(@user.webauthn_credentials.first)
+      delete passkey_url(credential)
     end
     assert_redirected_to root_path
   end

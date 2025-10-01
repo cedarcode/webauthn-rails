@@ -12,13 +12,12 @@ class WebauthnSessionsControllerTest < ActionDispatch::IntegrationTest
     create_options = @client.create(challenge: creation_options.challenge)
     credential = WebAuthn::Credential.from_create(create_options)
 
-    WebauthnCredential.create!(
+    WebauthnCredential.passkey.create!(
       nickname: "My Passkey",
       user: @user,
       external_id: credential.id,
       public_key: credential.public_key,
       sign_count: 0,
-      authentication_factor: 0
     )
   end
 
@@ -93,13 +92,12 @@ class WebauthnSessionsControllerTest < ActionDispatch::IntegrationTest
     create_options = client.create(challenge: creation_options.challenge)
     credential = WebAuthn::Credential.from_create(create_options)
 
-    WebauthnCredential.create!(
+    WebauthnCredential.second_factor.create!(
       nickname: "Second Factor Key",
       user: @user,
       external_id: credential.id,
       public_key: credential.public_key,
       sign_count: 0,
-      authentication_factor: 1
     )
 
     post get_options_webauthn_session_url
