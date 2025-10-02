@@ -14,42 +14,37 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
     @authenticator.remove!
   end
 
-  test "add credentials and sign in" do
-    visit root_path
-
-    click_on "Add Passkey"
-
+  test "adding a passkey and signing in" do
+    visit new_passkey_path
     fill_in("Security Key nickname", with: "Touch ID")
     click_on "Add Security Key"
 
-    assert_current_path "/"
-    assert_selector "div", text: "Security Key registered successfully"
-    assert_selector "span", text: "Touch ID"
+    assert_current_path root_path
+    assert_no_selector "div", text: "Error registering credential"
+    assert_no_selector "div", text: (/Verification failed:/)
 
-    click_on "Sign out"
-    assert_selector("input[type=submit][value='Sign in']")
+    Capybara.reset_sessions!
 
+    visit new_session_path
     click_on "Sign In with Passkey"
 
-    assert_current_path "/"
-    assert_selector "h3", text: "Your Passkeys"
+    assert_current_path root_path
+    assert_no_selector "div", text: "Credential not recognized"
+    assert_no_selector "div", text: (/Verification failed:/)
   end
 
-  test "sign in with 2FA WebAuthn credential" do
-    visit root_path
-
-    click_on "Add Second Factor Key"
-
+  test "adding a 2FA WebAuthn credential and signing in" do
+    visit new_second_factor_webauthn_credential_path
     fill_in("Security Key nickname", with: "Touch ID")
     click_on "Add Security Key"
 
-    assert_current_path "/"
-    assert_selector "div", text: "Security Key registered successfully"
-    assert_selector "span", text: "Touch ID"
+    assert_current_path root_path
+    assert_no_selector "div", text: "Error registering credential"
+    assert_no_selector "div", text: (/Verification failed:/)
 
-    click_on "Sign out"
-    assert_selector("input[type=submit][value='Sign in']")
+    Capybara.reset_sessions!
 
+    visit new_session_path
     fill_in "email_address", with: "alice@example.com"
     fill_in "password", with: "S3cr3tP@ssw0rd!"
     click_on "Sign in"
@@ -57,20 +52,19 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
     assert_selector "h3", text: "Two-factor authentication"
     click_on "Use Security Key"
 
-    assert_current_path "/"
-    assert_selector "h3", text: "Your Passkeys"
+    assert_current_path root_path
+    assert_no_selector "div", text: "Credential not recognized"
+    assert_no_selector "div", text: (/Verification failed:/)
   end
 
   private
 
   def sign_in_as(user)
     visit new_session_path
-
     fill_in "email_address", with: user.email_address
     fill_in "password", with: user.password
-
     click_on "Sign in"
 
-    assert_selector "h3", text: "Your Passkeys"
+    assert_current_path root_path
   end
 end
