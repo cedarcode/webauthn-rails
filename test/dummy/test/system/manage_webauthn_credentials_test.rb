@@ -23,7 +23,7 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
     assert_no_selector "div", text: "Error registering credential"
     assert_no_selector "div", text: (/Verification failed:/)
 
-    Capybara.reset_sessions!
+    sign_out
 
     visit new_session_path
     click_on "Sign In with Passkey"
@@ -42,7 +42,7 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
     assert_no_selector "div", text: "Error registering credential"
     assert_no_selector "div", text: (/Verification failed:/)
 
-    Capybara.reset_sessions!
+    sign_out
 
     visit new_session_path
     fill_in "email_address", with: "alice@example.com"
@@ -66,5 +66,9 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
     click_on "Sign in"
 
     assert_current_path root_path
+  end
+
+  def sign_out
+    Capybara.reset_sessions!
   end
 end
