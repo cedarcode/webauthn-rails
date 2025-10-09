@@ -32,7 +32,7 @@ class WebauthnAuthenticationGenerator < ::Rails::Generators::Base
     if File.exist?(File.join(destination_root, "app/controllers/sessions_controller.rb"))
       gsub_file "app/controllers/sessions_controller.rb",
         /^  def create.*?^  end/m,
-        <<~RUBY.strip_heredoc.indent(2)
+        <<~RUBY.chomp.indent(2)
           def create
             if user = User.authenticate_by(params.permit(:email_address, :password))
               if user.second_factor_enabled?
