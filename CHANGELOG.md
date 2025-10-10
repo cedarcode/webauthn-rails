@@ -1,13 +1,9 @@
 # Changelog
 
-## Unreleased
-### Added
-
-### Changed
-- Make system tests agnostic to the user's application. [#97](https://github.com/cedarcode/webauthn-rails/pull/97) [@joaquintomas2003]
+## [v0.1.2] - 2025-10-10
 
 ### Fixed
-
+- Make system tests agnostic to the user's application. [#97](https://github.com/cedarcode/webauthn-rails/pull/97) [@joaquintomas2003]
 - Passkeys being referenced as 'Security Keys'. [#99](https://github.com/cedarcode/webauthn-rails/pull/99) [@santiagorodriguez96]
 
 ## [v0.1.1] - 2025-10-01
