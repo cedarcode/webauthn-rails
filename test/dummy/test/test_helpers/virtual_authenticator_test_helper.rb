@@ -7,32 +7,41 @@ module VirtualAuthenticatorTestHelper
     page.driver.browser.add_virtual_authenticator(options)
   end
 
-  def add_credential_to_authenticator(authenticator, user)
-    raw_id = SecureRandom.random_bytes(16)
-    credential_id = Base64.urlsafe_encode64(raw_id)
+  def add_passkey_to_authenticator(authenticator, user)
+    add_credential_to_authenticator(authenticator, user, passkey: true)
+  end
+
+  def add_security_key_to_authenticator(authenticator, user)
+    add_credential_to_authenticator(authenticator, user, passkey: false)
+  end
+
+  def add_credential_to_authenticator(authenticator, user, passkey:)
+    credential_id = SecureRandom.random_bytes(16)
+    encoded_credential_id = Base64.urlsafe_encode64(credential_id)
     key = OpenSSL::PKey.generate_key("ED25519")
-    private_key = Base64.urlsafe_encode64(key.private_to_der)
+    encoded_private_key = Base64.urlsafe_encode64(key.private_to_der)
 
     cose_public_key = COSE::Key::OKP.from_pkey(OpenSSL::PKey.read(key.public_to_der))
     cose_public_key.alg = -8
-    public_key = Base64.urlsafe_encode64(cose_public_key.serialize)
+    encoded_cose_public_key = Base64.urlsafe_encode64(cose_public_key.serialize)
 
     credential_json = {
-      "credentialId" => credential_id,
-      "isResidentCredential" => true,
+      "credentialId" => encoded_credential_id,
+      "isResidentCredential" => passkey,
       "rpId" => "localhost",
-      "privateKey" => private_key,
+      "privateKey" => encoded_private_key,
       "signCount" => 0,
       "userHandle" => user.webauthn_id
     }
 
     authenticator.add_credential(credential_json)
 
-    user.passkeys.create!(
-      nickname: "My Security Key",
-      external_id: Base64.urlsafe_encode64(raw_id, padding: false),
-      public_key: public_key,
-      sign_count: 0
+    user.webauthn_credentials.create!(
+      nickname: "My Credential",
+      external_id: Base64.urlsafe_encode64(credential_id, padding: false),
+      public_key: encoded_cose_public_key,
+      sign_count: 0,
+      authentication_factor: passkey ? :first_factor : :second_factor
     )
   end
 end

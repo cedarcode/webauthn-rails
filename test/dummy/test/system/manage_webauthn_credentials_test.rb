@@ -24,7 +24,7 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
   end
 
   test "signing in with existing passkey" do
-    add_credential_to_authenticator(@authenticator, @user)
+    add_passkey_to_authenticator(@authenticator, @user)
 
     visit new_session_path
     click_on "Sign In with Passkey"
@@ -42,7 +42,7 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
   end
 
   test "sign in with existing 2FA WebAuthn credential" do
-    add_credential_to_authenticator(@authenticator, @user)
+    add_security_key_to_authenticator(@authenticator, @user)
 
     visit new_session_path
     fill_in "email_address", with: @user.email_address
