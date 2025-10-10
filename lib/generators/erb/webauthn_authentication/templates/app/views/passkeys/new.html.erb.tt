@@ -10,9 +10,9 @@
     "webauthn-credentials-options-url-value": create_options_passkeys_path,
   }) do |form| %>
   <div class="field">
-    <%%= form.label :nickname, 'Security Key nickname' %>
+    <%%= form.label :nickname, 'Passkey nickname' %>
     <%%= form.text_field :nickname, required: true %>
   </div>
   <%%= form.hidden_field :public_key_credential, data: { "webauthn-credentials-target": "credentialHiddenInput" } %>
-  <%%= form.submit "Add Security Key", disabled: true, data: { "webauthn-credentials-target": "submitButton" } %>
+  <%%= form.submit "Add Passkey", disabled: true, data: { "webauthn-credentials-target": "submitButton" } %>
 <%% end %>

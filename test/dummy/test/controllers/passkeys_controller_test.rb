@@ -48,7 +48,7 @@ class PasskeysControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to root_path
-    assert_match (/Security Key registered successfully/), flash[:notice]
+    assert_match (/Passkey registered successfully/), flash[:notice]
     assert_nil session[:current_registration]
   end
 

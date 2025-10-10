@@ -35,7 +35,7 @@ class PasskeysController < ApplicationController
           public_key: webauthn_credential.public_key,
           sign_count: webauthn_credential.sign_count
       )
-        redirect_to root_path, notice: "Security Key registered successfully"
+        redirect_to root_path, notice: "Passkey registered successfully"
       else
         flash[:alert] = "Error registering credential"
         render :new
@@ -50,7 +50,7 @@ class PasskeysController < ApplicationController
   def destroy
     Current.user.passkeys.destroy(params[:id])
 
-    redirect_to root_path, notice: "Security Key deleted successfully"
+    redirect_to root_path, notice: "Passkey deleted successfully"
   end
 
   private
