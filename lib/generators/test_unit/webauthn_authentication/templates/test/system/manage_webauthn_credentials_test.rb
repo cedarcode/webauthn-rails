@@ -21,6 +21,8 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
     click_on "Add Passkey"
 
     assert_current_path root_path
+    # Add custom assertions based on your application's behavior
+    # assert_text "Passkey registered successfully"
   end
 
   test "signing in with existing passkey" do
@@ -28,7 +30,9 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
 
     visit new_session_path
     click_on "Sign In with Passkey"
+
     assert_current_path root_path
+    # Add custom assertions based on your application's behavior
   end
 
   test "adding a 2FA WebAuthn credential" do
@@ -39,6 +43,8 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
     click_on "Add Security Key"
 
     assert_current_path root_path
+    # Add custom assertions based on your application's behavior
+    # assert_text "Security Key registered successfully"
   end
 
   test "sign in with existing 2FA WebAuthn credential" do
@@ -54,6 +60,7 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
     click_on "Use Security Key"
 
     assert_current_path root_path
+    # Add custom assertions based on your application's behavior
   end
 
   private
