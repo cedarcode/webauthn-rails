@@ -17,8 +17,8 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
     sign_in_as(@user)
 
     visit new_passkey_path
-    fill_in("Security Key nickname", with: "Touch ID")
-    click_on "Add Security Key"
+    fill_in("Passkey nickname", with: "Touch ID")
+    click_on "Add Passkey"
 
     assert_current_path root_path
   end
