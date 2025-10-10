@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- Passkeys being referenced as 'Security Keys'. [#99](https://github.com/cedarcode/webauthn-rails/pull/99) [@santiagorodriguez96]
+
 ## [v0.1.1] - 2025-10-01
 
 ### Added

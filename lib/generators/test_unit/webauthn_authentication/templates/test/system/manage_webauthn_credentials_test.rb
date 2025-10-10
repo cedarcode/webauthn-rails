@@ -19,11 +19,11 @@ class ManageWebauthnCredentialsTest < ApplicationSystemTestCase
 
     click_on "Add Passkey"
 
-    fill_in("Security Key nickname", with: "Touch ID")
-    click_on "Add Security Key"
+    fill_in("Passkey nickname", with: "Touch ID")
+    click_on "Add Passkey"
 
     assert_current_path "/"
-    assert_selector "div", text: "Security Key registered successfully"
+    assert_selector "div", text: "Passkey registered successfully"
     assert_selector "span", text: "Touch ID"
 
     click_on "Sign out"
