@@ -30,9 +30,9 @@ module VirtualAuthenticatorTestHelper
       "isResidentCredential" => passkey,
       "rpId" => "localhost",
       "privateKey" => encoded_private_key,
-      "signCount" => 0,
-      "userHandle" => user.webauthn_id
+      "signCount" => 0
     }
+    credential_json["userHandle"] = user.webauthn_id if passkey
 
     authenticator.add_credential(credential_json)
 
