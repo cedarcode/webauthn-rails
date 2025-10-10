@@ -1,6 +1,10 @@
 # Changelog
 
 ## Unreleased
+### Added
+
+### Changed
+- Make system tests agnostic to the user's application. [#97](https://github.com/cedarcode/webauthn-rails/pull/97) [@joaquintomas2003]
 
 ### Fixed
 
