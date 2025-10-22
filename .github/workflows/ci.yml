@@ -28,8 +28,9 @@ jobs:
           - '3.3'
           - '3.2'
         gemfile:
-          - rails_8_0
           - rails_edge
+          - rails_8_1
+          - rails_8_0
 
     env:
       BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
