@@ -8,7 +8,8 @@
 
 - **Ruby**: 3.2+
 - **Rails**: 8.0+
-- **Stimulus Rails**: This gem requires [stimulus-rails](https://github.com/hotwired/stimulus-rails) to be installed and configured in your application
+- **Stimulus Rails**: This gem requires [stimulus-rails](https://github.com/hotwired/stimulus-rails) to be installed and configured in your application for the generated code to work out of the box.
+> **Note:** If you prefer not to have the **stimulus-rails** dependency, you’ll need to manually implement the JavaScript logic for WebAuthn interactions.
 
 ### JavaScript Dependencies
 
