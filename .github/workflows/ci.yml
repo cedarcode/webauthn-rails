@@ -81,7 +81,7 @@ jobs:
         bundler-cache: true
 
     - name: Install Rails
-      run: gem install rails -v "8.0"
+      run: gem install rails -v $(grep '"rails"' gemfiles/${{ matrix.gemfile }}.gemfile | sed -E 's/.*"~> ([0-9.]+)".*/\1/')
 
     - name: Create new app and run generator
       run: |
