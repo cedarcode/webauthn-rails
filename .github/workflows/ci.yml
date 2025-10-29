@@ -48,8 +48,51 @@ jobs:
     - name: Run tests
       run: bundle exec rake test
 
-    - name: Run dummy app tests
-      run: bundle exec rake test_dummy
+    - name: Keep screenshots from failed system tests
+      uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: screenshots-${{ matrix.ruby }}
+        path: ${{ github.workspace }}/test/dummy/tmp/screenshots
+        if-no-files-found: ignore
+
+  test_generated_app:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - '3.4'
+          - '3.3'
+          - '3.2'
+        gemfile:
+          - rails_edge
+          - rails_8_1
+          - rails_8_0
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+        bundler-cache: true
+
+    - name: Install Rails
+      run: gem install rails -v "8.0"
+
+    - name: Create new app and run generator
+      run: |
+        rails new test-app --skip-action-mailbox --skip-action-text --skip-active-storage --skip-kamal
+        cd test-app
+        bundle install
+        bundle add webauthn-rails --path ..
+        rails generate webauthn_authentication
+        bundle install
+        bin/rails db:migrate
+        bundle exec rake test
 
     - name: Keep screenshots from failed system tests
       uses: actions/upload-artifact@v4
