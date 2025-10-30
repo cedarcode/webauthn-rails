@@ -92,6 +92,7 @@ jobs:
           git clone --depth 1 --branch "${branch:-main}" "$git_url" rails
           cd rails
           bundle install
+          bundle exec rake install
         else
           rails_version=$(echo "$rails_line" | sed -E 's/.*"~> ([0-9.]+)".*/\1/')
           echo "Installing Rails $rails_version"
@@ -104,7 +105,7 @@ jobs:
         cd test-app
         bundle install
         bundle add webauthn-rails --path ..
-        rails generate webauthn_authentication
+        rails generate webauthn_authentication --with-rails-authentication
         bundle install
         bin/rails db:migrate
         bundle exec rake test
