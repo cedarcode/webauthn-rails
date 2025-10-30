@@ -106,7 +106,7 @@ jobs:
         bundle install
         bundle add webauthn-rails --path ..
         rails generate webauthn_authentication --with-rails-authentication
-        bundle exec rake db:create db:schema:load
+        bundle exec rake db:migrate
         bundle exec rake test
 
     - name: Keep screenshots from failed system tests
