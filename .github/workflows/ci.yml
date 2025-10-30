@@ -86,6 +86,12 @@ jobs:
 
         if echo "$rails_line" | grep -q 'git:'; then
           echo "Installing Rails from git"
+          git_url=$(echo "$rails_line" | sed -E 's/.*git: *"([^"]+)".*/\1/')
+          branch=$(echo "$rails_line" | sed -E 's/.*branch: *"([^"]+)".*/\1/')
+          echo "Installing Rails from $git_url (branch: ${branch:-main})"
+          git clone --depth 1 --branch "${branch:-main}" "$git_url" rails
+          cd rails
+          bundle install
         else
           rails_version=$(echo "$rails_line" | sed -E 's/.*"~> ([0-9.]+)".*/\1/')
           echo "Installing Rails $rails_version"
