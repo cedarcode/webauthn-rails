@@ -106,6 +106,12 @@ jobs:
         bundle install
         bundle add webauthn-rails --path ..
         rails generate webauthn_authentication --with-rails-authentication
+        cat <<'RUBY' > config/initializers/webauthn.rb
+        WebAuthn.configure do |config|
+          config.allowed_origins = [ "http://localhost:3030" ]
+          config.rp_name = "WebAuthn Rails Demo App"
+        end
+        RUBY
         bundle exec rake db:migrate
         bundle exec rake test
 
