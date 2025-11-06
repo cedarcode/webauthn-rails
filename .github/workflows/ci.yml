@@ -112,6 +112,8 @@ jobs:
           config.rp_name = "WebAuthn Rails Demo App"
         end
         RUBY
+        rails generate controller home index
+        sed -i 's/^# root "posts#index"/  root "home#index"/' config/routes.rb
         bundle exec rake db:migrate
         bundle exec rake test
 
