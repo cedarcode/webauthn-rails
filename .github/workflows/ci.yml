@@ -113,7 +113,7 @@ jobs:
         end
         RUBY
         rails generate controller home index
-        sed -i 's/^# root "posts#index"/  root "home#index"/' config/routes.rb
+        sed 's/# root "posts#index"/root "home#index"/g' config/routes.rb
         cat config/routes.rb
         bundle exec rake db:migrate
         bundle exec rake test
