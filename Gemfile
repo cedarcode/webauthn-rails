@@ -31,3 +31,6 @@ gem "bcrypt", "~> 3.1.7"
 gem "webauthn"
 
 gem "appraisal", "~> 2.5"
+
+gem "minitest", "~> 6.0"
+gem "minitest-mock"
